@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { APP_VERSION, APP_YEAR } from '@/config/version';
 import styles from "@styles/page.module.css";
 
 export default function Home() {
@@ -24,6 +25,9 @@ export default function Home() {
         <p className={styles.small}>
           Per informazioni:{" "}
           <a href="mailto:info@twodotsdesign.it">info@twodotsdesign.it</a>
+        </p>
+        <p className={styles.small}>
+          twodots - ver. {APP_VERSION} - {APP_YEAR}
         </p>
       </div>
     </main>
