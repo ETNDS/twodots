@@ -21,6 +21,8 @@ type AnimaleForm = {
   immagineDisegno: string;
   immaginiCiondolo: string[];
   igLink: string;
+  prezzo: number;
+  prezzoPet: number;
 };
 
 const EMPTY: AnimaleForm = {
@@ -36,6 +38,8 @@ const EMPTY: AnimaleForm = {
   immagineDisegno: "",
   immaginiCiondolo: [],
   igLink: "",
+  prezzo: 45,
+  prezzoPet: 15,
 };
 
 export default function AdminAnimale() {
@@ -54,14 +58,17 @@ export default function AdminAnimale() {
   const [createdAt, setCreatedAt] = useState<string>("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
 
-  // Stati stringa per i campi decimali
   const [dimVStr, setDimVStr] = useState("");
   const [dimHStr, setDimHStr] = useState("");
   const [occhiStr, setOcchiStr] = useState("");
+  const [prezzoStr, setPrezzoStr] = useState("45");
+  const [prezzoPetStr, setPrezzoPetStr] = useState("15");
 
   useEffect(() => {
     if (isNuovo) {
       setOcchiStr("2");
+      setPrezzoStr("45");
+      setPrezzoPetStr("15");
       return;
     }
     async function carica() {
@@ -81,12 +88,16 @@ export default function AdminAnimale() {
         immagineDisegno: d.immagineDisegno || "",
         immaginiCiondolo: d.immaginiCiondolo?.filter((x: string) => x) || [],
         igLink: d.igLink || "",
+        prezzo: d.prezzo || 45,
+        prezzoPet: d.prezzoPet || 15,
       };
       setForm(f);
       setOriginal(f);
       setDimVStr(d.dimensioni?.v ? String(d.dimensioni.v) : "");
       setDimHStr(d.dimensioni?.h ? String(d.dimensioni.h) : "");
       setOcchiStr(d.occhiMm ? String(d.occhiMm) : "2");
+      setPrezzoStr(d.prezzo ? String(d.prezzo) : "45");
+      setPrezzoPetStr(d.prezzoPet ? String(d.prezzoPet) : "15");
       if (d.createdAt?.toDate) setCreatedAt(d.createdAt.toDate().toLocaleString("it-IT"));
       if (d.updatedAt?.toDate) setUpdatedAt(d.updatedAt.toDate().toLocaleString("it-IT"));
       setLoading(false);
@@ -116,10 +127,10 @@ export default function AdminAnimale() {
   function handleDecimalChange(
     raw: string,
     setStr: (s: string) => void,
-    key: "dimensioniV" | "dimensioniH" | "occhiMm"
+    key: "dimensioniV" | "dimensioniH" | "occhiMm" | "prezzo" | "prezzoPet"
   ) {
     const normalized = raw.replace(",", ".");
-    setStr(raw); // mantieni il testo grezzo nel campo
+    setStr(raw);
     if (normalized === "" || normalized === ".") {
       update(key, 0);
       return;
@@ -144,6 +155,8 @@ export default function AdminAnimale() {
         immagineDisegno: form.immagineDisegno,
         immaginiCiondolo: form.immaginiCiondolo,
         igLink: form.igLink,
+        prezzo: form.prezzo,
+        prezzoPet: form.prezzoPet,
         updatedAt: now,
       };
       if (isNuovo) data.createdAt = now;
@@ -294,6 +307,35 @@ export default function AdminAnimale() {
                 onChange={(e) => update("igLink", e.target.value)}
                 placeholder="https://instagram.com/p/..."
               />
+            </div>
+          </div>
+
+          {/* PREZZI */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Prezzi</h2>
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
+                <label className={styles.label}>Prezzo HUM (€)</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  inputMode="decimal"
+                  value={prezzoStr}
+                  onChange={(e) => handleDecimalChange(e.target.value, setPrezzoStr, "prezzo")}
+                  placeholder="es. 45"
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Prezzo PET (€)</label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  inputMode="decimal"
+                  value={prezzoPetStr}
+                  onChange={(e) => handleDecimalChange(e.target.value, setPrezzoPetStr, "prezzoPet")}
+                  placeholder="es. 15"
+                />
+              </div>
             </div>
           </div>
 

@@ -9,6 +9,7 @@ import styles from "@styles/adminLogin.module.css";
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errore, setErrore] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -17,13 +18,12 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setErrore("");
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/admin");
     } catch (error) {
-        console.error("Errore login:", error);
-        setErrore("Email o password non corretti.");
+      console.error("Errore login:", error);
+      setErrore("Email o password non corretti.");
     } finally {
       setLoading(false);
     }
@@ -47,13 +47,22 @@ export default function AdminLogin() {
           </div>
           <div className={styles.field}>
             <label className={styles.fieldLabel}>Password</label>
-            <input
-              className={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className={styles.passwordWrapper}>
+              <input
+                className={styles.inputPassword}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className={styles.showPasswordBtn}
+                onClick={() => setShowPassword((p) => !p)}
+              >
+                {showPassword ? "Nascondi" : "Mostra"}
+              </button>
+            </div>
           </div>
           {errore && <p className={styles.errore}>{errore}</p>}
           <button className={styles.btn} type="submit" disabled={loading}>

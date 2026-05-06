@@ -1,0 +1,483 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 61px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
+.loading {
+  padding: 60px 36px;
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.5;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  align-items: start;
+  padding: 36px;
+}
+
+/* STEPS */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-lavanda-light);
+}
+
+.stepHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.stepHeader:hover {
+  background: var(--color-lavanda-mid);
+}
+
+.stepHeaderAttivo {
+  background: var(--color-lavanda-mid);
+}
+
+.stepNum {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.3;
+  min-width: 24px;
+}
+
+.stepTitolo {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-navy);
+  flex: 1;
+}
+
+.stepValore {
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.5;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opzionale {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.5;
+}
+
+.stepBody {
+  padding: 16px;
+  border-top: 0.5px solid var(--color-lavanda-mid);
+}
+
+.stepDesc {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ANIMALI GRID */
+.animaliGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.animaleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  background: var(--color-lavanda);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.animaleCard:hover {
+  border-color: var(--color-navy);
+  opacity: 0.8;
+}
+
+.animaleCardSel {
+  border-color: var(--color-navy) !important;
+}
+
+.animaleImg {
+  width: 52px;
+  height: 52px;
+  background: var(--color-navy);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.animaleImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.animaleNome {
+  font-size: 10px;
+  color: var(--color-navy);
+  text-align: center;
+}
+
+/* COLORI */
+.coloriGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.coloreCircle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.coloreCircleInner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.coloreCircle:hover .coloreCircleInner {
+  transform: scale(1.1);
+}
+
+.coloreCircleSel .coloreCircleInner {
+  border-color: var(--color-navy);
+  transform: scale(1.1);
+}
+
+.coloreNome {
+  font-size: 9px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  text-align: center;
+  max-width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* SCELTA ROW */
+.sceltaRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.coloreBtn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.coloreBtnSel {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 2px;
+}
+
+.sceltaBtn {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-navy);
+  background: var(--color-lavanda);
+  border: 2px solid transparent;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sceltaBtnSel {
+  border-color: var(--color-navy);
+  font-weight: 500;
+}
+
+/* FONT */
+.fontBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background: var(--color-lavanda);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fontBtnSel {
+  border-color: var(--color-navy);
+}
+
+.fontDesc {
+  font-size: 10px;
+  color: var(--color-navy);
+  opacity: 0.6;
+}
+
+/* DEDICA */
+.dedicaTextarea {
+  width: 100%;
+  background: var(--color-lavanda);
+  border: 0.5px solid rgba(13,14,46,0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  resize: none;
+  outline: none;
+  color: var(--color-navy);
+  line-height: 1.6;
+}
+
+.dedicaTextarea:focus {
+  border-color: var(--color-navy);
+}
+
+/* FIELD */
+.field {
+  margin-bottom: 16px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.6;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  margin-top: 6px;
+}
+
+/* NEXT BTN */
+.nextBtn {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  background: var(--color-navy);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* CONFEZIONI */
+.confezioniGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.confezioneCard {
+  background: var(--color-lavanda);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.confezioneCardSel {
+  border-color: var(--color-navy);
+}
+
+.confezioneImg {
+  height: 80px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confezioneImg img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.confezioneNome {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 4px;
+}
+
+.confezioneDesc {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.55;
+  line-height: 1.5;
+}
+
+.confezionePrezzo {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-top: 6px;
+}
+
+/* RIEPILOGO */
+.riepilogo {
+  position: sticky;
+  top: 80px;
+}
+
+.riepilogoInner {
+  background: var(--color-navy);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.anteprima {
+  height: 160px;
+  background: rgba(234,230,244,0.05);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anteprimaImg {
+  max-height: 140px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.anteprimaPlaceholder {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  opacity: 0.2;
+}
+
+.riepilogoDettagli {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.riepilogoRiga {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.riepilogoLabel {
+  font-size: 11px;
+  color: var(--color-lavanda);
+  opacity: 0.45;
+}
+
+.riepilogoValore {
+  font-size: 11px;
+  color: var(--color-lavanda);
+  font-weight: 500;
+  max-width: 140px;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prezzoBox {
+  border-top: 0.5px solid rgba(234,230,244,0.15);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prezzoRiga {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-lavanda);
+  opacity: 0.55;
+}
+
+.prezzoTotale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  margin-top: 4px;
+}
+
+.ctaBtn {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-navy);
+  background: var(--color-lavanda);
+  border: none;
+  padding: 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ctaBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ctaBtn:not(:disabled):hover {
+  opacity: 0.85;
+}

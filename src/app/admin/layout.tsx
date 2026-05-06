@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
@@ -24,6 +24,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => unsubscribe();
   }, [router, isLoginPage]);
 
+  async function handleLogout() {
+    await signOut(auth);
+    router.push("/admin/login");
+  }
+
   if (checking) return null;
   if (isLoginPage) return <>{children}</>;
 
@@ -32,15 +37,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={styles.sidebar}>
         <p className={styles.sidebarLogo}>TWO DOTS</p>
         <nav className={styles.nav}>
-          <Link
-            href="/admin/animali"
-            className={`${styles.navLink} ${pathname.startsWith("/admin/animali") || pathname.startsWith("/admin/animale") ? styles.navLinkActive : ""}`}
-          >
+          <Link href="/admin/animali" className={`${styles.navLink} ${pathname.startsWith("/admin/animali") || pathname.startsWith("/admin/animale") ? styles.navLinkActive : ""}`}>
             Animali
+          </Link>
+          <Link href="/admin/cristalli" className={`${styles.navLink} ${pathname.startsWith("/admin/cristalli") ? styles.navLinkActive : ""}`}>
+            Cristalli
+          </Link>
+          <Link href="/admin/cordini" className={`${styles.navLink} ${pathname.startsWith("/admin/cordini") ? styles.navLinkActive : ""}`}>
+            Cordini
+          </Link>
+          <Link href="/admin/smalti" className={`${styles.navLink} ${pathname.startsWith("/admin/smalti") ? styles.navLinkActive : ""}`}>
+            Smalti
+          </Link>
+          <Link href="/admin/font" className={`${styles.navLink} ${pathname.startsWith("/admin/font") ? styles.navLinkActive : ""}`}>
+            Font dedica
+          </Link>
+          <Link href="/admin/confezioni" className={`${styles.navLink} ${pathname.startsWith("/admin/confezioni") ? styles.navLinkActive : ""}`}>
+            Confezioni
+          </Link>
+          <Link href="/admin/impostazioni" className={`${styles.navLink} ${pathname.startsWith("/admin/impostazioni") ? styles.navLinkActive : ""}`}>
+            Impostazioni
           </Link>
         </nav>
         <div className={styles.sidebarFooter}>
-          <Link href="/admin/login" className={styles.logoutLink}>Logout</Link>
+          <button className={styles.logoutBtn} onClick={handleLogout}>Logout</button>
         </div>
       </aside>
       <main className={styles.content}>
