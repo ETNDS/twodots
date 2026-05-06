@@ -1,19 +1,18 @@
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
+import { metadata as siteMetadata } from "@/config/metadata";
+import "@styles/globals.css";
 
-const poppins = Poppins({
+export const metadata = siteMetadata;
+
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500"],
 });
-
-export const metadata = {
-  title: "TwoDots – Coming Soon",
-  description: "Stiamo arrivando con il nuovo ecommerce TwoDots.",
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it">
-      <body className={poppins.className}>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

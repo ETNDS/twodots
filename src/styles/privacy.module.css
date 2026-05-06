@@ -1,0 +1,100 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 61px;
+  padding-bottom: 50px;
+  min-height: 100vh;
+}
+
+.hero {
+  background: var(--color-lavanda);
+  padding: 60px 36px 48px;
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.45;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.intro {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.55;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.updated {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.35;
+}
+
+.content {
+  background: var(--color-lavanda-light);
+  padding: 48px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 36px;
+  border-bottom: 0.5px solid rgba(13, 14, 46, 0.08);
+}
+
+.block:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.blockTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.blockText {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.65;
+  line-height: 1.85;
+}
+
+.list {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list li {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.65;
+  line-height: 1.75;
+}
+
+.link {
+  color: var(--color-navy);
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.link:hover {
+  opacity: 1;
+}

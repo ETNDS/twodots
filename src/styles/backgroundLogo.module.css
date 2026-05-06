@@ -1,0 +1,23 @@
+.left {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(50% + 390px);
+  width: 300px;
+  height: 600px;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.right {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  left: calc(50% + 390px);
+  width: 300px;
+  height: 600px;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}

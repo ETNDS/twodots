@@ -1,11 +1,28 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Sito pubblico */
+  --color-navy-org: #0D0E2E;
+  --color-navy: #010136;
+  --color-navy-section: #ddd9ee;
+  --color-lavanda: #EAE6F4;
+  --color-lavanda-light: #F2EFF8;
+  --color-lavanda-mid: #DDD9EE;
+
+  /* Admin */
+  --admin-bg: #F5F5F7;
+  --admin-surface: #ffffff;
+  --admin-sidebar: #0D0E2E;
+  --admin-sidebar-text: #EAE6F4;
+  --admin-text: #0D0E2E;
+  --admin-text-muted: rgba(13, 14, 46, 0.4);
+  --admin-border: rgba(13, 14, 46, 0.08);
+  --admin-hover: #EAE6F4;
 }
 
 body {
-  font-family: system-ui, sans-serif;
-  background: #fff;
-  color: #111;
+  font-family: 'Inter', sans-serif;
+  background: var(--color-lavanda);
+  color: var(--color-navy);
+  min-height: 100vh;
 }

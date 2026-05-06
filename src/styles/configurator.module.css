@@ -1,0 +1,81 @@
+.section {
+  background: var(--color-lavanda);
+  padding: 56px 36px;
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 8px;
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.step {
+  background: var(--color-lavanda-light);
+  border-radius: 12px;
+  padding: 20px 14px;
+}
+
+.num {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-navy);
+  opacity: 0.1;
+  margin-bottom: 8px;
+}
+
+.name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 4px;
+}
+
+.desc {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.55;
+  line-height: 1.55;
+}
+
+.cta {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.btn {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  font-size: 12px;
+  font-family: inherit;
+  letter-spacing: 0.07em;
+  padding: 13px 34px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}

@@ -1,0 +1,128 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 61px;
+  padding-bottom: 50px;
+  min-height: 100vh;
+}
+
+.intro {
+  background: var(--color-lavanda);
+  padding: 60px 36px 40px;
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  line-height: 1.8;
+}
+
+.loading {
+  padding: 60px 36px;
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.5;
+}
+
+.grid {
+  background: var(--color-lavanda);
+  padding: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: var(--color-lavanda-light);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.imageWrapper {
+  height: 160px;
+  background: var(--color-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  max-height: 140px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.placeholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(234, 230, 244, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder span {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  opacity: 0.4;
+}
+
+.info {
+  padding: 16px;
+}
+
+.nome {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 4px;
+}
+
+.forma {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+
+.storia {
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.65;
+  line-height: 1.7;
+}
+
+.storia strong {
+  font-weight: 600;
+  opacity: 1;
+}
+
+.storia em {
+  font-style: italic;
+}

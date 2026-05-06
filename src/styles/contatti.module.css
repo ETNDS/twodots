@@ -1,0 +1,135 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 61px;
+  padding-bottom: 50px;
+  min-height: 100vh;
+}
+
+.intro {
+  background: var(--color-lavanda);
+  padding: 60px 36px 40px;
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+.form {
+  background: var(--color-lavanda);
+  padding: 0 36px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-navy);
+  opacity: 0.6;
+  letter-spacing: 0.06em;
+}
+
+.input,
+.textarea {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-navy);
+  background: var(--color-lavanda-light);
+  border: 0.5px solid rgba(13, 14, 46, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: rgba(13, 14, 46, 0.5);
+}
+
+.btn {
+  align-self: flex-start;
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.07em;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.success {
+  font-size: 13px;
+  color: #2a7a4b;
+}
+
+.error {
+  font-size: 13px;
+  color: #a33030;
+}
+
+.alternative {
+  background: var(--color-lavanda-light);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.altText {
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.5;
+}
+
+.altLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-navy);
+  text-decoration: none;
+}
+
+.altLink:hover {
+  opacity: 0.7;
+}

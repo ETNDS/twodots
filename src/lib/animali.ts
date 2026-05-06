@@ -1,0 +1,31 @@
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+
+export type Animale = {
+  id: string;
+  nome: string;
+  storia: string;
+  forma: string;
+  dimensioni: { v: number; h: number };
+  occhiMm: number;
+  immagineDisegno: string;
+  immaginiCiondolo: string[];
+  pubblicato: boolean;
+  ordine: number;
+  igLink: string;
+};
+
+export async function getAnimaliPubblicati(): Promise<Animale[]> {
+  const snapshot = await getDocs(collection(db, "animali"));
+  return snapshot.docs
+    .map((doc) => ({ id: doc.id, ...doc.data() }) as Animale)
+    .filter((a) => a.pubblicato)
+    .sort((a, b) => a.ordine - b.ordine);
+}
+
+export async function getTuttiAnimali(): Promise<Animale[]> {
+  const snapshot = await getDocs(collection(db, "animali"));
+  return snapshot.docs
+    .map((doc) => ({ id: doc.id, ...doc.data() }) as Animale)
+    .sort((a, b) => a.nome.localeCompare(b.nome));
+}
