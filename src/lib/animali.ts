@@ -13,6 +13,8 @@ export type Animale = {
   pubblicato: boolean;
   ordine: number;
   igLink: string;
+  prezzo: number;
+  prezzoPet: number;
 };
 
 export async function getAnimaliPubblicati(): Promise<Animale[]> {
