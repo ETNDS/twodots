@@ -1,26 +1,11 @@
+import Link from "next/link";
 import styles from "@styles/configurator.module.css";
 
 const steps = [
-  {
-    num: "01",
-    name: "Animale",
-    desc: "Scegli il soggetto tra oltre 40 disegni stilizzati",
-  },
-  {
-    num: "02",
-    name: "Colore ceramica",
-    desc: "Nero o bianco",
-  },
-  {
-    num: "03",
-    name: "Swarovski",
-    desc: "16 colori — anche diversi tra loro",
-  },
-  {
-    num: "04",
-    name: "Incisione",
-    desc: "Un testo personalizzato sul retro",
-  },
+  { num: "01", name: "Animale", desc: "Scegli il soggetto tra oltre 40 disegni stilizzati" },
+  { num: "02", name: "Colore ceramica", desc: "Nero o bianco" },
+  { num: "03", name: "Swarovski", desc: "16 colori — anche diversi tra loro" },
+  { num: "04", name: "Incisione", desc: "Un testo personalizzato sul retro" },
 ];
 
 export default function Configurator() {
@@ -39,7 +24,9 @@ export default function Configurator() {
         ))}
       </div>
       <div className={styles.cta}>
-        <button className={styles.btn}>Inizia a configurare</button>
+        <Link href="/configura">
+          <button className={styles.btn}>Inizia a configurare</button>
+        </Link>
       </div>
     </section>
   );

@@ -22,23 +22,25 @@ export default function Animals() {
       </div>
       <div className={styles.grid}>
         {animali.map((animale) => (
-          <div key={animale.id} className={styles.card}>
-            <div className={styles.imageWrapper}>
-              {animale.immagineDisegno ? (
-                <img
-                  src={animale.immagineDisegno}
-                  alt={animale.nome}
-                  style={{ maxWidth: "100%", maxHeight: "120px", objectFit: "contain" }}
-                />
-              ) : (
-                <span className={styles.placeholder}>{animale.nome[0]}</span>
-              )}
+          <Link key={animale.id} href={`/collezione/${animale.id}`} className={styles.cardLink}>
+            <div className={styles.card}>
+              <div className={styles.imageWrapper}>
+                {animale.immagineDisegno ? (
+                  <img
+                    src={animale.immagineDisegno}
+                    alt={animale.nome}
+                    style={{ maxWidth: "100%", maxHeight: "120px", objectFit: "contain" }}
+                  />
+                ) : (
+                  <span className={styles.placeholder}>{animale.nome[0]}</span>
+                )}
+              </div>
+              <div className={styles.info}>
+                <p className={styles.name}>{animale.nome}</p>
+                <p className={styles.story}>{animale.storia.replace(/\*\*/g, "").replace(/\*/g, "").slice(0, 80)}...</p>
+              </div>
             </div>
-            <div className={styles.info}>
-              <p className={styles.name}>{animale.nome}</p>
-              <p className={styles.story}>{animale.storia.replace(/\*\*/g, "").replace(/\*/g, "").slice(0, 80)}...</p>
-            </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

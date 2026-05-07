@@ -95,7 +95,7 @@ export default function AdminImpostazioni() {
             </p>
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label className={styles.label}>Prezzo base HUM (€)</label>
+                <label className={styles.label}>Prezzo base YOU (€)</label>
                 <input className={styles.input} type="text" inputMode="decimal"
                   value={prezzoBaseStr}
                   onChange={(e) => handleDecimal(e.target.value, setPrezzoBaseStr, "prezzoBase")}

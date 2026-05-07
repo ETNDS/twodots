@@ -14,7 +14,7 @@ export default function HumPetPage() {
 
         {/* HERO */}
         <section className={styles.hero}>
-          <p className={styles.label}>HUM & PET</p>
+          <p className={styles.label}>YOU & PET</p>
           <h1 className={styles.title}>
             Il legame più autentico che hai.<br />
             Era ora che si vedesse.
@@ -32,13 +32,13 @@ export default function HumPetPage() {
               <div className={styles.cardImg}>
                 <Image
                   src="/images/hum-gatto-nero.jpg"
-                  alt="Ciondolo HUM"
+                  alt="Ciondolo YOU"
                   width={180}
                   height={180}
                   style={{ objectFit: "contain" }}
                 />
               </div>
-              <p className={styles.cardTag}>HUM</p>
+              <p className={styles.cardTag}>YOU</p>
               <h2 className={styles.cardTitle}>Il tuo ciondolo</h2>
               <p className={styles.cardText}>
                 Lo porti tu. Scegli l'animale, il colore della ceramica,
@@ -75,7 +75,7 @@ export default function HumPetPage() {
             <p className={styles.label}>IL CODICE</p>
             <h2 className={styles.titleDark}>Due oggetti. Un codice. Un legame.</h2>
             <p className={styles.textDark}>
-              Ogni coppia HUM + PET viene marchiata con un codice univoco —
+              Ogni coppia YOU + PET viene marchiata con un codice univoco —
               lo stesso su entrambi i ciondoli. Non è un numero di serie.
               È il simbolo che dice: questi due appartengono insieme.
             </p>
@@ -93,7 +93,7 @@ export default function HumPetPage() {
               <div className={styles.step}>
                 <span className={styles.stepNum}>01</span>
                 <div>
-                  <p className={styles.stepTitle}>Configura il tuo HUM</p>
+                  <p className={styles.stepTitle}>Configura il tuo YOU</p>
                   <p className={styles.stepText}>Scegli animale, colori, occhi, cordino e dedica.</p>
                 </div>
               </div>

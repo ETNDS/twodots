@@ -1,81 +1,68 @@
 .section {
-  background: var(--color-lavanda-light);
+  background: var(--color-navy);
   padding: 56px 36px;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.label {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--color-navy);
-  opacity: 0.5;
-  margin-bottom: 10px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--color-navy);
-  margin-bottom: 8px;
-}
-
-.sub {
-  font-size: 13px;
-  color: var(--color-navy);
-  opacity: 0.6;
-}
-
-.grid {
+.cardUnica {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 48px;
+  align-items: center;
+  padding: 12px 0;
 }
 
-.card {
-  background: var(--color-lavanda);
-  border-radius: 14px;
-  padding: 24px 20px;
-}
-
-.imageWrapper {
-  height: 160px;
+.immagini {
   display: flex;
+  gap: 24px;
   align-items: center;
   justify-content: center;
-  background: var(--color-lavanda-mid);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 16px;
+}
+
+.imgCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .tag {
-  display: inline-block;
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  color: var(--color-navy);
-  opacity: 0.5;
-  border: 0.5px solid rgba(13, 14, 46, 0.3);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--color-lavanda);
+  opacity: 0.4;
+  border: 0.5px solid rgba(234, 230, 244, 0.2);
   padding: 3px 12px;
   border-radius: 10px;
-  margin-bottom: 10px;
 }
 
-.cardTitle {
-  font-size: 16px;
+.testo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.titolo {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.scopriBtn {
+  display: inline-block;
+  font-size: 13px;
   font-weight: 500;
   color: var(--color-navy);
-  margin-bottom: 8px;
-  margin-top: 8px;
+  background: var(--color-lavanda);
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 20px;
+  width: fit-content;
+  transition: opacity 0.15s;
 }
 
-.cardText {
-  font-size: 13px;
-  color: var(--color-navy);
-  opacity: 0.65;
-  line-height: 1.75;
+.scopriBtn:hover {
+  opacity: 0.85;
 }

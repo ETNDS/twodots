@@ -19,6 +19,7 @@ type AnimaleForm = {
   occhiMm: number;
   pubblicato: boolean;
   immagineDisegno: string;
+  immagineForma: string;
   immaginiCiondolo: string[];
   igLink: string;
   prezzo: number;
@@ -36,6 +37,7 @@ const EMPTY: AnimaleForm = {
   occhiMm: 2,
   pubblicato: false,
   immagineDisegno: "",
+  immagineForma: "",
   immaginiCiondolo: [],
   igLink: "",
   prezzo: 45,
@@ -54,6 +56,7 @@ export default function AdminAnimale() {
   const [showPreview, setShowPreview] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [uploadingDisegno, setUploadingDisegno] = useState(false);
+  const [uploadingForma, setUploadingForma] = useState(false);
   const [uploadingCiondolo, setUploadingCiondolo] = useState(false);
   const [createdAt, setCreatedAt] = useState<string>("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
@@ -86,6 +89,7 @@ export default function AdminAnimale() {
         occhiMm: d.occhiMm || 2,
         pubblicato: d.pubblicato || false,
         immagineDisegno: d.immagineDisegno || "",
+        immagineForma: d.immagineForma || "",
         immaginiCiondolo: d.immaginiCiondolo?.filter((x: string) => x) || [],
         igLink: d.igLink || "",
         prezzo: d.prezzo || 45,
@@ -131,10 +135,7 @@ export default function AdminAnimale() {
   ) {
     const normalized = raw.replace(",", ".");
     setStr(raw);
-    if (normalized === "" || normalized === ".") {
-      update(key, 0);
-      return;
-    }
+    if (normalized === "" || normalized === ".") { update(key, 0); return; }
     const num = parseFloat(normalized);
     if (!isNaN(num)) update(key, num);
   }
@@ -153,6 +154,7 @@ export default function AdminAnimale() {
         occhiMm: form.occhiMm,
         pubblicato: form.pubblicato,
         immagineDisegno: form.immagineDisegno,
+        immagineForma: form.immagineForma,
         immaginiCiondolo: form.immaginiCiondolo,
         igLink: form.igLink,
         prezzo: form.prezzo,
@@ -189,11 +191,25 @@ export default function AdminAnimale() {
 
   async function handleDeleteDisegno() {
     if (!form.immagineDisegno) return;
-    try {
-      const fileRef = ref(storage, form.immagineDisegno);
-      await deleteObject(fileRef);
-    } catch { }
+    try { await deleteObject(ref(storage, form.immagineDisegno)); } catch {}
     update("immagineDisegno", "");
+  }
+
+  async function handleUploadForma(file: File) {
+    setUploadingForma(true);
+    try {
+      const fileRef = ref(storage, `forme/${form.id || "tmp"}_${file.name}`);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      update("immagineForma", url);
+    } catch (e) { console.error(e); }
+    finally { setUploadingForma(false); }
+  }
+
+  async function handleDeleteForma() {
+    if (!form.immagineForma) return;
+    try { await deleteObject(ref(storage, form.immagineForma)); } catch {}
+    update("immagineForma", "");
   }
 
   async function handleUploadCiondolo(file: File) {
@@ -208,21 +224,20 @@ export default function AdminAnimale() {
   }
 
   async function handleDeleteCiondolo(url: string) {
-    try {
-      const fileRef = ref(storage, url);
-      await deleteObject(fileRef);
-    } catch { }
+    try { await deleteObject(ref(storage, url)); } catch {}
     update("immaginiCiondolo", form.immaginiCiondolo.filter((u) => u !== url));
+  }
+
+  function impostaCiondoloPrincipale(url: string) {
+    const altre = form.immaginiCiondolo.filter(u => u !== url);
+    update("immaginiCiondolo", [url, ...altre]);
   }
 
   async function handleDelete() {
     try {
-      if (form.immagineDisegno) {
-        try { await deleteObject(ref(storage, form.immagineDisegno)); } catch {}
-      }
-      for (const url of form.immaginiCiondolo) {
-        try { await deleteObject(ref(storage, url)); } catch {}
-      }
+      if (form.immagineDisegno) { try { await deleteObject(ref(storage, form.immagineDisegno)); } catch {} }
+      if (form.immagineForma) { try { await deleteObject(ref(storage, form.immagineForma)); } catch {} }
+      for (const url of form.immaginiCiondolo) { try { await deleteObject(ref(storage, url)); } catch {} }
       await deleteDoc(doc(db, "animali", form.id));
       router.push("/admin/animali");
     } catch (e) {
@@ -235,187 +250,115 @@ export default function AdminAnimale() {
 
   return (
     <div className={styles.page}>
-
-      {/* HEADER */}
       <div className={styles.header}>
-        <button className={styles.backBtn} onClick={() => router.push("/admin/animali")}>
-          ← Animali
-        </button>
+        <button className={styles.backBtn} onClick={() => router.push("/admin/animali")}>← Animali</button>
         <h1 className={styles.title}>{isNuovo ? "Nuovo animale" : form.nome || "Animale"}</h1>
         <div className={styles.headerActions}>
           {!isNuovo && (
-            <button className={styles.deleteBtn} onClick={() => setShowDeleteDialog(true)}>
-              Elimina
-            </button>
+            <button className={styles.deleteBtn} onClick={() => setShowDeleteDialog(true)}>Elimina</button>
           )}
-          <button className={styles.cancelBtn} onClick={() => router.push("/admin/animali")}>
-            Annulla
-          </button>
-          <button
-            className={styles.saveBtn}
-            onClick={handleSave}
-            disabled={!isDirty || saving}
-          >
+          <button className={styles.cancelBtn} onClick={() => router.push("/admin/animali")}>Annulla</button>
+          <button className={styles.saveBtn} onClick={handleSave} disabled={!isDirty || saving}>
             {saving ? "Salvataggio..." : "Salva"}
           </button>
         </div>
       </div>
 
       <div className={styles.body}>
-
-        {/* COLONNA SINISTRA */}
         <div className={styles.col}>
 
-          {/* IDENTIFICATIVO */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Identificativo</h2>
             <div className={styles.field}>
               <label className={styles.label}>ID documento</label>
               {isNuovo ? (
-                <input
-                  className={styles.input}
-                  value={form.id}
+                <input className={styles.input} value={form.id}
                   onChange={(e) => setForm((p) => ({ ...p, id: e.target.value.toLowerCase().replace(/\s/g, "-") }))}
-                  placeholder="es. gatto"
-                />
+                  placeholder="es. gatto" />
               ) : (
                 <input className={styles.inputReadonly} value={form.id} readOnly />
               )}
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Nome</label>
-              <input
-                className={styles.input}
-                value={form.nome}
-                onChange={(e) => update("nome", e.target.value)}
-              />
+              <input className={styles.input} value={form.nome} onChange={(e) => update("nome", e.target.value)} />
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Forma ciondolo</label>
-              <input
-                className={styles.input}
-                value={form.forma}
-                onChange={(e) => update("forma", e.target.value)}
-              />
+              <input className={styles.input} value={form.forma} onChange={(e) => update("forma", e.target.value)} />
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Link Instagram</label>
-              <input
-                className={styles.input}
-                type="url"
-                value={form.igLink}
+              <input className={styles.input} type="url" value={form.igLink}
                 onChange={(e) => update("igLink", e.target.value)}
-                placeholder="https://instagram.com/p/..."
-              />
+                placeholder="https://instagram.com/p/..." />
             </div>
           </div>
 
-          {/* PREZZI */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Prezzi</h2>
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label className={styles.label}>Prezzo HUM (€)</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  inputMode="decimal"
-                  value={prezzoStr}
+                <label className={styles.label}>Prezzo YOU (€)</label>
+                <input className={styles.input} type="text" inputMode="decimal" value={prezzoStr}
                   onChange={(e) => handleDecimalChange(e.target.value, setPrezzoStr, "prezzo")}
-                  placeholder="es. 45"
-                />
+                  placeholder="es. 45" />
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>Prezzo PET (€)</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  inputMode="decimal"
-                  value={prezzoPetStr}
+                <input className={styles.input} type="text" inputMode="decimal" value={prezzoPetStr}
                   onChange={(e) => handleDecimalChange(e.target.value, setPrezzoPetStr, "prezzoPet")}
-                  placeholder="es. 15"
-                />
+                  placeholder="es. 15" />
               </div>
             </div>
           </div>
 
-          {/* MISURE */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Misure</h2>
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label className={styles.label}>Dimensione V (cm)</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  inputMode="decimal"
-                  value={dimVStr}
+                <input className={styles.input} type="text" inputMode="decimal" value={dimVStr}
                   onChange={(e) => handleDecimalChange(e.target.value, setDimVStr, "dimensioniV")}
-                  placeholder="es. 4.5"
-                />
+                  placeholder="es. 4.5" />
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>Dimensione H (cm)</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  inputMode="decimal"
-                  value={dimHStr}
+                <input className={styles.input} type="text" inputMode="decimal" value={dimHStr}
                   onChange={(e) => handleDecimalChange(e.target.value, setDimHStr, "dimensioniH")}
-                  placeholder="es. 3.2"
-                />
+                  placeholder="es. 3.2" />
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>Occhi (mm)</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  inputMode="decimal"
-                  value={occhiStr}
+                <input className={styles.input} type="text" inputMode="decimal" value={occhiStr}
                   onChange={(e) => handleDecimalChange(e.target.value, setOcchiStr, "occhiMm")}
-                  placeholder="es. 2"
-                />
+                  placeholder="es. 2" />
               </div>
             </div>
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label className={styles.label}>Ordine</label>
-                <input
-                  className={styles.input}
-                  type="number"
-                  step="1"
-                  value={form.ordine}
-                  onChange={(e) => update("ordine", parseInt(e.target.value))}
-                />
+                <input className={styles.input} type="number" step="1" value={form.ordine}
+                  onChange={(e) => update("ordine", parseInt(e.target.value))} />
               </div>
             </div>
           </div>
 
-          {/* PUBBLICAZIONE */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Pubblicazione</h2>
             <div className={styles.toggleRow}>
               <label className={styles.toggleLabel}>
-                <input
-                  type="checkbox"
-                  checked={form.pubblicato}
-                  disabled={!canPubblicato}
+                <input type="checkbox" checked={form.pubblicato} disabled={!canPubblicato}
                   onChange={(e) => update("pubblicato", e.target.checked)}
-                  className={styles.toggleInput}
-                />
-                <span className={styles.toggleText}>
-                  {form.pubblicato ? "Pubblicato" : "Bozza"}
-                </span>
+                  className={styles.toggleInput} />
+                <span className={styles.toggleText}>{form.pubblicato ? "Pubblicato" : "Bozza"}</span>
               </label>
               {!canPubblicato && (
-                <p className={styles.toggleNote}>
-                  Richiede: nome, storia, immagine disegno e almeno una foto ciondolo.
-                </p>
+                <p className={styles.toggleNote}>Richiede: nome, storia, immagine disegno e almeno una foto ciondolo.</p>
               )}
             </div>
           </div>
 
-          {/* METADATI */}
           {!isNuovo && (
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Metadati</h2>
@@ -431,29 +374,21 @@ export default function AdminAnimale() {
           )}
         </div>
 
-        {/* COLONNA DESTRA */}
         <div className={styles.col}>
 
-          {/* STORIA */}
           <div className={styles.section}>
             <div className={styles.sectionTitleRow}>
               <h2 className={styles.sectionTitle}>Storia</h2>
-              <button
-                className={styles.previewBtn}
-                onClick={() => setShowPreview((p) => !p)}
-              >
+              <button className={styles.previewBtn} onClick={() => setShowPreview((p) => !p)}>
                 {showPreview ? "Modifica" : "Preview"}
               </button>
             </div>
             {!showPreview ? (
               <>
-                <textarea
-                  className={styles.textarea}
-                  value={form.storia}
+                <textarea className={styles.textarea} value={form.storia}
                   onChange={(e) => update("storia", e.target.value)}
                   placeholder="Scrivi in markdown... es. **grassetto**, *corsivo*"
-                  rows={6}
-                />
+                  rows={6} />
                 <p className={styles.hint}>Supporta markdown: **grassetto**, *corsivo*</p>
               </>
             ) : (
@@ -463,70 +398,81 @@ export default function AdminAnimale() {
             )}
           </div>
 
-          {/* IMMAGINE DISEGNO */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Disegno animale</h2>
             {form.immagineDisegno ? (
               <div className={styles.imgPreview}>
                 <img src={form.immagineDisegno} alt="Disegno" />
-                <button className={styles.imgDeleteBtn} onClick={handleDeleteDisegno}>
-                  Elimina immagine
-                </button>
+                <button className={styles.imgDeleteBtn} onClick={handleDeleteDisegno}>Elimina immagine</button>
               </div>
             ) : (
               <div className={styles.uploadArea}>
                 <label className={styles.uploadBtn}>
                   {uploadingDisegno ? "Caricamento in corso..." : "Carica immagine"}
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    disabled={uploadingDisegno}
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (!f) return;
-                      if (!f.type.startsWith("image/")) {
-                        alert("Il file selezionato non è un'immagine.");
-                        return;
-                      }
-                      handleUploadDisegno(f);
-                    }}
-                    style={{ display: "none" }}
-                  />
+                  <input type="file" accept="image/png,image/jpeg,image/webp" disabled={uploadingDisegno}
+                    onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (!f.type.startsWith("image/")) { alert("File non valido."); return; } handleUploadDisegno(f); }}
+                    style={{ display: "none" }} />
                 </label>
-                {uploadingDisegno && (
-                  <span className={styles.uploading}>Caricamento in corso...</span>
-                )}
+                {uploadingDisegno && <span className={styles.uploading}>Caricamento in corso...</span>}
               </div>
             )}
           </div>
 
-          {/* IMMAGINI CIONDOLO */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Forma ciondolo</h2>
+            <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 12 }}>
+              Immagine della sagoma del ciondolo — mostrata nel configuratore durante la scelta.
+            </p>
+            {form.immagineForma ? (
+              <div className={styles.imgPreview}>
+                <img src={form.immagineForma} alt="Forma ciondolo" />
+                <button className={styles.imgDeleteBtn} onClick={handleDeleteForma}>Elimina immagine</button>
+              </div>
+            ) : (
+              <div className={styles.uploadArea}>
+                <label className={styles.uploadBtn}>
+                  {uploadingForma ? "Caricamento in corso..." : "Carica immagine forma"}
+                  <input type="file" accept="image/png,image/jpeg,image/webp" disabled={uploadingForma}
+                    onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (!f.type.startsWith("image/")) { alert("File non valido."); return; } handleUploadForma(f); }}
+                    style={{ display: "none" }} />
+                </label>
+                {uploadingForma && <span className={styles.uploading}>Caricamento in corso...</span>}
+              </div>
+            )}
+          </div>
+
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Foto ciondolo</h2>
+            <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 12 }}>
+              La prima foto è quella principale. Clicca "Principale" per spostarla in prima posizione.
+            </p>
             <div className={styles.ciondoloGrid}>
               {form.immaginiCiondolo.map((url, i) => (
                 <div key={i} className={styles.ciondoloImg}>
+                  {i === 0 && (
+                    <span style={{ fontSize: 9, background: "var(--admin-sidebar)", color: "var(--admin-sidebar-text)", padding: "2px 6px", borderRadius: 4, marginBottom: 4, display: "inline-block" }}>
+                      Principale
+                    </span>
+                  )}
                   <img src={url} alt={`Ciondolo ${i + 1}`} />
-                  <button onClick={() => handleDeleteCiondolo(url)}>Elimina</button>
+                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
+                    {i > 0 && (
+                      <button
+                        style={{ fontSize: 10, color: "var(--admin-sidebar)", background: "var(--admin-bg)", border: "0.5px solid var(--admin-border)", padding: "3px 8px", borderRadius: 6, cursor: "pointer" }}
+                        onClick={() => impostaCiondoloPrincipale(url)}
+                      >
+                        Principale
+                      </button>
+                    )}
+                    <button onClick={() => handleDeleteCiondolo(url)}>Elimina</button>
+                  </div>
                 </div>
               ))}
               <label className={styles.uploadBtn}>
                 {uploadingCiondolo ? "Caricamento in corso..." : "+ Aggiungi foto"}
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  disabled={uploadingCiondolo}
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (!f) return;
-                    if (!f.type.startsWith("image/")) {
-                      alert("Il file selezionato non è un'immagine.");
-                      return;
-                    }
-                    handleUploadCiondolo(f);
-                  }}
-                  style={{ display: "none" }}
-                />
+                <input type="file" accept="image/png,image/jpeg,image/webp" disabled={uploadingCiondolo}
+                  onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (!f.type.startsWith("image/")) { alert("File non valido."); return; } handleUploadCiondolo(f); }}
+                  style={{ display: "none" }} />
               </label>
             </div>
           </div>
@@ -534,25 +480,16 @@ export default function AdminAnimale() {
         </div>
       </div>
 
-      {/* DIALOG ELIMINA */}
       {showDeleteDialog && (
         <div className={styles.dialogOverlay}>
           <div className={styles.dialog}>
             <h2 className={styles.dialogTitle}>Elimina animale</h2>
             <p className={styles.dialogText}>
-              Stai per eliminare <strong>{form.nome}</strong> e tutte le sue immagini.
-              Questa operazione è irreversibile.
+              Stai per eliminare <strong>{form.nome}</strong> e tutte le sue immagini. Operazione irreversibile.
             </p>
             <div className={styles.dialogActions}>
-              <button
-                className={styles.dialogCancelBtn}
-                onClick={() => setShowDeleteDialog(false)}
-              >
-                Annulla
-              </button>
-              <button className={styles.dialogDeleteBtn} onClick={handleDelete}>
-                Elimina definitivamente
-              </button>
+              <button className={styles.dialogCancelBtn} onClick={() => setShowDeleteDialog(false)}>Annulla</button>
+              <button className={styles.dialogDeleteBtn} onClick={handleDelete}>Elimina definitivamente</button>
             </div>
           </div>
         </div>

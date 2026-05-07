@@ -21,7 +21,6 @@
   padding: 36px;
 }
 
-/* STEPS */
 .steps {
   display: flex;
   flex-direction: column;
@@ -47,13 +46,8 @@
   transition: background 0.15s;
 }
 
-.stepHeader:hover {
-  background: var(--color-lavanda-mid);
-}
-
-.stepHeaderAttivo {
-  background: var(--color-lavanda-mid);
-}
+.stepHeader:hover { background: var(--color-lavanda-mid); }
+.stepHeaderAttivo { background: var(--color-lavanda-mid); }
 
 .stepNum {
   font-size: 11px;
@@ -99,7 +93,6 @@
   line-height: 1.6;
 }
 
-/* ANIMALI GRID */
 .animaliGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -119,14 +112,8 @@
   transition: all 0.15s;
 }
 
-.animaleCard:hover {
-  border-color: var(--color-navy);
-  opacity: 0.8;
-}
-
-.animaleCardSel {
-  border-color: var(--color-navy) !important;
-}
+.animaleCard:hover { border-color: var(--color-navy); opacity: 0.8; }
+.animaleCardSel { border-color: var(--color-navy) !important; }
 
 .animaleImg {
   width: 52px;
@@ -139,11 +126,7 @@
   overflow: hidden;
 }
 
-.animaleImg img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+.animaleImg img { width: 100%; height: 100%; object-fit: contain; }
 
 .animaleNome {
   font-size: 10px;
@@ -151,11 +134,18 @@
   text-align: center;
 }
 
-/* COLORI */
 .coloriGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.coloreCircleWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
 }
 
 .coloreCircle {
@@ -177,14 +167,8 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-.coloreCircle:hover .coloreCircleInner {
-  transform: scale(1.1);
-}
-
-.coloreCircleSel .coloreCircleInner {
-  border-color: var(--color-navy);
-  transform: scale(1.1);
-}
+.coloreCircle:hover .coloreCircleInner { transform: scale(1.1); }
+.coloreCircleSel .coloreCircleInner { border-color: var(--color-navy); transform: scale(1.1); }
 
 .coloreNome {
   font-size: 9px;
@@ -197,7 +181,86 @@
   white-space: nowrap;
 }
 
-/* SCELTA ROW */
+.imgPopupTrigger {
+  font-size: 10px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.imgPopupTrigger:hover { opacity: 0.8; }
+
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: var(--color-lavanda-light);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 360px;
+  width: 90%;
+}
+
+.popupHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.popupColore {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+.popupNome {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-navy);
+  flex: 1;
+}
+
+.popupClose {
+  font-size: 20px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.popupClose:hover { opacity: 0.8; }
+
+.popupImmagini {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.popupImg {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: var(--color-lavanda);
+}
+
 .sceltaRow {
   display: flex;
   gap: 10px;
@@ -214,10 +277,7 @@
   transition: all 0.15s;
 }
 
-.coloreBtnSel {
-  outline: 2px solid var(--color-navy);
-  outline-offset: 2px;
-}
+.coloreBtnSel { outline: 2px solid var(--color-navy); outline-offset: 2px; }
 
 .sceltaBtn {
   font-family: inherit;
@@ -231,12 +291,8 @@
   transition: all 0.15s;
 }
 
-.sceltaBtnSel {
-  border-color: var(--color-navy);
-  font-weight: 500;
-}
+.sceltaBtnSel { border-color: var(--color-navy); font-weight: 500; }
 
-/* FONT */
 .fontBtn {
   display: flex;
   flex-direction: column;
@@ -250,9 +306,7 @@
   transition: all 0.15s;
 }
 
-.fontBtnSel {
-  border-color: var(--color-navy);
-}
+.fontBtnSel { border-color: var(--color-navy); }
 
 .fontDesc {
   font-size: 10px;
@@ -260,7 +314,6 @@
   opacity: 0.6;
 }
 
-/* DEDICA */
 .dedicaTextarea {
   width: 100%;
   background: var(--color-lavanda);
@@ -273,14 +326,9 @@
   line-height: 1.6;
 }
 
-.dedicaTextarea:focus {
-  border-color: var(--color-navy);
-}
+.dedicaTextarea:focus { border-color: var(--color-navy); }
 
-/* FIELD */
-.field {
-  margin-bottom: 16px;
-}
+.field { margin-bottom: 16px; }
 
 .fieldLabel {
   font-size: 11px;
@@ -298,7 +346,6 @@
   margin-top: 6px;
 }
 
-/* NEXT BTN */
 .nextBtn {
   font-family: inherit;
   font-size: 12px;
@@ -312,7 +359,6 @@
   margin-top: 8px;
 }
 
-/* CONFEZIONI */
 .confezioniGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -329,9 +375,7 @@
   transition: all 0.15s;
 }
 
-.confezioneCardSel {
-  border-color: var(--color-navy);
-}
+.confezioneCardSel { border-color: var(--color-navy); }
 
 .confezioneImg {
   height: 80px;
@@ -341,11 +385,7 @@
   justify-content: center;
 }
 
-.confezioneImg img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-}
+.confezioneImg img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
 .confezioneNome {
   font-size: 13px;
@@ -368,7 +408,6 @@
   margin-top: 6px;
 }
 
-/* RIEPILOGO */
 .riepilogo {
   position: sticky;
   top: 80px;
@@ -385,7 +424,7 @@
 
 .anteprima {
   height: 160px;
-  background: rgba(234,230,244,0.05);
+  background: var(--color-lavanda-light);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -434,6 +473,29 @@
   white-space: nowrap;
 }
 
+.riepilogoColore {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.riepilogoColoreDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.riepilogoImg {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
 .prezzoBox {
   border-top: 0.5px solid rgba(234,230,244,0.15);
   padding-top: 12px;
@@ -476,8 +538,9 @@
 .ctaBtn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+  background: rgba(234, 230, 244, 0.3);
+  color: var(--color-lavanda);
 }
 
-.ctaBtn:not(:disabled):hover {
-  opacity: 0.85;
-}
+.ctaBtn:not(:disabled):hover { opacity: 0.85; }
+

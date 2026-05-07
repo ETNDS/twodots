@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "@styles/hero.module.css";
 
 export default function Hero() {
@@ -14,7 +15,9 @@ export default function Hero() {
           Bijoux in ceramica stampata in 3D. Ogni ciondolo porta il disegno
           stilizzato di un animale, con due cristalli Swarovski come occhi.
         </p>
-        <button className={styles.cta}>Configura il tuo bijoux</button>
+        <Link href="/configura">
+          <button className={styles.cta}>Configura il tuo bijoux</button>
+        </Link>
       </div>
       <div className={styles.image}>
         <Image

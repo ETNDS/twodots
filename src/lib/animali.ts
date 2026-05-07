@@ -9,6 +9,7 @@ export type Animale = {
   dimensioni: { v: number; h: number };
   occhiMm: number;
   immagineDisegno: string;
+  immagineForma: string;
   immaginiCiondolo: string[];
   pubblicato: boolean;
   ordine: number;

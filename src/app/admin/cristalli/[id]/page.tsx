@@ -70,6 +70,11 @@ export default function AdminCristallo() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  function impostaPrincipale(url: string) {
+    const altre = form.immagini.filter(u => u !== url);
+    update("immagini", [url, ...altre]);
+  }
+
   async function handleSave() {
     if (!form.id.trim()) { alert("Inserisci un ID."); return; }
     setSaving(true);
@@ -209,11 +214,29 @@ export default function AdminCristallo() {
         <div className={styles.col}>
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Immagini</h2>
+            <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 12 }}>
+              La prima immagine è quella principale — mostrata nel configuratore. Clicca "Principale" per spostarla in prima posizione.
+            </p>
             <div className={styles.ciondoloGrid}>
               {form.immagini.map((url, i) => (
                 <div key={i} className={styles.ciondoloImg}>
+                  {i === 0 && (
+                    <span style={{ fontSize: 9, background: "var(--admin-sidebar)", color: "var(--admin-sidebar-text)", padding: "2px 6px", borderRadius: 4, marginBottom: 4, display: "inline-block" }}>
+                      Principale
+                    </span>
+                  )}
                   <img src={url} alt={`Immagine ${i + 1}`} />
-                  <button onClick={() => handleDeleteImmagine(url)}>Elimina</button>
+                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
+                    {i > 0 && (
+                      <button
+                        style={{ fontSize: 10, color: "var(--admin-sidebar)", background: "var(--admin-bg)", border: "0.5px solid var(--admin-border)", padding: "3px 8px", borderRadius: 6, cursor: "pointer" }}
+                        onClick={() => impostaPrincipale(url)}
+                      >
+                        Principale
+                      </button>
+                    )}
+                    <button onClick={() => handleDeleteImmagine(url)}>Elimina</button>
+                  </div>
                 </div>
               ))}
               <label className={styles.uploadBtn}>

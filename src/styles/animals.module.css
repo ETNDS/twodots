@@ -21,6 +21,7 @@
   color: var(--color-navy);
   opacity: 0.45;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .grid {
@@ -30,7 +31,7 @@
 }
 
 .card {
-  background: #161727;
+  background: var(--color-navy);
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
@@ -41,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #101120;
+  background: var(--color-navy);
 }
 
 .placeholder {
@@ -69,3 +70,6 @@
   line-height: 1.55;
 }
 
+.cardLink {
+  text-decoration: none;
+}
