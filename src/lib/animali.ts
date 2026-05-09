@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 export type Animale = {
   id: string;
@@ -11,6 +11,7 @@ export type Animale = {
   immagineDisegno: string;
   immagineForma: string;
   immaginiCiondolo: string[];
+  modello3D?: string;
   pubblicato: boolean;
   ordine: number;
   igLink: string;

@@ -21,6 +21,7 @@ type AnimaleForm = {
   immagineDisegno: string;
   immagineForma: string;
   immaginiCiondolo: string[];
+  modello3D: string;
   igLink: string;
   prezzo: number;
   prezzoPet: number;
@@ -39,6 +40,7 @@ const EMPTY: AnimaleForm = {
   immagineDisegno: "",
   immagineForma: "",
   immaginiCiondolo: [],
+  modello3D: "",
   igLink: "",
   prezzo: 45,
   prezzoPet: 15,
@@ -58,6 +60,7 @@ export default function AdminAnimale() {
   const [uploadingDisegno, setUploadingDisegno] = useState(false);
   const [uploadingForma, setUploadingForma] = useState(false);
   const [uploadingCiondolo, setUploadingCiondolo] = useState(false);
+  const [uploadingModello, setUploadingModello] = useState(false);
   const [createdAt, setCreatedAt] = useState<string>("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
 
@@ -91,6 +94,7 @@ export default function AdminAnimale() {
         immagineDisegno: d.immagineDisegno || "",
         immagineForma: d.immagineForma || "",
         immaginiCiondolo: d.immaginiCiondolo?.filter((x: string) => x) || [],
+        modello3D: d.modello3D || "",
         igLink: d.igLink || "",
         prezzo: d.prezzo || 45,
         prezzoPet: d.prezzoPet || 15,
@@ -156,6 +160,7 @@ export default function AdminAnimale() {
         immagineDisegno: form.immagineDisegno,
         immagineForma: form.immagineForma,
         immaginiCiondolo: form.immaginiCiondolo,
+        modello3D: form.modello3D,
         igLink: form.igLink,
         prezzo: form.prezzo,
         prezzoPet: form.prezzoPet,
@@ -233,11 +238,29 @@ export default function AdminAnimale() {
     update("immaginiCiondolo", [url, ...altre]);
   }
 
+  async function handleUploadModello(file: File) {
+    setUploadingModello(true);
+    try {
+      const fileRef = ref(storage, `modelli3d/${form.id || "tmp"}_${file.name}`);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      update("modello3D", url);
+    } catch (e) { console.error(e); }
+    finally { setUploadingModello(false); }
+  }
+
+  async function handleDeleteModello() {
+    if (!form.modello3D) return;
+    try { await deleteObject(ref(storage, form.modello3D)); } catch {}
+    update("modello3D", "");
+  }
+
   async function handleDelete() {
     try {
       if (form.immagineDisegno) { try { await deleteObject(ref(storage, form.immagineDisegno)); } catch {} }
       if (form.immagineForma) { try { await deleteObject(ref(storage, form.immagineForma)); } catch {} }
       for (const url of form.immaginiCiondolo) { try { await deleteObject(ref(storage, url)); } catch {} }
+      if (form.modello3D) { try { await deleteObject(ref(storage, form.modello3D)); } catch {} }
       await deleteDoc(doc(db, "animali", form.id));
       router.push("/admin/animali");
     } catch (e) {
@@ -437,6 +460,31 @@ export default function AdminAnimale() {
                     style={{ display: "none" }} />
                 </label>
                 {uploadingForma && <span className={styles.uploading}>Caricamento in corso...</span>}
+              </div>
+            )}
+          </div>
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Modello 3D</h2>
+            <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 12 }}>
+              File GLB per l'anteprima 3D nel configuratore.
+            </p>
+            {form.modello3D ? (
+              <div className={styles.imgPreview}>
+                <p style={{ fontSize: 12, wordBreak: "break-all", color: "var(--admin-text-muted)", marginBottom: 8 }}>
+                  ✓ {decodeURIComponent(form.modello3D.split("/").pop()?.split("?")[0] || "")}
+                </p>
+                <button className={styles.imgDeleteBtn} onClick={handleDeleteModello}>Elimina modello</button>
+              </div>
+            ) : (
+              <div className={styles.uploadArea}>
+                <label className={styles.uploadBtn}>
+                  {uploadingModello ? "Caricamento in corso..." : "Carica file GLB"}
+                  <input type="file" accept=".glb,.gltf" disabled={uploadingModello}
+                    onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; handleUploadModello(f); }}
+                    style={{ display: "none" }} />
+                </label>
+                {uploadingModello && <span className={styles.uploading}>Caricamento in corso...</span>}
               </div>
             )}
           </div>

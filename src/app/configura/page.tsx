@@ -9,6 +9,7 @@ import { getAnimaliPubblicati, Animale } from "@/lib/animali";
 import { getCristalli, getCordini, getSmalti, getFontDedica, getConfezioni, getImpostazioni, ItemColore, FontDedica, Confezione, Impostazioni } from "@/lib/configuratore";
 import styles from "@styles/configura.module.css";
 import { SHOPIFY_VARIANT_IDS } from "@/config/shopify";
+import Viewer3D from "@/components/Viewer3D";
 
 type Configurazione = {
   animale: Animale | null;
@@ -609,7 +610,15 @@ function ConfiguraInner() {
             <div className={styles.riepilogoInner}>
 
               <div className={styles.anteprima}>
-                {config.animale ? (
+                {config.animale?.modello3D && config.coloreCiondolo && config.smalto && config.occhioSx && config.occhioDx ? (
+                  <Viewer3D
+                    glbUrl={config.animale.modello3D}
+                    coloreCiondolo={config.coloreCiondolo}
+                    coloreDisegno={config.smalto.coloreCSS}
+                    coloreOcchioSx={config.occhioSx.coloreCSS}
+                    coloreOcchioDx={config.occhioDx.coloreCSS}
+                  />
+                ) : config.animale ? (
                   (config.animale.immagineForma || config.animale.immagineDisegno) ? (
                     <img src={config.animale.immagineForma || config.animale.immagineDisegno} alt={config.animale.nome} className={styles.anteprimaImg} />
                   ) : (
