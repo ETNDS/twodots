@@ -1,0 +1,48 @@
+.badgeRifiutata {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  background: rgba(163, 48, 48, 0.1);
+  color: #a33030;
+}
+
+.azioni {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btnApprova {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: rgba(42, 122, 75, 0.1);
+  color: #2a7a4b;
+}
+
+.btnRifiuta {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: rgba(163, 48, 48, 0.1);
+  color: #a33030;
+}
+
+.btnBozza {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: var(--admin-hover);
+  color: var(--admin-text);
+  opacity: 0.6;
+}

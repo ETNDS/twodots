@@ -1,0 +1,232 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 61px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
+.titolo {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+  padding: 60px 36px 0;
+}
+
+.formBox {
+  background: var(--color-lavanda-light);
+  margin: 32px 36px;
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.formTitolo {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-navy);
+  opacity: 0.6;
+  letter-spacing: 0.06em;
+}
+
+.input,
+.textarea {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-navy);
+  background: var(--color-lavanda);
+  border: 0.5px solid rgba(13, 14, 46, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  outline: none;
+  resize: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: rgba(13, 14, 46, 0.5);
+}
+
+.stelleInput {
+  display: flex;
+  gap: 6px;
+}
+
+.stelleInput button {
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.1s;
+}
+
+.stelleInput button:hover {
+  transform: scale(1.15);
+}
+
+.stellaPiena {
+  color: var(--color-navy);
+}
+
+.stellaVuota {
+  color: var(--color-navy);
+  opacity: 0.2;
+}
+
+.submitBtn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  background: var(--color-navy);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 22px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.submitBtn:hover {
+  opacity: 0.85;
+}
+
+.successo {
+  font-size: 13px;
+  color: #2a7a4b;
+  padding: 12px 0;
+}
+
+.errore {
+  font-size: 12px;
+  color: #a33030;
+}
+
+.lista {
+  padding: 0 36px;
+}
+
+.listaTitolo {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 20px;
+}
+
+.loading,
+.vuoto {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.5;
+}
+
+.card {
+  background: var(--color-lavanda-light);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cardNome {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+.stelle {
+  font-size: 14px;
+  color: var(--color-navy);
+  letter-spacing: 2px;
+}
+
+.cardCommento {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.7;
+  line-height: 1.7;
+}
+
+/* Home section */
+.homeSection {
+  background: var(--color-lavanda);
+  padding: 56px 36px;
+}
+
+.homeTitolo {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 24px;
+}
+
+.homeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.homeSection {
+  background: var(--color-lavanda-light);
+  padding: 56px 36px;
+  margin-top: 2px;
+}
+
+.homeCtaBtn {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  font-size: 12px;
+  font-family: inherit;
+  letter-spacing: 0.07em;
+  padding: 13px 34px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.homeCtaBtn:hover {
+  opacity: 0.85;
+}
+.homeLabel {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.homeTitolo {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 8px;
+}
+

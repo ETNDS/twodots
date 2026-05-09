@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
+import { CONTACT } from "@/config/constants";
 import styles from "@styles/ilProgetto.module.css";
 
 export default function IlProgetto() {
@@ -24,27 +25,25 @@ export default function IlProgetto() {
         <section className={styles.sectionDark}>
           <div className={styles.sectionInner}>
             <div>
-                <div className={styles.titleBox}>
-                    <p className={styles.labelLight}>L'ORIGINE</p>
-                    <h2 className={styles.titleLight}>Una @ scarabocchiata al contrario.</h2>
-                </div>
+              <div className={styles.titleBox}>
+                <p className={styles.labelLight}>L'ORIGINE</p>
+                <h2 className={styles.titleLight}>Una @ scarabocchiata al contrario.</h2>
+              </div>
             </div>
-
-
             <div>
-                <p className={styles.textDarkOnLight}>
-                    L'inizio è stato casuale. Una @ disegnata al contrario, un tratto verticale lungo,
-                    due puntini come occhi — ed è nata la chiocciola. Il primo animale 2dots.
-                </p>
-                <p className={styles.textDarkOnLight} style={{ marginTop: "16px" }}>
-                    Da quella intuizione sono emersi oltre 40 soggetti. La balena, la formica,
-                    il gatto, il cane, la coccinella. Ognuno con il suo tratto inconfondibile.
-                    Ognuno con i suoi due occhi.
-                </p>
-                <p className={styles.textDarkOnLight} style={{ marginTop: "16px" }}>
-                    A chi osserva il compito di riconoscere l'animale — e far emergere
-                    le emozioni che suscita.
-                </p>
+              <p className={styles.textDarkOnLight}>
+                L'inizio è stato casuale. Una @ disegnata al contrario, un tratto verticale lungo,
+                due puntini come occhi — ed è nata la chiocciola. Il primo animale 2dots.
+              </p>
+              <p className={styles.textDarkOnLight} style={{ marginTop: "16px" }}>
+                Da quella intuizione sono emersi oltre 40 soggetti. La balena, la formica,
+                il gatto, il cane, la coccinella. Ognuno con il suo tratto inconfondibile.
+                Ognuno con i suoi due occhi.
+              </p>
+              <p className={styles.textDarkOnLight} style={{ marginTop: "16px" }}>
+                A chi osserva il compito di riconoscere l'animale — e far emergere
+                le emozioni che suscita.
+              </p>
             </div>
           </div>
         </section>
@@ -76,11 +75,11 @@ export default function IlProgetto() {
         <section className={styles.sectionDark}>
           <div className={styles.sectionInner}>
             <div>
-            <div className={styles.titleBox}>
+              <div className={styles.titleBox}>
                 <p className={styles.labelLight}>I MATERIALI</p>
                 <h2 className={styles.titleLight}>Costruito per durare. Come certi legami.</h2>
+              </div>
             </div>
-            </div>            
             <div className={styles.materialsGrid}>
               <div className={styles.materialCard}>
                 <p className={styles.materialTitle}>Ceramica 3D</p>
@@ -118,18 +117,16 @@ export default function IlProgetto() {
         <section className={styles.sectionLight}>
           <div className={styles.sectionInnerCentered}>
             <p className={styles.label}>CHI SIAMO</p>
-            <h2 className={styles.titleDark}>Un progetto milanese. Un'idea semplice.</h2>
+            <h2 className={styles.titleDark}>Un progetto nato a Milano. Un'idea semplice.</h2>
             <p className={styles.textDarkCentered}>
               2dots nasce a Milano da una passione per il design essenziale
-              e per gli animali. Il marchio è registrato. Gli animali crescono.
-              Il progetto è ancora agli inizi — e questo è il momento migliore
-              per entrare.
+              e per gli animali. Il marchio è registrato. La collezione cresce.
             </p>
             <p className={styles.textDarkCentered} style={{ marginTop: "16px" }}>
               Per qualsiasi domanda, curiosità o proposta:
             </p>
-            <a href="mailto:info@twodotsdesign.it" className={styles.emailLink}>
-              info@twodotsdesign.it
+            <a href={`mailto:${CONTACT.email}`} className={styles.emailLink}>
+              {CONTACT.email}
             </a>
           </div>
         </section>

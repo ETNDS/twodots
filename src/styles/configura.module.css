@@ -135,9 +135,9 @@
 }
 
 .coloriGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
 }
 
 .coloreCircleWrapper {
@@ -162,13 +162,17 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid transparent;
   transition: all 0.15s;
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-.coloreCircle:hover .coloreCircleInner { transform: scale(1.1); }
-.coloreCircleSel .coloreCircleInner { border-color: var(--color-navy); transform: scale(1.1); }
+.coloreCircle:hover .coloreCircleInner {
+  transform: scale(1.1);
+}
+
+.coloreCircleSel .coloreCircleInner {
+  transform: scale(1.05);
+}
 
 .coloreNome {
   font-size: 9px;
@@ -180,6 +184,14 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.coloreSpunta {
+  font-size: 9px;
+  color: var(--color-navy);
+  font-weight: 700;
+  margin-right: 2px;
+}
+
 
 .imgPopupTrigger {
   font-size: 10px;
@@ -481,11 +493,11 @@
 }
 
 .riepilogoColoreDot {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 0 0 0 1.5px rgba(234, 230, 244, 0.6);
 }
 
 .riepilogoImg {
@@ -544,3 +556,98 @@
 
 .ctaBtn:not(:disabled):hover { opacity: 0.85; }
 
+.coloreNomeSelezionato {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 500;
+}
+
+.coloreNome {
+  font-size: 9px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  text-align: center;
+  max-width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coloreNomeSelezionato {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  opacity: 1;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 500;
+}
+
+.coloreSpunta {
+  font-size: 9px;
+  font-weight: 700;
+  margin-right: 2px;
+  color: inherit;
+}
+
+.coloreCiondoloBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+}
+
+.coloreCiondoloBtnSel {
+  border-color: var(--color-navy);
+}
+
+.coloreCiondoloNome {
+  font-size: 12px;
+  color: var(--color-navy);
+}
+
+.coloreCiondoloBall {
+  width: 80px;
+  height: 48px;
+  border-radius: 12px;
+  background: v; /* verrà da inline style */
+}
+
+.intro {
+  background: var(--color-lavanda);
+  padding: 60px 36px 40px;
+}
+
+.introLabel {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.introTitolo {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+}
+
+.intro {
+  background: var(--color-lavanda);
+  padding: 60px 36px 20px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  align-items: start;
+  padding: 10px 36px 36px;
+}

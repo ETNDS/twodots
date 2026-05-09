@@ -37,6 +37,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={styles.sidebar}>
         <p className={styles.sidebarLogo}>TWO DOTS</p>
         <nav className={styles.nav}>
+          <Link href="/admin/recensioni" className={`${styles.navLink} ${pathname.startsWith("/admin/recensioni") ? styles.navLinkActive : ""}`}>
+            Recensioni
+          </Link>
           <Link href="/admin/animali" className={`${styles.navLink} ${pathname.startsWith("/admin/animali") || pathname.startsWith("/admin/animale") ? styles.navLinkActive : ""}`}>
             Animali
           </Link>

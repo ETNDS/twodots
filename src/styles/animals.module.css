@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-navy);
+  padding: 12px;
 }
 
 .placeholder {

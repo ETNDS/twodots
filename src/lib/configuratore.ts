@@ -38,6 +38,7 @@ export type Impostazioni = {
   prezzoBase: number;
   prezzoPet: number;
   prezzoDedica: number;
+  prezzoDedicaPet: number;
 };
 
 async function getCollezione<T>(nome: string): Promise<T[]> {
@@ -54,11 +55,12 @@ export const getConfezioni = () => getCollezione<Confezione>("confezioni");
 
 export async function getImpostazioni(): Promise<Impostazioni> {
   const snap = await getDoc(doc(db, "configuratore", "impostazioni"));
-  if (!snap.exists()) return { prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0 };
+  if (!snap.exists()) return { prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0 };
   const d = snap.data();
   return {
     prezzoBase: d.prezzoBase || 45,
     prezzoPet: d.prezzoPet || 15,
     prezzoDedica: d.prezzoDedica || 0,
+    prezzoDedicaPet: d.prezzoDedicaPet || 0,
   };
 }

@@ -32,6 +32,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "src/app/admin/recensioni/page.tsx", "src/app/admin/recensioni/page.tsx"  ],
   "exclude": ["node_modules"]
 }

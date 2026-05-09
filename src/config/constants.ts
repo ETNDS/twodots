@@ -4,7 +4,7 @@ export const SOCIAL = {
 };
 
 export const CONTACT = {
-  email: "info@twodotsdesign.it",
+  email: "2dotsmilano@gmail.com",
 };
 
 export const SITE = {

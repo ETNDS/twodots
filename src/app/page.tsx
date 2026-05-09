@@ -6,6 +6,7 @@ import Origin from "@/components/Origin";
 import HumPet from "@/components/HumPet";
 import Animals from "@/components/Animals";
 import Configurator from "@/components/Configurator";
+import RecensioniHome from "@/components/RecensioniHome";
 import styles from "@styles/page.module.css";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
         <HumPet />
         <Animals />
         <Configurator />
+        <RecensioniHome />
       </main>
       <Footer />
     </>
