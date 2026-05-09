@@ -8,6 +8,7 @@ import BackgroundLogo from "@/components/BackgroundLogo";
 import { getAnimaliPubblicati, Animale } from "@/lib/animali";
 import { getCristalli, getCordini, getSmalti, getFontDedica, getConfezioni, getImpostazioni, ItemColore, FontDedica, Confezione, Impostazioni } from "@/lib/configuratore";
 import styles from "@styles/configura.module.css";
+import { SHOPIFY_VARIANT_IDS } from "@/config/shopify";
 
 type Configurazione = {
   animale: Animale | null;
@@ -257,6 +258,7 @@ function ConfiguraInner() {
   const [fonts, setFonts] = useState<FontDedica[]>([]);
   const [confezioni, setConfezioni] = useState<Confezione[]>([]);
   const [impostazioni, setImpostazioni] = useState<Impostazioni>({ prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0 });
+  const [aggiungendo, setAggiungendo] = useState(false);
 
   useEffect(() => {
     async function carica() {
@@ -281,6 +283,45 @@ function ConfiguraInner() {
 
   function update(partial: Partial<Configurazione>) {
     setConfig(p => ({ ...p, ...partial }));
+  }
+
+  async function handleAggiungiAlCarrello() {
+    if (!tuttiCompletati) return;
+    setAggiungendo(true);
+    try {
+      const { creaCarrello, buildRigheCarrello } = await import("@/lib/shopify-cart");
+
+      // Mappa le confezioni ai variant ID Shopify
+      const confezioneVariantMap: Record<string, string> = {
+        "sacchetto": SHOPIFY_VARIANT_IDS.sacchetto,
+        "astuccio": SHOPIFY_VARIANT_IDS.astuccio,
+      };
+
+      const righe = buildRigheCarrello({
+        animale: config.animale!.nome,
+        coloreCiondolo: config.coloreCiondolo === "nero" ? "Nero" : "Bianco",
+        disegno: config.smalto!.nome,
+        swarovskiSx: config.occhioSx!.nome,
+        swarovskiDx: config.occhioDx!.nome,
+        cordino: config.cordino!.nome,
+        dedicaHum: config.dedicaHum,
+        aggiungPet: config.aggiungPet,
+        coloreCiondoloPet: config.coloreCiondoloPet === "nero" ? "Nero" : "Bianco",
+        swarovskiSxPet: config.occhioSxPet?.nome || "",
+        swarovskiDxPet: config.occhioDxPet?.nome || "",
+        dedicaPet: config.dedicaPet,
+        confezione: config.confezione!.nome,
+        confezioneVariantId: confezioneVariantMap[config.confezione!.id] || null,
+      });
+      const cart = await creaCarrello(righe);
+      console.log("cart:", JSON.stringify(cart));
+      window.location.href = cart.checkoutUrl;
+    } catch (e) {
+      console.error(e);
+      alert("Errore nella creazione del carrello. Riprova.");
+    } finally {
+      setAggiungendo(false);
+    }
   }
 
   const prezzoHum = config.animale?.prezzo || impostazioni.prezzoBase;
@@ -696,8 +737,8 @@ function ConfiguraInner() {
               <div className={styles.prezzoTotale}><span>Totale</span><span>€{totale}</span></div>
             </div>
 
-              <button className={styles.ctaBtn} disabled={!tuttiCompletati}>
-                {tuttiCompletati ? "Aggiungi al carrello" : "Completa la configurazione"}
+              <button className={styles.ctaBtn} disabled={!tuttiCompletati || aggiungendo} onClick={handleAggiungiAlCarrello}>
+                {aggiungendo ? "Preparazione..." : tuttiCompletati ? "Aggiungi al carrello" : "Completa la configurazione"}
               </button>
 
             </div>
