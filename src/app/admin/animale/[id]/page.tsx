@@ -7,6 +7,9 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { db, storage } from "@/lib/firebase";
 import ReactMarkdown from "react-markdown";
 import styles from "@styles/adminAnimale.module.css";
+import ImmagineCard from "@/components/ImmagineCard";
+
+type OcchioPos = { x: number; y: number; z: number };
 
 type AnimaleForm = {
   id: string;
@@ -22,6 +25,8 @@ type AnimaleForm = {
   immagineForma: string;
   immaginiCiondolo: string[];
   modello3D: string;
+  occhioSxPos: OcchioPos | null;
+  occhioDxPos: OcchioPos | null;
   igLink: string;
   prezzo: number;
   prezzoPet: number;
@@ -41,6 +46,8 @@ const EMPTY: AnimaleForm = {
   immagineForma: "",
   immaginiCiondolo: [],
   modello3D: "",
+  occhioSxPos: null,
+  occhioDxPos: null,
   igLink: "",
   prezzo: 45,
   prezzoPet: 15,
@@ -57,6 +64,7 @@ export default function AdminAnimale() {
   const [saving, setSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteModelloDialog, setShowDeleteModelloDialog] = useState(false);
   const [uploadingDisegno, setUploadingDisegno] = useState(false);
   const [uploadingForma, setUploadingForma] = useState(false);
   const [uploadingCiondolo, setUploadingCiondolo] = useState(false);
@@ -69,6 +77,14 @@ export default function AdminAnimale() {
   const [occhiStr, setOcchiStr] = useState("");
   const [prezzoStr, setPrezzoStr] = useState("45");
   const [prezzoPetStr, setPrezzoPetStr] = useState("15");
+
+  // Stringhe per i campi posizione occhi
+  const [sxX, setSxX] = useState("");
+  const [sxY, setSxY] = useState("");
+  const [sxZ, setSxZ] = useState("");
+  const [dxX, setDxX] = useState("");
+  const [dxY, setDxY] = useState("");
+  const [dxZ, setDxZ] = useState("");
 
   useEffect(() => {
     if (isNuovo) {
@@ -95,6 +111,8 @@ export default function AdminAnimale() {
         immagineForma: d.immagineForma || "",
         immaginiCiondolo: d.immaginiCiondolo?.filter((x: string) => x) || [],
         modello3D: d.modello3D || "",
+        occhioSxPos: d.occhioSxPos || null,
+        occhioDxPos: d.occhioDxPos || null,
         igLink: d.igLink || "",
         prezzo: d.prezzo || 45,
         prezzoPet: d.prezzoPet || 15,
@@ -106,6 +124,16 @@ export default function AdminAnimale() {
       setOcchiStr(d.occhiMm ? String(d.occhiMm) : "2");
       setPrezzoStr(d.prezzo ? String(d.prezzo) : "45");
       setPrezzoPetStr(d.prezzoPet ? String(d.prezzoPet) : "15");
+      if (d.occhioSxPos) {
+        setSxX(String(d.occhioSxPos.x));
+        setSxY(String(d.occhioSxPos.y));
+        setSxZ(String(d.occhioSxPos.z));
+      }
+      if (d.occhioDxPos) {
+        setDxX(String(d.occhioDxPos.x));
+        setDxY(String(d.occhioDxPos.y));
+        setDxZ(String(d.occhioDxPos.z));
+      }
       if (d.createdAt?.toDate) setCreatedAt(d.createdAt.toDate().toLocaleString("it-IT"));
       if (d.updatedAt?.toDate) setUpdatedAt(d.updatedAt.toDate().toLocaleString("it-IT"));
       setLoading(false);
@@ -144,6 +172,23 @@ export default function AdminAnimale() {
     if (!isNaN(num)) update(key, num);
   }
 
+  function handleOcchioChange(
+    raw: string,
+    setStr: (s: string) => void,
+    occhio: "sx" | "dx",
+    campo: "x" | "y" | "z"
+  ) {
+    const normalized = raw.replace(",", ".");
+    setStr(raw);
+    const num = parseFloat(normalized);
+    if (isNaN(num)) return;
+    const key = occhio === "sx" ? "occhioSxPos" : "occhioDxPos";
+    setForm(prev => {
+      const current = prev[key] || { x: 0, y: 0, z: 0 };
+      return { ...prev, [key]: { ...current, [campo]: num } };
+    });
+  }
+
   async function handleSave() {
     if (!form.id.trim()) { alert("Inserisci un ID per l'animale."); return; }
     setSaving(true);
@@ -161,6 +206,8 @@ export default function AdminAnimale() {
         immagineForma: form.immagineForma,
         immaginiCiondolo: form.immaginiCiondolo,
         modello3D: form.modello3D,
+        occhioSxPos: form.occhioSxPos,
+        occhioDxPos: form.occhioDxPos,
         igLink: form.igLink,
         prezzo: form.prezzo,
         prezzoPet: form.prezzoPet,
@@ -252,7 +299,15 @@ export default function AdminAnimale() {
   async function handleDeleteModello() {
     if (!form.modello3D) return;
     try { await deleteObject(ref(storage, form.modello3D)); } catch {}
-    update("modello3D", "");
+    setForm(prev => ({
+      ...prev,
+      modello3D: "",
+      occhioSxPos: null,
+      occhioDxPos: null,
+    }));
+    setSxX(""); setSxY(""); setSxZ("");
+    setDxX(""); setDxY(""); setDxZ("");
+    setShowDeleteModelloDialog(false);
   }
 
   async function handleDelete() {
@@ -426,7 +481,10 @@ export default function AdminAnimale() {
             {form.immagineDisegno ? (
               <div className={styles.imgPreview}>
                 <img src={form.immagineDisegno} alt="Disegno" />
-                <button className={styles.imgDeleteBtn} onClick={handleDeleteDisegno}>Elimina immagine</button>
+                <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 4 }}>
+                  <button title="Scarica" onClick={() => window.open(form.immagineDisegno, "_blank")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>💾</button>
+                  <button title="Elimina" onClick={handleDeleteDisegno} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
+                </div>
               </div>
             ) : (
               <div className={styles.uploadArea}>
@@ -449,7 +507,10 @@ export default function AdminAnimale() {
             {form.immagineForma ? (
               <div className={styles.imgPreview}>
                 <img src={form.immagineForma} alt="Forma ciondolo" />
-                <button className={styles.imgDeleteBtn} onClick={handleDeleteForma}>Elimina immagine</button>
+                <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 4 }}>
+                  <button title="Scarica" onClick={() => window.open(form.immagineForma, "_blank")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>💾</button>
+                  <button title="Elimina" onClick={handleDeleteForma} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
+                </div>
               </div>
             ) : (
               <div className={styles.uploadArea}>
@@ -470,12 +531,67 @@ export default function AdminAnimale() {
               File GLB per l'anteprima 3D nel configuratore.
             </p>
             {form.modello3D ? (
-              <div className={styles.imgPreview}>
-                <p style={{ fontSize: 12, wordBreak: "break-all", color: "var(--admin-text-muted)", marginBottom: 8 }}>
-                  ✓ {decodeURIComponent(form.modello3D.split("/").pop()?.split("?")[0] || "")}
-                </p>
-                <button className={styles.imgDeleteBtn} onClick={handleDeleteModello}>Elimina modello</button>
-              </div>
+              <>
+                <div className={styles.imgPreview}>
+                  <p style={{ fontSize: 12, wordBreak: "break-all", color: "var(--admin-text-muted)", marginBottom: 8 }}>
+                    ✓ {decodeURIComponent(form.modello3D.split("/").pop()?.split("?")[0] || "")}
+                  </p>
+                  <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 4 }}>
+                  <button title="Scarica" onClick={() => window.open(form.modello3D, "_blank")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>💾</button>
+                  <button title="Elimina" onClick={() => setShowDeleteModelloDialog(true)} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
+                </div>
+                </div>
+
+                <div style={{ marginTop: 16 }}>
+                  <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 8 }}>
+                    Posizione occhio sinistro nel viewer 3D
+                  </p>
+                  <div className={styles.fieldRow}>
+                    <div className={styles.field}>
+                      <label className={styles.label}>X</label>
+                      <input className={styles.input} type="text" inputMode="decimal" value={sxX}
+                        onChange={(e) => handleOcchioChange(e.target.value, setSxX, "sx", "x")}
+                        placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                      <label className={styles.label}>Y</label>
+                      <input className={styles.input} type="text" inputMode="decimal" value={sxY}
+                        onChange={(e) => handleOcchioChange(e.target.value, setSxY, "sx", "y")}
+                        placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                      <label className={styles.label}>Z</label>
+                      <input className={styles.input} type="text" inputMode="decimal" value={sxZ}
+                        onChange={(e) => handleOcchioChange(e.target.value, setSxZ, "sx", "z")}
+                        placeholder="0.00" />
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 8, marginTop: 12 }}>
+                    Posizione occhio destro nel viewer 3D
+                  </p>
+                  <div className={styles.fieldRow}>
+                    <div className={styles.field}>
+                      <label className={styles.label}>X</label>
+                      <input className={styles.input} type="text" inputMode="decimal" value={dxX}
+                        onChange={(e) => handleOcchioChange(e.target.value, setDxX, "dx", "x")}
+                        placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                      <label className={styles.label}>Y</label>
+                      <input className={styles.input} type="text" inputMode="decimal" value={dxY}
+                        onChange={(e) => handleOcchioChange(e.target.value, setDxY, "dx", "y")}
+                        placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                      <label className={styles.label}>Z</label>
+                      <input className={styles.input} type="text" inputMode="decimal" value={dxZ}
+                        onChange={(e) => handleOcchioChange(e.target.value, setDxZ, "dx", "z")}
+                        placeholder="0.00" />
+                    </div>
+                  </div>
+                </div>
+              </>
             ) : (
               <div className={styles.uploadArea}>
                 <label className={styles.uploadBtn}>
@@ -496,25 +612,14 @@ export default function AdminAnimale() {
             </p>
             <div className={styles.ciondoloGrid}>
               {form.immaginiCiondolo.map((url, i) => (
-                <div key={i} className={styles.ciondoloImg}>
-                  {i === 0 && (
-                    <span style={{ fontSize: 9, background: "var(--admin-sidebar)", color: "var(--admin-sidebar-text)", padding: "2px 6px", borderRadius: 4, marginBottom: 4, display: "inline-block" }}>
-                      Principale
-                    </span>
-                  )}
-                  <img src={url} alt={`Ciondolo ${i + 1}`} />
-                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
-                    {i > 0 && (
-                      <button
-                        style={{ fontSize: 10, color: "var(--admin-sidebar)", background: "var(--admin-bg)", border: "0.5px solid var(--admin-border)", padding: "3px 8px", borderRadius: 6, cursor: "pointer" }}
-                        onClick={() => impostaCiondoloPrincipale(url)}
-                      >
-                        Principale
-                      </button>
-                    )}
-                    <button onClick={() => handleDeleteCiondolo(url)}>Elimina</button>
-                  </div>
-                </div>
+                <ImmagineCard
+                  key={i}
+                  url={url}
+                  index={i}
+                  altText={`Ciondolo ${i + 1}`}
+                  onElimina={handleDeleteCiondolo}
+                  onPrincipale={impostaCiondoloPrincipale}
+                />
               ))}
               <label className={styles.uploadBtn}>
                 {uploadingCiondolo ? "Caricamento in corso..." : "+ Aggiungi foto"}
@@ -538,6 +643,21 @@ export default function AdminAnimale() {
             <div className={styles.dialogActions}>
               <button className={styles.dialogCancelBtn} onClick={() => setShowDeleteDialog(false)}>Annulla</button>
               <button className={styles.dialogDeleteBtn} onClick={handleDelete}>Elimina definitivamente</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModelloDialog && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>Elimina modello 3D</h2>
+            <p className={styles.dialogText}>
+              Eliminando il modello 3D verranno azzerati anche i valori di posizione degli occhi. Continuare?
+            </p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setShowDeleteModelloDialog(false)}>Annulla</button>
+              <button className={styles.dialogDeleteBtn} onClick={handleDeleteModello}>Elimina</button>
             </div>
           </div>
         </div>

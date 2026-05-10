@@ -45,6 +45,10 @@
   padding: 12px;
 }
 
+.imageWrapper img {
+  filter: invert(1) brightness(10);
+}
+
 .placeholder {
   font-size: 10px;
   color: var(--color-lavanda);

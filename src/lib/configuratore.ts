@@ -41,6 +41,19 @@ export type Impostazioni = {
   prezzoDedicaPet: number;
 };
 
+export type OcchioPos = {
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type PetCiondolo = {
+  immagineForma: string;
+  modello3D: string;
+  occhioSxPos: OcchioPos | null;
+  occhioDxPos: OcchioPos | null;
+};
+
 async function getCollezione<T>(nome: string): Promise<T[]> {
   const q = query(collection(db, nome), orderBy("ordine", "asc"));
   const snap = await getDocs(q);
@@ -63,4 +76,20 @@ export async function getImpostazioni(): Promise<Impostazioni> {
     prezzoDedica: d.prezzoDedica || 0,
     prezzoDedicaPet: d.prezzoDedicaPet || 0,
   };
+}
+
+export async function getPetCiondolo(): Promise<PetCiondolo | null> {
+  const snap = await getDoc(doc(db, "configuratore", "pet"));
+  if (!snap.exists()) return null;
+  const d = snap.data();
+  return {
+    immagineForma: d.immagineForma || "",
+    modello3D: d.modello3D || "",
+    occhioSxPos: d.occhioSxPos || null,
+    occhioDxPos: d.occhioDxPos || null,
+  };
+}
+
+export async function savePetCiondolo(data: PetCiondolo): Promise<void> {
+  await setDoc(doc(db, "configuratore", "pet"), data);
 }

@@ -1,28 +1,30 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import BackgroundLogo from "@/components/BackgroundLogo";
-import Hero from "@/components/Hero";
-import Origin from "@/components/Origin";
-import HumPet from "@/components/HumPet";
-import Animals from "@/components/Animals";
-import Configurator from "@/components/Configurator";
-import RecensioniHome from "@/components/RecensioniHome";
-import styles from "@styles/page.module.css";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "@styles/landing.module.css";
 
 export default function Home() {
   return (
-    <>
-      <BackgroundLogo />
-      <Navbar />
-      <main className={styles.main}>
-        <Hero />
-        <Origin />
-        <HumPet />
-        <Animals />
-        <Configurator />
-        <RecensioniHome />
-      </main>
-      <Footer />
-    </>
+    <main className={styles.container}>
+      <div className={styles.inner}>
+        <Image
+          src="/images/twodots-logo.png"
+          alt="TwoDots Logo"
+          width={260}
+          height={260}
+          priority
+          className={styles.logo}
+        />
+        <h1 className={styles.title}>TwoDots</h1>
+        <p className={styles.subtitle}>
+          Stiamo arrivando.<br/>
+          Stiamo ultimando i prototipi per darvi un prodotto non comune e di qualità.
+        </p>
+        <p className={styles.small}>
+          Per informazioni:{" "}
+          <a href="mailto:info@twodotsdesign.it">info@twodotsdesign.it</a>
+        </p>
+        <Link href="/login" className={styles.accessoLink}>accesso</Link>
+      </div>
+    </main>
   );
 }

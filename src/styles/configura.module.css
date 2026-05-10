@@ -13,12 +13,32 @@
   opacity: 0.5;
 }
 
+.intro {
+  background: var(--color-lavanda);
+  padding: 60px 36px 28px;
+}
+
+.introLabel {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.introTitolo {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+}
+
 .layout {
   display: grid;
   grid-template-columns: 1fr 280px;
   gap: 24px;
   align-items: start;
-  padding: 36px;
+  padding: 0 36px 36px;
 }
 
 .steps {
@@ -166,13 +186,7 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-.coloreCircle:hover .coloreCircleInner {
-  transform: scale(1.1);
-}
-
-.coloreCircleSel .coloreCircleInner {
-  transform: scale(1.05);
-}
+.coloreCircle:hover .coloreCircleInner { transform: scale(1.1); }
 
 .coloreNome {
   font-size: 9px;
@@ -185,13 +199,21 @@
   white-space: nowrap;
 }
 
-.coloreSpunta {
-  font-size: 9px;
-  color: var(--color-navy);
-  font-weight: 700;
-  margin-right: 2px;
+.coloreNomeSelezionato {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  opacity: 1;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 500;
 }
 
+.coloreSpunta {
+  font-size: 9px;
+  font-weight: 700;
+  margin-right: 2px;
+  color: inherit;
+}
 
 .imgPopupTrigger {
   font-size: 10px;
@@ -279,18 +301,6 @@
   flex-wrap: wrap;
 }
 
-.coloreBtn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.15s;
-}
-
-.coloreBtnSel { outline: 2px solid var(--color-navy); outline-offset: 2px; }
-
 .sceltaBtn {
   font-family: inherit;
   font-size: 13px;
@@ -371,6 +381,31 @@
   margin-top: 8px;
 }
 
+.coloreCiondoloBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+}
+
+.coloreCiondoloBtnSel { border-color: var(--color-navy); }
+
+.coloreCiondoloNome {
+  font-size: 12px;
+  color: var(--color-navy);
+}
+
+.coloreCiondoloBall {
+  width: 80px;
+  height: 48px;
+  border-radius: 12px;
+}
+
 .confezioniGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -420,10 +455,32 @@
   margin-top: 6px;
 }
 
+/* COLONNA DESTRA */
+
 .riepilogo {
   position: sticky;
   top: 80px;
 }
+
+.introRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.resetBtn {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.resetBtn:hover { opacity: 0.7; }
 
 .riepilogoInner {
   background: var(--color-navy);
@@ -508,6 +565,12 @@
   flex-shrink: 0;
 }
 
+.riepilogoDivider {
+  height: 0.5px;
+  background: rgba(234, 230, 244, 0.2);
+  margin: 4px 0;
+}
+
 .prezzoBox {
   border-top: 0.5px solid rgba(234,230,244,0.15);
   padding-top: 12px;
@@ -556,98 +619,6 @@
 
 .ctaBtn:not(:disabled):hover { opacity: 0.85; }
 
-.coloreNomeSelezionato {
-  background: var(--color-navy);
-  color: var(--color-lavanda);
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-weight: 500;
-}
-
-.coloreNome {
-  font-size: 9px;
-  color: var(--color-navy);
-  opacity: 0.6;
-  text-align: center;
-  max-width: 50px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.coloreNomeSelezionato {
-  background: var(--color-navy);
-  color: var(--color-lavanda);
-  opacity: 1;
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-weight: 500;
-}
-
-.coloreSpunta {
-  font-size: 9px;
-  font-weight: 700;
-  margin-right: 2px;
-  color: inherit;
-}
-
-.coloreCiondoloBtn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background: none;
-  cursor: pointer;
-}
-
-.coloreCiondoloBtnSel {
-  border-color: var(--color-navy);
-}
-
-.coloreCiondoloNome {
-  font-size: 12px;
-  color: var(--color-navy);
-}
-
-.coloreCiondoloBall {
-  width: 80px;
-  height: 48px;
-  border-radius: 12px;
-  background: v; /* verrà da inline style */
-}
-
-.intro {
-  background: var(--color-lavanda);
-  padding: 60px 36px 40px;
-}
-
-.introLabel {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--color-navy);
-  opacity: 0.5;
-  margin-bottom: 12px;
-}
-
-.introTitolo {
-  font-size: 42px;
-  font-weight: 500;
-  color: var(--color-navy);
-  letter-spacing: -0.02em;
-}
-
-.intro {
-  background: var(--color-lavanda);
-  padding: 60px 36px 20px;
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 24px;
-  align-items: start;
-  padding: 10px 36px 36px;
+.animaleImg img {
+  filter: invert(1) brightness(2);
 }

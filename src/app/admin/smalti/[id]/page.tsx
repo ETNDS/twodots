@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc, deleteDoc, serverTimestamp } from "firebase/firest
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
 import styles from "@styles/adminAnimale.module.css";
+import ImmagineCard from "@/components/ImmagineCard";
 
 type SmaltoForm = {
   id: string;
@@ -212,25 +213,14 @@ export default function AdminSmalto() {
                 </p>
                 <div className={styles.ciondoloGrid}>
                     {form.immagini.map((url, i) => (
-                        <div key={i} className={styles.ciondoloImg}>
-                            {i === 0 && (
-                            <span style={{ fontSize: 9, background: "var(--admin-sidebar)", color: "var(--admin-sidebar-text)", padding: "2px 6px", borderRadius: 4, marginBottom: 4, display: "inline-block" }}>
-                                Principale
-                            </span>
-                            )}
-                            <img src={url} alt={`Immagine ${i + 1}`} />
-                            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
-                            {i > 0 && (
-                                <button
-                                style={{ fontSize: 10, color: "var(--admin-sidebar)", background: "var(--admin-bg)", border: "0.5px solid var(--admin-border)", padding: "3px 8px", borderRadius: 6, cursor: "pointer" }}
-                                onClick={() => impostaPrincipale(url)}
-                                >
-                                Principale
-                                </button>
-                            )}
-                            <button onClick={() => handleDeleteImmagine(url)}>Elimina</button>
-                            </div>
-                        </div>
+                        <ImmagineCard
+                          key={i}
+                          url={url}
+                          index={i}
+                          altText={`Immagine ${i + 1}`}
+                          onElimina={handleDeleteImmagine}
+                          onPrincipale={impostaPrincipale}
+                        />
                     ))}
                     <label className={styles.uploadBtn}>
                         {uploading ? "Caricamento..." : "+ Aggiungi immagine"}

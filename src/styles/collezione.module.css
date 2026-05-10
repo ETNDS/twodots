@@ -126,3 +126,22 @@
 .storia em {
   font-style: italic;
 }
+
+.imgDisegno {
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.imgDisegno img {
+  max-width: 100%;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(8%) sepia(50%) saturate(2000%) hue-rotate(210deg) brightness(90%);
+}
+
+.imageWrapper img {
+  filter: invert(1) brightness(2);
+}

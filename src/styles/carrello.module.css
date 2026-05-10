@@ -1,0 +1,220 @@
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 61px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
+.intro {
+  background: var(--color-lavanda);
+  padding: 40px 36px 20px;
+}
+
+.introLabel {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-navy);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.introTitolo {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-navy);
+  letter-spacing: -0.02em;
+}
+
+.vuoto {
+  padding: 60px 36px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 24px;
+  padding: 24px 36px 36px;
+  align-items: start;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: var(--color-lavanda-light);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.cardImg {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: var(--color-lavanda);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cardImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cardImg span {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+.cardInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cardNome {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+.cardSub {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.6;
+}
+
+.cardDx {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cardPrezzo {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+.btnRimuovi {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.btnRimuovi:hover { opacity: 0.7; }
+
+.btnAggiungi {
+  background: transparent;
+  border: 1px dashed rgba(13, 14, 46, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  transition: opacity 0.15s;
+}
+
+.btnAggiungi:hover { opacity: 1; }
+
+.riepilogo {
+  position: sticky;
+  top: 80px;
+}
+
+.riepilogoInner {
+  background: var(--color-lavanda-light);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.riepilogoTitolo {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-navy);
+  margin-bottom: 16px;
+}
+
+.riepilogoRiga {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.riepilogoTotale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-navy);
+  border-top: 0.5px solid rgba(13, 14, 46, 0.15);
+  padding-top: 12px;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.btnCheckout {
+  width: 100%;
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 13px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btnCheckout:hover { opacity: 0.85; }
+.btnCheckout:disabled { opacity: 0.4; cursor: default; }
+
+.btnContinua {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  font-size: 13px;
+  font-family: inherit;
+  padding: 13px 28px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+.btnContinua:hover { opacity: 0.85; }
