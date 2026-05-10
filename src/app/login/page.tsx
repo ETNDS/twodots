@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "@styles/login.module.css";
 
-export default function Login() {
+function LoginInner() {
   const [password, setPassword] = useState("");
   const [errore, setErrore] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") || "/collezione";
+  const from = searchParams.get("from") || "/home";
 
   async function handleLogin() {
     const res = await fetch("/api/login", {
@@ -42,5 +42,13 @@ export default function Login() {
         <button className={styles.btn} onClick={handleLogin}>Entra</button>
       </div>
     </main>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div>Caricamento...</div>}>
+      <LoginInner />
+    </Suspense>
   );
 }

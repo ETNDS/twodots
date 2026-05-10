@@ -192,28 +192,42 @@ export default function AdminPet() {
                     Posizione occhio sinistro nel viewer 3D
                   </p>
                   <div className={styles.fieldRow}>
-                    {[["X", sxX, setSxX, "sx", "x"], ["Y", sxY, setSxY, "sx", "y"], ["Z", sxZ, setSxZ, "sx", "z"]].map(([label, val, setVal, o, c]) => (
-                      <div key={String(label)} className={styles.field}>
-                        <label className={styles.label}>{label}</label>
-                        <input className={styles.input} type="text" inputMode="decimal" value={String(val)}
-                          onChange={(e) => handleOcchioChange(e.target.value, setVal as any, o as any, c as any)}
-                          placeholder="0.00" />
-                      </div>
-                    ))}
+                    <div className={styles.field}>
+                        <label className={styles.label}>X</label>
+                        <input className={styles.input} type="text" inputMode="decimal" value={sxX}
+                        onChange={(e) => handleOcchioChange(e.target.value, setSxX, "sx", "x")} placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                        <label className={styles.label}>Y</label>
+                        <input className={styles.input} type="text" inputMode="decimal" value={sxY}
+                        onChange={(e) => handleOcchioChange(e.target.value, setSxY, "sx", "y")} placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                        <label className={styles.label}>Z</label>
+                        <input className={styles.input} type="text" inputMode="decimal" value={sxZ}
+                        onChange={(e) => handleOcchioChange(e.target.value, setSxZ, "sx", "z")} placeholder="0.00" />
+                    </div>
                   </div>
 
                   <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 8, marginTop: 12 }}>
                     Posizione occhio destro nel viewer 3D
                   </p>
                   <div className={styles.fieldRow}>
-                    {[["X", dxX, setDxX, "dx", "x"], ["Y", dxY, setDxY, "dx", "y"], ["Z", dxZ, setDxZ, "dx", "z"]].map(([label, val, setVal, o, c]) => (
-                      <div key={String(label)} className={styles.field}>
-                        <label className={styles.label}>{label}</label>
-                        <input className={styles.input} type="text" inputMode="decimal" value={String(val)}
-                          onChange={(e) => handleOcchioChange(e.target.value, setVal as any, o as any, c as any)}
-                          placeholder="0.00" />
-                      </div>
-                    ))}
+                    <div className={styles.field}>
+                        <label className={styles.label}>X</label>
+                        <input className={styles.input} type="text" inputMode="decimal" value={dxX}
+                        onChange={(e) => handleOcchioChange(e.target.value, setDxX, "dx", "x")} placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                        <label className={styles.label}>Y</label>
+                        <input className={styles.input} type="text" inputMode="decimal" value={dxY}
+                        onChange={(e) => handleOcchioChange(e.target.value, setDxY, "dx", "y")} placeholder="0.00" />
+                    </div>
+                    <div className={styles.field}>
+                        <label className={styles.label}>Z</label>
+                        <input className={styles.input} type="text" inputMode="decimal" value={dxZ}
+                        onChange={(e) => handleOcchioChange(e.target.value, setDxZ, "dx", "z")} placeholder="0.00" />
+                    </div>
                   </div>
                 </div>
               </>
