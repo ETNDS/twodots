@@ -1,0 +1,186 @@
+.intro {
+  font-size: 13px;
+  color: var(--admin-text);
+  opacity: 0.6;
+  line-height: 1.6;
+  max-width: 600px;
+  flex: 1;
+}
+
+.grid {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gridHeader,
+.gridRow {
+  display: grid;
+  grid-template-columns: 100px 100px 1fr 60px 120px 160px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.gridHeader {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--admin-text);
+  opacity: 0.45;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gridRow {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  font-size: 13px;
+  color: var(--admin-text);
+}
+
+.colDa { font-weight: 600; }
+.colPerc { font-weight: 500; }
+.colCodice { font-family: monospace; font-size: 12px; }
+.colOrdine { opacity: 0.5; font-size: 12px; }
+
+.colAzioni {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btnEdit {
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--admin-text);
+  background: none;
+  border: 1px solid var(--admin-border);
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnEdit:hover { background: var(--admin-hover); }
+
+.btnDelete {
+  font-family: inherit;
+  font-size: 12px;
+  color: #c0392b;
+  background: none;
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnDelete:hover { background: rgba(192, 57, 43, 0.06); }
+
+.vuoto {
+  font-size: 13px;
+  opacity: 0.4;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--admin-surface);
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 420px;
+  width: 92%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalTitolo {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--admin-text);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.input {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+}
+
+.input:focus { border-color: var(--admin-text); }
+
+.hint {
+  font-size: 11px;
+  color: var(--admin-text);
+  opacity: 0.4;
+  line-height: 1.5;
+}
+
+.modalAzioni {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btnAnnulla {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--admin-text);
+  background: none;
+  border: 1px solid var(--admin-border);
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btnSalva {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--admin-sidebar);
+  border: none;
+  padding: 8px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btnSalva:disabled { opacity: 0.5; cursor: default; }

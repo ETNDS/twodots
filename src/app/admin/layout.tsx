@@ -61,6 +61,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/pet" className={`${styles.navLink} ${pathname.startsWith("/admin/pet") ? styles.navLinkActive : ""}`}>
             Ciondolo PET
           </Link>
+          <Link href="/admin/sconti" className={`${styles.navLink} ${pathname.startsWith("/admin/sconti") ? styles.navLinkActive : ""}`}>
+            Sconti
+          </Link>
+          <Link href="/admin/faq" className={`${styles.navLink} ${pathname.startsWith("/admin/faq") ? styles.navLinkActive : ""}`}>
+            FAQ
+          </Link>
           <Link href="/admin/impostazioni" className={`${styles.navLink} ${pathname.startsWith("/admin/impostazioni") ? styles.navLinkActive : ""}`}>
             Impostazioni
           </Link>

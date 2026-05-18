@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
+
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -28,6 +29,7 @@ type Configurazione = {
   dedicaPet: string;
   fontDedicaPet: FontDedica | null;
   confezione: Confezione | null;
+  quantita: number;
 };
 
 const EMPTY: Configurazione = {
@@ -46,6 +48,7 @@ const EMPTY: Configurazione = {
   dedicaPet: "",
   fontDedicaPet: null,
   confezione: null,
+  quantita: 1,
 };
 
 const STEP_DESC: Record<number, string> = {
@@ -58,6 +61,7 @@ const STEP_DESC: Record<number, string> = {
   6: "Puoi incidere una dedica personalizzata sul retro del ciondolo.",
   7: "Aggiungi un ciondolo abbinato da agganciare al collare del tuo animale.",
   9: "Scegli come vuoi ricevere il tuo ordine.",
+  10: "Quante copie di questo bijoux vuoi aggiungere al carrello?",
 };
 
 function ciondoloGradient(colore: "nero" | "bianco"): string {
@@ -109,6 +113,166 @@ function RiepilogoColore({ item }: { item: ItemColore }) {
   return <div className={styles.riepilogoColoreDot} style={{ background: coloreGradient(item.coloreCSS) }} />;
 }
 
+// ── POPUP PREVIEW FONT ──────────────────────────────────────────────────────
+function FontPreviewPopup({ testo, font, onClose }: { testo: string; font: FontDedica; onClose: () => void }) {
+  const righe = testo.split("\n");
+  const [fontPronto, setFontPronto] = useState(false);
+
+  useEffect(() => {
+    const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.famiglia)}:wght@400;500;700&display=swap`;
+    const id = `gfont-${font.famiglia.replace(/\s+/g, "-").toLowerCase()}`;
+    if (!document.getElementById(id)) {
+      const link = document.createElement("link");
+      link.id = id;
+      link.rel = "stylesheet";
+      link.href = url;
+      document.head.appendChild(link);
+    }
+    document.fonts.load(`400 16px "${font.famiglia}"`).then(() => setFontPronto(true));
+  }, [font.famiglia]);
+
+  return (
+    <div className={styles.popupOverlay} onClick={onClose}>
+      <div className={styles.fontPreviewPopup} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.fontPreviewHeader}>
+          <span className={styles.fontPreviewTitolo}>Anteprima della dedica</span>
+          <button className={styles.popupClose} onClick={onClose}>×</button>
+        </div>
+        <div className={styles.fontPreviewArea}>
+          {fontPronto ? (
+            <div className={styles.fontPreviewTesto} style={{ fontFamily: font.famiglia, fontSize: "20px" }}>
+              {righe.map((r, i) => (
+                <div key={i}>{r || "\u00A0"}</div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.fontPreviewTesto} style={{ opacity: 0.3, fontSize: "13px" }}>
+              Caricamento font...
+            </div>
+          )}
+        </div>
+        <p className={styles.fontPreviewFamiglia}>Font: {font.famiglia}</p>
+        <p className={styles.fontPreviewHint}>
+          L'incisione fisica sarà proporzionalmente più piccola.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── MODULO PREVENTIVO ────────────────────────────────────────────────────────
+function ModuloPreventivo({ maxPezzi, onClose }: { maxPezzi: number; onClose: () => void }) {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [pezzi, setPezzi] = useState("");
+  const [messaggio, setMessaggio] = useState("");
+  const [inviando, setInviando] = useState(false);
+  const [inviato, setInviato] = useState(false);
+  const [errore, setErrore] = useState("");
+
+  async function handleInvia() {
+    if (!nome.trim() || !email.trim() || !messaggio.trim()) {
+      setErrore("Compila tutti i campi obbligatori.");
+      return;
+    }
+    setErrore("");
+    setInviando(true);
+    try {
+      const res = await fetch("/api/preventivo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, email, telefono, pezzi, messaggio }),
+      });
+      if (res.ok) {
+        setInviato(true);
+      } else {
+        setErrore("Errore nell'invio. Riprova.");
+      }
+    } catch {
+      setErrore("Errore nell'invio. Riprova.");
+    } finally {
+      setInviando(false);
+    }
+  }
+
+  return (
+    <div className={styles.popupOverlay} onClick={onClose}>
+      <div className={styles.preventivoPopup} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.popupHeader}>
+          <h3 className={styles.popupNome}>Richiedi un preventivo</h3>
+          <button className={styles.popupClose} onClick={onClose}>×</button>
+        </div>
+
+        {inviato ? (
+          <div className={styles.preventivoSuccesso}>
+            <p>✓ Richiesta inviata!</p>
+            <p className={styles.preventivoSuccessoSub}>Ti risponderemo all'indirizzo indicato.</p>
+            <button className={styles.nextBtn} onClick={onClose}>Chiudi</button>
+          </div>
+        ) : (
+          <>
+            <p className={styles.preventivoIntro}>
+              Per ordini superiori a {maxPezzi} pezzi contattaci — ti prepariamo un preventivo su misura.
+            </p>
+
+            <div className={styles.preventivoForm}>
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Nome *</label>
+                <input className={styles.preventivoInput} type="text" value={nome}
+                  onChange={(e) => setNome(e.target.value)} placeholder="Il tuo nome" />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Email *</label>
+                <input className={styles.preventivoInput} type="email" value={email}
+                  onChange={(e) => setEmail(e.target.value)} placeholder="La tua email" />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Telefono</label>
+                <input className={styles.preventivoInput} type="tel" value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)} placeholder="Opzionale" />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Numero di pezzi indicativo</label>
+                <input className={styles.preventivoInput} type="number" min={maxPezzi + 1} value={pezzi}
+                  onChange={(e) => setPezzi(e.target.value)} placeholder={`Es. ${maxPezzi + 5}`} />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Descrivi la tua richiesta *</label>
+                <textarea className={styles.preventivoTextarea} rows={4} value={messaggio}
+                  onChange={(e) => setMessaggio(e.target.value)}
+                  placeholder="Raccontaci cosa ti serve: animali, personalizzazioni, confezioni speciali..." />
+              </div>
+
+              {errore && <p className={styles.preventivoErrore}>{errore}</p>}
+
+              <button className={styles.nextBtn} onClick={handleInvia} disabled={inviando}>
+                {inviando ? "Invio in corso..." : "Invia richiesta"}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── BANNER LIMITE RAGGIUNTO ──────────────────────────────────────────────────
+function BannerLimiteRaggiunto({ maxPezzi, onPreventivo }: { maxPezzi: number; onPreventivo: () => void }) {
+  return (
+    <div className={styles.bannerLimite}>
+      <div className={styles.bannerLimiteIcona}>⚑</div>
+      <div className={styles.bannerLimiteTesto}>
+        <strong>Hai raggiunto il massimo di {maxPezzi} pezzi per ordine online.</strong>
+        <span> Per quantità maggiori puoi richiedere un preventivo.</span>
+      </div>
+      <button className={styles.bannerLimiteBtn} onClick={onPreventivo}>
+        Richiedi preventivo
+      </button>
+    </div>
+  );
+}
+
 function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua }: {
   config: Configurazione;
   cristalli: ItemColore[];
@@ -118,8 +282,13 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
   onContinua: () => void;
 }) {
   const [subStep, setSubStep] = useState(0);
+  const [showPreviewPet, setShowPreviewPet] = useState(false);
+
+  const fontPet = config.fontDedicaPet || config.fontDedicaHum || fonts[0];
+
   return (
     <div className={styles.stepBody}>
+
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 0 ? styles.stepHeaderAttivo : ""}`} onClick={() => setSubStep(0)}>
           <span className={styles.stepNum}>a</span>
@@ -140,6 +309,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
           </div>
         )}
       </div>
+
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 1 ? styles.stepHeaderAttivo : ""}`} onClick={() => config.coloreCiondoloPet && setSubStep(1)}>
           <span className={styles.stepNum}>b</span>
@@ -154,6 +324,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
           </div>
         )}
       </div>
+
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 2 ? styles.stepHeaderAttivo : ""}`} onClick={() => config.occhioSxPet && setSubStep(2)}>
           <span className={styles.stepNum}>c</span>
@@ -168,6 +339,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
           </div>
         )}
       </div>
+
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 3 ? styles.stepHeaderAttivo : ""}`} onClick={() => config.occhioDxPet && setSubStep(3)}>
           <span className={styles.stepNum}>d</span>
@@ -176,8 +348,20 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
         </button>
         {subStep === 3 && (
           <div className={styles.stepBody}>
-            {(config.fontDedicaPet || fonts[0]) && (() => {
-              const font = config.fontDedicaPet || fonts[0];
+            {fonts.length > 0 && (
+              <div className={styles.field}>
+                <label className={styles.fieldLabel}>Stile carattere</label>
+                <div className={styles.fontGrid}>
+                  {fonts.map((f) => (
+                    <button key={f.id} className={`${styles.fontCard} ${fontPet?.id === f.id ? styles.fontCardSel : ""}`} onClick={() => update({ fontDedicaPet: f })}>
+                      <span className={styles.fontCardNome}>{f.descrizione}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {fontPet && (() => {
+              const font = fontPet;
               const maxTotale = font.righe * font.caratteriPerRiga;
               function handleDedicaPet(val: string) {
                 const righe = val.split("\n");
@@ -186,18 +370,36 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
               }
               return (
                 <>
-                  <textarea className={styles.dedicaTextarea} style={{ fontFamily: font.famiglia, fontSize: font.sizePx }}
-                    value={config.dedicaPet} rows={font.righe}
-                    placeholder={`Max ${font.righe} righe × ${font.caratteriPerRiga} caratteri`}
-                    onChange={(e) => handleDedicaPet(e.target.value)} />
-                  <p className={styles.hint}>{config.dedicaPet.replace(/\n/g, "").length}/{maxTotale} caratteri</p>
+                  <div className={styles.dedicaWrapper}>
+                    <textarea className={styles.dedicaTextarea} 
+                      value={config.dedicaPet} rows={2}
+                      onChange={(e) => handleDedicaPet(e.target.value)} />
+                    {!config.dedicaPet && (
+                      <span className={styles.dedicaPlaceholder}>
+                        Max {font.righe} righe × {font.caratteriPerRiga} caratteri
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.dedicaHintRow}>
+                    <p className={styles.hint}>{config.dedicaPet.replace(/\n/g, "").length}/{maxTotale} caratteri</p>
+                    {config.dedicaPet.trim() && (
+                      <button className={styles.previewFontBtn} onClick={() => setShowPreviewPet(true)}>
+                        Anteprima testo
+                      </button>
+                    )}
+                  </div>
                 </>
               );
             })()}
           </div>
         )}
       </div>
+
       <button className={styles.nextBtn} onClick={onContinua}>Continua →</button>
+
+      {showPreviewPet && fontPet && config.dedicaPet.trim() && (
+        <FontPreviewPopup testo={config.dedicaPet} font={fontPet} onClose={() => setShowPreviewPet(false)} />
+      )}
     </div>
   );
 }
@@ -207,7 +409,7 @@ function ConfiguraInner() {
   const animaleParam = searchParams.get("animale");
   const resetParam = searchParams.get("reset");
   const router = useRouter();
-  const { aggiungi } = useCarrello();
+  const { aggiungi, totalePezzi } = useCarrello();
 
   const [config, setConfig] = useState<Configurazione>(EMPTY);
   const [stepAttivo, setStepAttivo] = useState(animaleParam ? 1 : 0);
@@ -218,10 +420,12 @@ function ConfiguraInner() {
   const [smalti, setSmalti] = useState<ItemColore[]>([]);
   const [fonts, setFonts] = useState<FontDedica[]>([]);
   const [confezioni, setConfezioni] = useState<Confezione[]>([]);
-  const [impostazioni, setImpostazioni] = useState<Impostazioni>({ prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0 });
+  const [impostazioni, setImpostazioni] = useState<Impostazioni>({ prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0, maxPezzi: 5 });
   const [aggiungendo, setAggiungendo] = useState(false);
   const [petCiondolo, setPetCiondolo] = useState<PetCiondolo | null>(null);
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [showPreviewHum, setShowPreviewHum] = useState(false);
+  const [showPreventivo, setShowPreventivo] = useState(false);
 
   useEffect(() => {
     if (resetParam === "1") {
@@ -260,18 +464,44 @@ function ConfiguraInner() {
   }, [animaleParam]);
 
   function update(partial: Partial<Configurazione>) {
-    setConfig(p => ({ ...p, ...partial }));
+    setConfig(p => {
+      const next = { ...p, ...partial };
+
+      // ── PUNTO 1: prezzo incisione PET segue incisione HUM ──────────────────
+      // Se stiamo modificando dedicaHum o fontDedicaHum, aggiorniamo anche
+      // il prezzo della dedica PET (gestito implicitamente dalla logica prezzi
+      // che usa impostazioni.prezzoDedicaPet vs impostazioni.prezzoDedica).
+      // Non serve stato extra: il calcolo del totale usa già i prezzi corretti.
+      // La logica è in prezzoIncisionePet qui sotto.
+
+      return next;
+    });
   }
 
   function reset() {
     setShowResetDialog(true);
   }
 
+  // ── PUNTO 1: prezzo incisione PET ────────────────────────────────────────
+  // Se c'è dedica HUM → incisione PET al prezzo scontato (prezzoDedicaPet)
+  // Se NON c'è dedica HUM → incisione PET al prezzo intero (prezzoDedica)
+  const hasDedicaHum = config.dedicaHum.trim() !== "";
+  const prezzoDedicaPetEffettivo = hasDedicaHum
+    ? (impostazioni.prezzoDedicaPet || 0)
+    : (impostazioni.prezzoDedica || 0);
+
   const prezzoHum = config.animale ? (config.animale.prezzo || impostazioni.prezzoBase) : 0;
   const prezzoPet = config.aggiungPet ? (config.animale?.prezzoPet || impostazioni.prezzoPet) : 0;
   const prezzoConfezione = config.confezione?.prezzo || 0;
-  const prezzoDedica = (config.dedicaHum.trim() ? (impostazioni.prezzoDedica || 0) : 0) + (config.dedicaPet.trim() ? (impostazioni.prezzoDedicaPet || 0) : 0);
-  const totale = prezzoHum + prezzoPet + prezzoConfezione + prezzoDedica;
+  const prezzoDedicaHumCalc = config.dedicaHum.trim() ? (impostazioni.prezzoDedica || 0) : 0;
+  const prezzoDedicaPetCalc = config.dedicaPet.trim() ? prezzoDedicaPetEffettivo : 0;
+  const prezzoDedica = prezzoDedicaHumCalc + prezzoDedicaPetCalc;
+  const totalePerPezzo = prezzoHum + prezzoPet + prezzoConfezione + prezzoDedica;
+  const totale = totalePerPezzo * config.quantita;
+
+  // ── PUNTO 2/3: quantità disponibile ──────────────────────────────────────
+  const pezziDisponibili = impostazioni.maxPezzi - totalePezzi;
+  const limiteMassimo = pezziDisponibili <= 0;
 
   async function handleAggiungiAlCarrello() {
     if (!tuttiCompletati) return;
@@ -294,7 +524,8 @@ function ConfiguraInner() {
         dedicaPet: config.dedicaPet,
         fontDedicaPet: config.fontDedicaPet,
         confezione: config.confezione!,
-        prezzoTotale: totale,
+        quantita: config.quantita,
+        prezzoTotale: totalePerPezzo,
       });
       router.push("/carrello");
     } catch (e) {
@@ -316,9 +547,14 @@ function ConfiguraInner() {
     7: true,
     8: !config.aggiungPet || (!!config.coloreCiondoloPet && !!config.occhioSxPet && !!config.occhioDxPet),
     9: !!config.confezione,
+    10: config.quantita >= 1,
   };
 
   const tuttiCompletati = Object.values(stepCompletati).every(Boolean) && !!config.animale && !!config.coloreCiondolo && !!config.smalto && !!config.occhioSx && !!config.occhioDx && !!config.cordino && !!config.confezione;
+
+  const fontHum = config.fontDedicaHum || fonts[0];
+
+  const show3DViewer = !!(config.animale?.modello3D && config.coloreCiondolo && config.smalto && config.occhioSx && config.occhioDx);
 
   if (loading) return (
     <>
@@ -327,6 +563,43 @@ function ConfiguraInner() {
       <Footer />
     </>
   );
+
+  // ── PUNTO 4: se limite già raggiunto, non mostrare il configuratore ──────
+  if (limiteMassimo) {
+    return (
+      <>
+        <BackgroundLogo />
+        <Navbar />
+        <main className={styles.main}>
+          <div className={styles.intro}>
+            <p className={styles.introLabel}>CONFIGURA</p>
+            <h1 className={styles.introTitolo}>Crea il tuo bijoux</h1>
+          </div>
+          <div className={styles.limitePagina}>
+            <div className={styles.limitePaginaIcona}>⚑</div>
+            <p className={styles.limitePaginaTitolo}>
+              Hai raggiunto il massimo di {impostazioni.maxPezzi} pezzi per ordine online.
+            </p>
+            <p className={styles.limitePaginaSub}>
+              Per ordini più grandi ti prepariamo un preventivo su misura.
+            </p>
+            <div className={styles.limitePaginaBtns}>
+              <button className={styles.ctaBtnPrimary} onClick={() => setShowPreventivo(true)}>
+                Richiedi preventivo
+              </button>
+              <button className={styles.linkBtn} onClick={() => router.push("/carrello")}>
+                Vai al carrello
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+        {showPreventivo && (
+          <ModuloPreventivo maxPezzi={impostazioni.maxPezzi} onClose={() => setShowPreventivo(false)} />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -337,11 +610,16 @@ function ConfiguraInner() {
           <p className={styles.introLabel}>CONFIGURA</p>
           <div className={styles.introRow}>
             <h1 className={styles.introTitolo}>Crea il tuo bijoux</h1>
-            {!Object.values(config).every(v => v === null || v === false || v === "") && (
+            {!Object.values(config).every(v => v === null || v === false || v === "" || v === 1) && (
               <button className={styles.resetBtn} onClick={reset}>Ricomincia</button>
             )}
           </div>
         </div>
+
+        {/* ── PUNTO 4: banner limite raggiunto ── */}
+        {limiteMassimo && (
+          <BannerLimiteRaggiunto maxPezzi={impostazioni.maxPezzi} onPreventivo={() => setShowPreventivo(true)} />
+        )}
 
         <div className={styles.layout}>
           <div className={styles.steps}>
@@ -466,11 +744,10 @@ function ConfiguraInner() {
                   {fonts.length > 0 && (
                     <div className={styles.field}>
                       <label className={styles.fieldLabel}>Stile carattere</label>
-                      <div className={styles.sceltaRow}>
+                      <div className={styles.fontGrid}>
                         {fonts.map((f) => (
-                          <button key={f.id} className={`${styles.fontBtn} ${config.fontDedicaHum?.id === f.id ? styles.fontBtnSel : ""}`} onClick={() => update({ fontDedicaHum: f })}>
-                            <span style={{ fontFamily: f.famiglia, fontSize: 16 }}>Aa</span>
-                            <span className={styles.fontDesc}>{f.descrizione}</span>
+                          <button key={f.id} className={`${styles.fontCard} ${config.fontDedicaHum?.id === f.id ? styles.fontCardSel : ""}`} onClick={() => update({ fontDedicaHum: f })}>
+                            <span className={styles.fontCardNome}>{f.descrizione}</span>
                           </button>
                         ))}
                       </div>
@@ -478,8 +755,8 @@ function ConfiguraInner() {
                   )}
                   <div className={styles.field}>
                     <label className={styles.fieldLabel}>Testo dedica</label>
-                    {(config.fontDedicaHum || fonts[0]) && (() => {
-                      const font = config.fontDedicaHum || fonts[0];
+                    {fontHum && (() => {
+                      const font = fontHum;
                       const maxTotale = font.righe * font.caratteriPerRiga;
                       function handleDedica(val: string) {
                         const righe = val.split("\n");
@@ -488,14 +765,28 @@ function ConfiguraInner() {
                       }
                       return (
                         <>
-                          <textarea className={styles.dedicaTextarea} style={{ fontFamily: font.famiglia, fontSize: font.sizePx }}
-                            value={config.dedicaHum} rows={font.righe}
-                            placeholder={`Max ${font.righe} righe × ${font.caratteriPerRiga} caratteri`}
-                            onChange={(e) => handleDedica(e.target.value)} />
-                          <p className={styles.hint}>
-                            {config.dedicaHum.replace(/\n/g, "").length}/{maxTotale} caratteri
-                            {impostazioni.prezzoDedica > 0 && ` — supplemento €${impostazioni.prezzoDedica}`}
-                          </p>
+                          <div className={styles.dedicaWrapper}>
+                            <textarea className={styles.dedicaTextarea} 
+                              value={config.dedicaHum} rows={2}
+                              onChange={(e) => handleDedica(e.target.value)} />
+                            {!config.dedicaHum && (
+                              <span className={styles.dedicaPlaceholder}>
+                                Max {font.righe} righe × {font.caratteriPerRiga} caratteri
+                              </span>
+                            )}
+                          </div>
+                          <div className={styles.dedicaHintRow}>
+                            <p className={styles.hint}>
+                              {config.dedicaHum.replace(/\n/g, "").length}/{maxTotale} caratteri
+                              {impostazioni.prezzoDedica > 0 && ` — supplemento €${impostazioni.prezzoDedica}`}
+                            </p>
+                            {/* ── PUNTO 6: bottone preview font ── */}
+                            {config.dedicaHum.trim() && (
+                              <button className={styles.previewFontBtn} onClick={() => setShowPreviewHum(true)}>
+                                Anteprima testo
+                              </button>
+                            )}
+                          </div>
                         </>
                       );
                     })()}
@@ -545,7 +836,7 @@ function ConfiguraInner() {
                   <p className={styles.stepDesc}>{STEP_DESC[9]}</p>
                   <div className={styles.confezioniGrid}>
                     {confezioni.map((c) => (
-                      <button key={c.id} className={`${styles.confezioneCard} ${config.confezione?.id === c.id ? styles.confezioneCardSel : ""}`} onClick={() => update({ confezione: c })}>
+                      <button key={c.id} className={`${styles.confezioneCard} ${config.confezione?.id === c.id ? styles.confezioneCardSel : ""}`} onClick={() => { update({ confezione: c }); setTimeout(() => setStepAttivo(10), 100); }}>
                         {c.immagini?.[0] && <div className={styles.confezioneImg}><img src={c.immagini[0]} alt={c.nome} /></div>}
                         <p className={styles.confezioneNome}>{c.nome}</p>
                         <p className={styles.confezioneDesc}>{c.descrizione}</p>
@@ -557,35 +848,80 @@ function ConfiguraInner() {
               )}
             </div>
 
+            {/* ── PUNTO 3: step quantità ── */}
+            <div className={styles.step} id="step-10">
+              <button className={`${styles.stepHeader} ${stepAttivo === 10 ? styles.stepHeaderAttivo : ""}`} onClick={() => stepCompletati[9] && setStepAttivo(10)}>
+                <span className={styles.stepNum}>{config.aggiungPet ? "11" : "10"}</span>
+                <span className={styles.stepTitolo}>Quantità</span>
+                {config.quantita > 1 && <span className={styles.stepValore}>× {config.quantita}</span>}
+              </button>
+              {stepAttivo === 10 && (
+                <div className={styles.stepBody}>
+                  <p className={styles.stepDesc}>{STEP_DESC[10]}</p>
+                  <div className={styles.quantitaRow}>
+                    <button className={styles.quantitaBtn}
+                      disabled={config.quantita <= 1}
+                      onClick={() => update({ quantita: Math.max(1, config.quantita - 1) })}>
+                      −
+                    </button>
+                    <span className={styles.quantitaValore}>{config.quantita}</span>
+                    <button className={styles.quantitaBtn}
+                      disabled={config.quantita >= pezziDisponibili}
+                      onClick={() => update({ quantita: Math.min(pezziDisponibili, config.quantita + 1) })}>
+                      +
+                    </button>
+                  </div>
+                  {pezziDisponibili < impostazioni.maxPezzi && (
+                    <p className={styles.hint}>
+                      Puoi aggiungere ancora {pezziDisponibili} {pezziDisponibili === 1 ? "pezzo" : "pezzi"} su {impostazioni.maxPezzi} max.
+                      {" "}<button className={styles.linkBtn} onClick={() => setShowPreventivo(true)}>Servono di più?</button>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* COLONNA DESTRA — RIEPILOGO */}
           <div className={styles.riepilogo}>
             <div className={styles.riepilogoInner}>
 
-              {/* ANTEPRIMA YOU */}
-              <div className={styles.anteprima}>
-                {config.animale?.modello3D && config.coloreCiondolo && config.smalto && config.occhioSx && config.occhioDx ? (
-                  <Viewer3D
-                    glbUrl={config.animale.modello3D}
-                    coloreCiondolo={config.coloreCiondolo}
-                    coloreDisegno={config.smalto.coloreCSS}
-                    coloreOcchioSx={config.occhioSx.coloreCSS}
-                    coloreOcchioDx={config.occhioDx.coloreCSS}
-                    immagineOcchioSx={config.occhioSx.immagini?.[0] || null}
-                    immagineOcchioDx={config.occhioDx.immagini?.[0] || null}
-                    occhioSxPos={config.animale.occhioSxPos || null}
-                    occhioDxPos={config.animale.occhioDxPos || null}
-                  />
-                ) : config.animale ? (
-                  (config.animale.immagineForma || config.animale.immagineDisegno) ? (
-                    <img src={config.animale.immagineForma || config.animale.immagineDisegno} alt={config.animale.nome} className={styles.anteprimaImg} />
+              {/* ── PUNTO 5: anteprima YOU con label 3D ── */}
+              <div className={styles.anteprimaWrapper}>
+                <div className={styles.anteprima}>
+                  {show3DViewer ? (
+                    <Viewer3D
+                      glbUrl={config.animale!.modello3D!}
+                      coloreCiondolo={config.coloreCiondolo!}
+                      coloreDisegno={config.smalto!.coloreCSS}
+                      coloreOcchioSx={config.occhioSx!.coloreCSS}
+                      coloreOcchioDx={config.occhioDx!.coloreCSS}
+                      immagineOcchioSx={config.occhioSx!.immagini?.[0] || null}
+                      immagineOcchioDx={config.occhioDx!.immagini?.[0] || null}
+                      occhioSxPos={config.animale!.occhioSxPos || null}
+                      occhioDxPos={config.animale!.occhioDxPos || null}
+                    />
+                  ) : config.animale ? (
+                    (config.animale.immagineForma || config.animale.immagineDisegno) ? (
+                      <img src={config.animale.immagineForma || config.animale.immagineDisegno} alt={config.animale.nome} className={styles.anteprimaImg} />
+                    ) : (
+                      <div className={styles.anteprimaPlaceholder}><span>{config.animale.nome}</span></div>
+                    )
                   ) : (
-                    <div className={styles.anteprimaPlaceholder}><span>{config.animale.nome}</span></div>
-                  )
-                ) : (
-                  <div className={styles.anteprimaPlaceholder}><span>2dots</span></div>
-                )}
+                    <div className={styles.anteprimaPlaceholder}><span>2dots</span></div>
+                  )}
+                  {!!config.animale && (
+                    <div className={styles.watermark3D}>
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <span key={i}>2DOTS·2DOTS·2DOTS·2DOTS</span>
+                      ))}
+                    </div>
+                  )}
+                  {show3DViewer && (
+                    <div className={styles.label3D}>↺ ruota</div>
+                  )}
+                </div>
               </div>
 
               {/* DETTAGLI YOU */}
@@ -653,28 +989,41 @@ function ConfiguraInner() {
                   <>
                     <div className={styles.riepilogoDivider} />
 
-                    {/* ANTEPRIMA PET */}
-                    {petCiondolo && (
-                      <div className={styles.anteprima}>
-                        {petCiondolo.modello3D && config.coloreCiondoloPet && config.occhioSxPet && config.occhioDxPet ? (
-                          <Viewer3D
-                            glbUrl={petCiondolo.modello3D}
-                            coloreCiondolo={config.coloreCiondoloPet}
-                            coloreDisegno={null}
-                            coloreOcchioSx={config.occhioSxPet.coloreCSS}
-                            coloreOcchioDx={config.occhioDxPet.coloreCSS}
-                            immagineOcchioSx={config.occhioSxPet.immagini?.[0] || null}
-                            immagineOcchioDx={config.occhioDxPet.immagini?.[0] || null}
-                            occhioSxPos={petCiondolo.occhioSxPos}
-                            occhioDxPos={petCiondolo.occhioDxPos}
-                          />
-                        ) : petCiondolo.immagineForma ? (
-                          <img src={petCiondolo.immagineForma} alt="PET" className={styles.anteprimaImg} />
-                        ) : (
-                          <div className={styles.anteprimaPlaceholder}><span>PET</span></div>
-                        )}
-                      </div>
-                    )}
+                    {/* ANTEPRIMA PET con label 3D */}
+                    {petCiondolo && (() => {
+                      const show3DPet = !!(petCiondolo.modello3D && config.coloreCiondoloPet && config.occhioSxPet && config.occhioDxPet);
+                      return (
+                        <div className={styles.anteprimaWrapper}>
+                          <div className={styles.anteprima}>
+                            {show3DPet ? (
+                              <Viewer3D
+                                glbUrl={petCiondolo.modello3D}
+                                coloreCiondolo={config.coloreCiondoloPet!}
+                                coloreDisegno={null}
+                                coloreOcchioSx={config.occhioSxPet!.coloreCSS}
+                                coloreOcchioDx={config.occhioDxPet!.coloreCSS}
+                                immagineOcchioSx={config.occhioSxPet!.immagini?.[0] || null}
+                                immagineOcchioDx={config.occhioDxPet!.immagini?.[0] || null}
+                                occhioSxPos={petCiondolo.occhioSxPos}
+                                occhioDxPos={petCiondolo.occhioDxPos}
+                              />
+                            ) : petCiondolo.immagineForma ? (
+                              <img src={petCiondolo.immagineForma} alt="PET" className={styles.anteprimaImg} />
+                            ) : (
+                              <div className={styles.anteprimaPlaceholder}><span>PET</span></div>
+                            )}
+                            <div className={styles.watermark3D}>
+                              {Array.from({ length: 6 }).map((_, i) => (
+                                <span key={i}>2DOTS·2DOTS·2DOTS·2DOTS</span>
+                              ))}
+                            </div>
+                            {show3DPet && (
+                              <div className={styles.label3D}>↺ ruota</div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     {config.coloreCiondoloPet && (
                       <div className={styles.riepilogoRiga}>
@@ -726,16 +1075,28 @@ function ConfiguraInner() {
                 {config.dedicaHum && impostazioni.prezzoDedica > 0 && (
                   <div className={styles.prezzoRiga}><span>Dedica YOU</span><span>€{impostazioni.prezzoDedica}</span></div>
                 )}
-                {config.dedicaPet.trim() !== "" && (impostazioni.prezzoDedicaPet || 0) > 0 && (
-                  <div className={styles.prezzoRiga}><span>Dedica PET</span><span>€{impostazioni.prezzoDedicaPet}</span></div>
+                {config.dedicaPet.trim() !== "" && prezzoDedicaPetEffettivo > 0 && (
+                  <div className={styles.prezzoRiga}>
+                    <span>Dedica PET{hasDedicaHum ? " (sconto)" : ""}</span>
+                    <span>€{prezzoDedicaPetEffettivo}</span>
+                  </div>
                 )}
                 {prezzoConfezione > 0 && <div className={styles.prezzoRiga}><span>Confezione</span><span>€{prezzoConfezione}</span></div>}
+                {config.quantita > 1 && (
+                  <div className={styles.prezzoRiga}><span>× {config.quantita} pezzi</span><span>€{totalePerPezzo} cad.</span></div>
+                )}
                 <div className={styles.prezzoTotale}><span>Totale</span><span>€{totale}</span></div>
               </div>
 
-              <button className={styles.ctaBtn} disabled={!tuttiCompletati || aggiungendo} onClick={handleAggiungiAlCarrello}>
-                {aggiungendo ? "Preparazione..." : tuttiCompletati ? "Aggiungi al carrello" : "Completa la configurazione"}
+              <button className={styles.ctaBtn} disabled={!tuttiCompletati || aggiungendo || limiteMassimo} onClick={handleAggiungiAlCarrello}>
+                {aggiungendo ? "Preparazione..." : limiteMassimo ? "Limite raggiunto" : tuttiCompletati ? "Aggiungi al carrello" : "Completa la configurazione"}
               </button>
+
+              {limiteMassimo && (
+                <button className={styles.preventivoInlineBtn} onClick={() => setShowPreventivo(true)}>
+                  Richiedi preventivo per quantità maggiori
+                </button>
+              )}
 
             </div>
           </div>
@@ -752,6 +1113,16 @@ function ConfiguraInner() {
           onConferma={() => { setShowResetDialog(false); setConfig(EMPTY); setStepAttivo(0); }}
           onAnnulla={() => setShowResetDialog(false)}
         />
+      )}
+
+      {/* ── PUNTO 6: popup preview font HUM ── */}
+      {showPreviewHum && fontHum && config.dedicaHum.trim() && (
+        <FontPreviewPopup testo={config.dedicaHum} font={fontHum} onClose={() => setShowPreviewHum(false)} />
+      )}
+
+      {/* ── PUNTO 2: modulo preventivo ── */}
+      {showPreventivo && (
+        <ModuloPreventivo maxPezzi={impostazioni.maxPezzi} onClose={() => setShowPreventivo(false)} />
       )}
     </>
   );

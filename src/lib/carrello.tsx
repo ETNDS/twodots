@@ -21,7 +21,8 @@ export type ArticoloCarrello = {
   dedicaPet: string;
   fontDedicaPet: FontDedica | null;
   confezione: Confezione;
-  prezzoTotale: number;
+  quantita: number;
+  prezzoTotale: number; // prezzo per singolo pezzo
 };
 
 type CarrelloCtx = {
@@ -30,6 +31,7 @@ type CarrelloCtx = {
   rimuovi: (id: string) => void;
   svuota: () => void;
   totale: number;
+  totalePezzi: number;
 };
 
 const CarrelloContext = createContext<CarrelloCtx>({
@@ -38,6 +40,7 @@ const CarrelloContext = createContext<CarrelloCtx>({
   rimuovi: () => {},
   svuota: () => {},
   totale: 0,
+  totalePezzi: 0,
 });
 
 export function CarrelloProvider({ children }: { children: ReactNode }) {
@@ -55,10 +58,11 @@ export function CarrelloProvider({ children }: { children: ReactNode }) {
     setArticoli([]);
   }
 
-  const totale = articoli.reduce((acc, a) => acc + a.prezzoTotale, 0);
+  const totale = articoli.reduce((acc, a) => acc + a.prezzoTotale * a.quantita, 0);
+  const totalePezzi = articoli.reduce((acc, a) => acc + a.quantita, 0);
 
   return (
-    <CarrelloContext.Provider value={{ articoli, aggiungi, rimuovi, svuota, totale }}>
+    <CarrelloContext.Provider value={{ articoli, aggiungi, rimuovi, svuota, totale, totalePezzi }}>
       {children}
     </CarrelloContext.Provider>
   );

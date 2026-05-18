@@ -46,7 +46,33 @@ export async function creaCarrello(righe: {
     },
   });
 
+  if (!data?.data?.cartCreate?.cart) {
+    console.error("Shopify cartCreate error:", JSON.stringify(data));
+    return null;
+  }
+
   return data.data.cartCreate.cart;
+}
+
+export async function cartApplyDiscount(cartId: string, codice: string): Promise<void> {
+  const query = `
+    mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
+      cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+        cart {
+          id
+          discountCodes {
+            code
+            applicable
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+  await shopifyFetch(query, { cartId, discountCodes: [codice] });
 }
 
 export type ConfigurazioneCarrello = {
@@ -64,9 +90,12 @@ export type ConfigurazioneCarrello = {
   dedicaPet: string;
   confezione: string;
   confezioneVariantId: string | null;
+  quantita?: number;
 };
 
 export function buildRigheCarrello(c: ConfigurazioneCarrello) {
+  const qty = c.quantita ?? 1;
+
   const righe: {
     variantId: string;
     quantity: number;
@@ -76,7 +105,7 @@ export function buildRigheCarrello(c: ConfigurazioneCarrello) {
   // HUM
   righe.push({
     variantId: VARIANT_IDS.hum,
-    quantity: 1,
+    quantity: qty,
     attributes: [
       { key: "Animale", value: c.animale },
       { key: "Colore ciondolo", value: c.coloreCiondolo },
@@ -92,7 +121,7 @@ export function buildRigheCarrello(c: ConfigurazioneCarrello) {
   if (c.aggiungPet) {
     righe.push({
       variantId: VARIANT_IDS.pet,
-      quantity: 1,
+      quantity: qty,
       attributes: [
         { key: "Colore ciondolo", value: c.coloreCiondoloPet },
         { key: "Swarovski occhio sx", value: c.swarovskiSxPet },
@@ -104,17 +133,20 @@ export function buildRigheCarrello(c: ConfigurazioneCarrello) {
 
   // Confezione
   if (c.confezioneVariantId) {
-    righe.push({ variantId: c.confezioneVariantId, quantity: 1 });
+    righe.push({ variantId: c.confezioneVariantId, quantity: qty });
   }
 
-  // Dedica YOU
+  // Dedica YOU — prezzo intero
   if (c.dedicaHum) {
-    righe.push({ variantId: VARIANT_IDS.dedicaYou, quantity: 1 });
+    righe.push({ variantId: VARIANT_IDS.dedica, quantity: qty });
   }
 
-  // Dedica PET
+  // Dedica PET — scontata se c'è dedica HUM, prezzo intero altrimenti
   if (c.aggiungPet && c.dedicaPet) {
-    righe.push({ variantId: VARIANT_IDS.dedicaPet, quantity: 1 });
+    const variantDedicaPet = c.dedicaHum
+      ? VARIANT_IDS.dedicaScontata
+      : VARIANT_IDS.dedica;
+    righe.push({ variantId: variantDedicaPet, quantity: qty });
   }
 
   return righe;

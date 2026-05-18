@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CONTACT } from "@/config/constants";
 import styles from "@styles/landing.module.css";
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
         </p>
         <p className={styles.small}>
           Per informazioni:{" "}
-          <a href="mailto:info@twodotsdesign.it">info@twodotsdesign.it</a>
+          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
         </p>
         <Link href="/login" className={styles.accessoLink}>accesso</Link>
       </div>

@@ -41,9 +41,10 @@ export default function Navbar() {
           </div>
           <div className={styles.links}>
             <Link href="/collezione">Collezione</Link>
-            <Link href="/hum-pet">You &amp; Pet</Link>
+            <Link href="/bijoux-coppia">You &amp; Pet</Link>
             <Link href="/configura">Configura</Link>
-            <Link href="/il-progetto">Il progetto</Link>
+            <Link href="/storia">Il progetto</Link>
+            <Link href="/faq">FAQ</Link>
           </div>
           <div className={styles.actions}>
             {nArticoli > 0 && (

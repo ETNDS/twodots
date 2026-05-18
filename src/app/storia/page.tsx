@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import { CONTACT } from "@/config/constants";
 import styles from "@styles/ilProgetto.module.css";
+
+export const metadata: Metadata = {
+  title: "Il progetto — La storia di Two Dots",
+  description:
+    "Two Dots nasce da uno scarabocchio. Bijoux artigianali in ceramica stampata in 3D con cristalli Swarovski, prodotti a Milano. La storia, la filosofia e i materiali.",
+  openGraph: {
+    title: "Il progetto — La storia di Two Dots",
+    description:
+      "Two Dots nasce da uno scarabocchio. Bijoux artigianali in ceramica 3D con Swarovski, prodotti a Milano.",
+    url: "https://www.twodotsmilano.it/storia",
+  },
+};
 
 export default function IlProgetto() {
   return (

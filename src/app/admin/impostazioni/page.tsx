@@ -10,6 +10,7 @@ type ImpostazioniForm = {
   prezzoPet: number;
   prezzoDedica: number;
   prezzoDedicaPet: number;
+  maxPezzi: number;
 };
 
 const EMPTY: ImpostazioniForm = {
@@ -17,6 +18,7 @@ const EMPTY: ImpostazioniForm = {
   prezzoPet: 15,
   prezzoDedica: 0,
   prezzoDedicaPet: 0,
+  maxPezzi: 5,
 };
 
 export default function AdminImpostazioni() {
@@ -28,6 +30,7 @@ export default function AdminImpostazioni() {
   const [prezzoPetStr, setPrezzoPetStr] = useState("15");
   const [prezzoDedicaStr, setPrezzoDedicaStr] = useState("0");
   const [prezzoDedicaPetStr, setPrezzoDedicaPetStr] = useState("0");
+  const [maxPezziStr, setMaxPezziStr] = useState("5");
 
   useEffect(() => {
     async function carica() {
@@ -45,12 +48,11 @@ export default function AdminImpostazioni() {
           prezzoPet: d.prezzoPet || 15,
           prezzoDedica,
           prezzoDedicaPet,
+          maxPezzi: d.maxPezzi || 5,
         };
         setForm(f);
-        // Se prezzoDedicaPet non era nel DB, non impostare original uguale
-        // così isDirty scatta e l'utente può salvare subito
         if (d.prezzoDedicaPet === undefined) {
-          setOriginal({ ...f, prezzoDedicaPet: -1 }); // forza isDirty
+          setOriginal({ ...f, prezzoDedicaPet: -1 });
         } else {
           setOriginal(f);
         }
@@ -59,6 +61,7 @@ export default function AdminImpostazioni() {
         setPrezzoPetStr(String(d.prezzoPet || 15));
         setPrezzoDedicaStr(String(prezzoDedica));
         setPrezzoDedicaPetStr(String(prezzoDedicaPet));
+        setMaxPezziStr(String(d.maxPezzi || 5));
       }
       setLoading(false);
     }
@@ -89,7 +92,13 @@ export default function AdminImpostazioni() {
       setForm(p => ({ ...p, prezzoDedica: num, prezzoDedicaPet: pet }));
       setPrezzoDedicaPetStr(String(pet));
     }
-  }  
+  }
+
+  function handleMaxPezzi(raw: string) {
+    setMaxPezziStr(raw);
+    const num = parseInt(raw, 10);
+    if (!isNaN(num) && num > 0) setForm(p => ({ ...p, maxPezzi: num }));
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -164,6 +173,22 @@ export default function AdminImpostazioni() {
                   value={prezzoDedicaPetStr}
                   onChange={(e) => handleDecimal(e.target.value, setPrezzoDedicaPetStr, "prezzoDedicaPet")}
                   placeholder="0" />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Ordini</h2>
+            <p style={{ fontSize: 12, color: "var(--admin-text-muted)", marginBottom: 16 }}>
+              Oltre questa quantità l'utente viene indirizzato a richiedere un preventivo.
+            </p>
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
+                <label className={styles.label}>Numero massimo pezzi per ordine</label>
+                <input className={styles.input} type="number" inputMode="numeric" min={1}
+                  value={maxPezziStr}
+                  onChange={(e) => handleMaxPezzi(e.target.value)}
+                  placeholder="5" />
               </div>
             </div>
           </div>

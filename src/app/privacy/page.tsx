@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import { CONTACT, SITE } from "@/config/constants";
 import styles from "@styles/privacy.module.css";
+
+export const metadata: Metadata = {
+  title: "Informativa Privacy",
+  description: "Informativa sul trattamento dei dati personali ai sensi del GDPR. Two Dots, Milano.",
+  robots: { index: false },
+};
 
 export default function Privacy() {
   return (

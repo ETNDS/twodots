@@ -1,6 +1,6 @@
 export const SOCIAL = {
-  instagram: "https://www.instagram.com/twodotsdesign",
-  facebook: "https://www.facebook.com/twodotsdesign",
+  instagram: "https://www.instagram.com/twodotsmilano/",
+  facebook: "https://www.facebook.com/profile.php?id=61589035059976",
 };
 
 export const CONTACT = {
@@ -8,8 +8,9 @@ export const CONTACT = {
 };
 
 export const SITE = {
-  url: "https://www.twodotsdesign.it",
+  url: "https://www.twodotsmilano.it",
   name: "Two Dots",
   city: "Milano",
   tagline: "La semplicità racconta storie straordinarie",
+  ogImage: "https://www.twodotsmilano.it/images/twodots-og.jpg",
 };

@@ -39,6 +39,16 @@ export type Impostazioni = {
   prezzoPet: number;
   prezzoDedica: number;
   prezzoDedicaPet: number;
+  maxPezzi: number;
+};
+
+export type FasciaSconto = {
+  id: string;
+  da: number;
+  percentuale: number;
+  codiceShopify: string;
+  attivo: boolean;
+  ordine: number;
 };
 
 export type OcchioPos = {
@@ -68,13 +78,14 @@ export const getConfezioni = () => getCollezione<Confezione>("confezioni");
 
 export async function getImpostazioni(): Promise<Impostazioni> {
   const snap = await getDoc(doc(db, "configuratore", "impostazioni"));
-  if (!snap.exists()) return { prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0 };
+  if (!snap.exists()) return { prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0, maxPezzi: 5 };
   const d = snap.data();
   return {
     prezzoBase: d.prezzoBase || 45,
     prezzoPet: d.prezzoPet || 15,
     prezzoDedica: d.prezzoDedica || 0,
     prezzoDedicaPet: d.prezzoDedicaPet || 0,
+    maxPezzi: d.maxPezzi || 5,
   };
 }
 
@@ -92,4 +103,25 @@ export async function getPetCiondolo(): Promise<PetCiondolo | null> {
 
 export async function savePetCiondolo(data: PetCiondolo): Promise<void> {
   await setDoc(doc(db, "configuratore", "pet"), data);
+}
+
+export async function getFasceSconto(): Promise<FasciaSconto[]> {
+  const q = query(collection(db, "fasceSconto"), orderBy("ordine", "asc"));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }) as FasciaSconto);
+}
+
+export async function saveFasciaSconto(id: string | null, data: Omit<FasciaSconto, "id">): Promise<void> {
+  const ref = id ? doc(db, "fasceSconto", id) : doc(collection(db, "fasceSconto"));
+  await setDoc(ref, data);
+}
+
+export async function deleteFasciaSconto(id: string): Promise<void> {
+  await deleteDoc(doc(db, "fasceSconto", id));
+}
+
+export function calcolaSconto(fasce: FasciaSconto[], totalePezzi: number): FasciaSconto | null {
+  const attive = fasce.filter(f => f.attivo && f.da <= totalePezzi);
+  if (attive.length === 0) return null;
+  return attive.reduce((best, f) => f.da > best.da ? f : best);
 }

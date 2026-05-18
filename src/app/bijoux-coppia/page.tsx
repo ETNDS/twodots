@@ -1,9 +1,22 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "@styles/humPetPage.module.css";
+
+export const metadata: Metadata = {
+  title: "YOU & PET — Il bijoux per te e il tuo animale",
+  description:
+    "Due ciondoli abbinati: uno per te, uno per il tuo animale. Stesso stile, stessa palette, stesso legame. Bijoux artigianale in ceramica 3D con cristalli Swarovski.",
+  openGraph: {
+    title: "YOU & PET — Il bijoux per te e il tuo animale",
+    description:
+      "Due ciondoli abbinati: uno per te, uno per il tuo animale. Stesso stile, stessa palette, stesso legame.",
+    url: "https://www.twodotsmilano.it/bijoux-coppia",
+  },
+};
 
 export default function HumPetPage() {
   return (
@@ -32,7 +45,7 @@ export default function HumPetPage() {
               <div className={styles.cardImg}>
                 <Image
                   src="/images/hum-gatto-nero.jpg"
-                  alt="Ciondolo YOU"
+                  alt="Ciondolo YOU — da portare al collo"
                   width={180}
                   height={180}
                   style={{ objectFit: "contain" }}
@@ -51,7 +64,7 @@ export default function HumPetPage() {
               <div className={styles.cardImg}>
                 <Image
                   src="/images/pet-bianco.jpg"
-                  alt="Ciondolo PET"
+                  alt="Ciondolo PET — da agganciare al collare dell'animale"
                   width={180}
                   height={180}
                   style={{ objectFit: "contain" }}
@@ -75,52 +88,26 @@ export default function HumPetPage() {
             <p className={styles.label}>IL CODICE</p>
             <h2 className={styles.titleDark}>Due oggetti. Un codice. Un legame.</h2>
             <p className={styles.textDark}>
-              Ogni coppia YOU + PET viene marchiata con un codice univoco —
-              lo stesso su entrambi i ciondoli. Non è un numero di serie.
-              È il simbolo che dice: questi due appartengono insieme.
+              Ogni coppia YOU + PET viene marchiata con un codice univoco inciso sul retro.
+              Un numero seriale che appartiene solo a voi due.
             </p>
           </div>
         </section>
 
-        {/* COME FUNZIONA */}
+        {/* MATERIALI */}
         <section className={styles.sectionDark}>
-          <div className={styles.sectionInner}>
-            <div className={styles.titleBox}>
-              <p className={styles.labelLight}>COME FUNZIONA</p>
-              <h2 className={styles.titleLight}>Costruiscilo su di voi. Su tutti e due.</h2>
-            </div>
-            <div className={styles.steps}>
-              <div className={styles.step}>
-                <span className={styles.stepNum}>01</span>
-                <div>
-                  <p className={styles.stepTitle}>Configura il tuo YOU</p>
-                  <p className={styles.stepText}>Scegli animale, colori, occhi, cordino e dedica.</p>
-                </div>
-              </div>
-              <div className={styles.step}>
-                <span className={styles.stepNum}>02</span>
-                <div>
-                  <p className={styles.stepTitle}>Aggiungi il PET</p>
-                  <p className={styles.stepText}>Scegli colori e occhi per il ciondolo del tuo animale.</p>
-                </div>
-              </div>
-              <div className={styles.step}>
-                <span className={styles.stepNum}>03</span>
-                <div>
-                  <p className={styles.stepTitle}>Ricevi entrambi</p>
-                  <p className={styles.stepText}>Arrivano insieme, con il codice univoco che li unisce.</p>
-                </div>
-              </div>
-            </div>
+          <div className={styles.centrato}>
+            <p className={styles.labelLight}>I MATERIALI</p>
+            <h2 className={styles.titleLight}>Resina eco-sostenibile. Swarovski veri.</h2>
+            <p className={styles.textLight}>
+              Ogni ciondolo è stampato in 3D con resine certificate eco-sostenibili.
+              Gli occhi sono cristalli Swarovski originali, montati a mano.
+            </p>
           </div>
         </section>
 
         {/* CTA */}
-        <section className={styles.cta}>
-          <h2 className={styles.ctaTitle}>Inizia dal tuo animale.</h2>
-          <p className={styles.ctaText}>
-            Scegli il soggetto, configura ogni dettaglio. Il PET lo aggiungi dopo.
-          </p>
+        <section className={styles.sectionCta}>
           <Link href="/configura" className={styles.ctaBtn}>
             Configura il tuo bijoux
           </Link>

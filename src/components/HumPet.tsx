@@ -18,7 +18,7 @@ export default function HumPet() {
         </div>
         <div className={styles.testo}>
           <h2 className={styles.titolo}>Una collezione per due.</h2>
-          <Link href="/hum-pet" className={styles.scopriBtn}>Scopri →</Link>
+          <Link href="/bijoux-coppia" className={styles.scopriBtn}>Scopri →</Link>
         </div>
       </div>
     </section>

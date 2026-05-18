@@ -52,7 +52,11 @@ export default function Collezione() {
               >
                 <div className={styles.imageWrapper}>
                   {animale.immagineDisegno ? (
-                    <img src={animale.immagineDisegno} alt={animale.nome} className={styles.image} />
+                    <img
+                      src={animale.immagineDisegno}
+                      alt={`Ciondolo ${animale.nome} — bijoux artigianale Two Dots`}
+                      className={styles.image}
+                    />
                   ) : (
                     <div className={styles.placeholder}>
                       <span>{animale.nome[0]}</span>
