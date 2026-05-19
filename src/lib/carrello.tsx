@@ -5,7 +5,7 @@ import { Confezione, FontDedica, ItemColore } from "@/lib/configuratore";
 import { Animale } from "@/lib/animali";
 
 export type ArticoloCarrello = {
-  id: string; // timestamp univoco
+  id: string;
   animale: Animale;
   coloreCiondolo: "nero" | "bianco";
   smalto: ItemColore;
@@ -20,9 +20,13 @@ export type ArticoloCarrello = {
   occhioDxPet: ItemColore | null;
   dedicaPet: string;
   fontDedicaPet: FontDedica | null;
+  sizePet: string | null;
+  etichettaSizePet: string | null;
   confezione: Confezione;
-  quantita: number;
-  prezzoTotale: number; // prezzo per singolo pezzo
+  quantitaHum: number;
+  quantitaPet: number;
+  prezzoHumSolo: number;
+  prezzoHumPet: number;
 };
 
 type CarrelloCtx = {
@@ -58,8 +62,13 @@ export function CarrelloProvider({ children }: { children: ReactNode }) {
     setArticoli([]);
   }
 
-  const totale = articoli.reduce((acc, a) => acc + a.prezzoTotale * a.quantita, 0);
-  const totalePezzi = articoli.reduce((acc, a) => acc + a.quantita, 0);
+  const totale = articoli.reduce((acc, a) => {
+    const righeConPet = a.quantitaPet;
+    const righeSoloHum = a.quantitaHum - a.quantitaPet;
+    return acc + (righeConPet * a.prezzoHumPet) + (righeSoloHum * a.prezzoHumSolo);
+  }, 0);
+
+  const totalePezzi = articoli.reduce((acc, a) => acc + a.quantitaHum, 0);
 
   return (
     <CarrelloContext.Provider value={{ articoli, aggiungi, rimuovi, svuota, totale, totalePezzi }}>

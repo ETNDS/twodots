@@ -124,3 +124,27 @@
   line-height: 1.8;
   margin-top: 16px;
 }
+
+.contatti {
+  margin: 40px 36px 0;
+  padding: 24px;
+  background: var(--color-lavanda-light);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.contattiTesto {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.7;
+  line-height: 1.7;
+}
+
+.contattiLink {
+  color: var(--color-navy);
+  font-weight: 500;
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.contattiLink:hover { opacity: 0.7; }

@@ -125,3 +125,26 @@ export function calcolaSconto(fasce: FasciaSconto[], totalePezzi: number): Fasci
   if (attive.length === 0) return null;
   return attive.reduce((best, f) => f.da > best.da ? f : best);
 }
+
+export type PetSize = {
+  id: string;
+  etichetta: string;  // testo mostrato all'utente, es. "Piccolo (fino a 5kg)"
+  slug: string;       // chiave interna, es. "piccolo"
+  ordine: number;
+  attivo: boolean;
+};
+
+export async function getPetSizes(): Promise<PetSize[]> {
+  const q = query(collection(db, "petSizes"), orderBy("ordine", "asc"));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }) as PetSize);
+}
+
+export async function savePetSize(id: string | null, data: Omit<PetSize, "id">): Promise<void> {
+  const ref = id ? doc(db, "petSizes", id) : doc(collection(db, "petSizes"));
+  await setDoc(ref, data);
+}
+
+export async function deletePetSize(id: string): Promise<void> {
+  await deleteDoc(doc(db, "petSizes", id));
+}

@@ -1065,3 +1065,52 @@
 }
 
 .preventivoInlineBtn:hover { opacity: 1; }
+
+.hintFont {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.45;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.quantitaLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.quantitaGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.sizeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.sizeBtn {
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--color-navy);
+  background: var(--color-lavanda);
+  border: 2px solid transparent;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+
+.sizeBtn:hover { border-color: rgba(13, 14, 46, 0.3); }
+.sizeBtnSel { border-color: var(--color-navy); font-weight: 500; }

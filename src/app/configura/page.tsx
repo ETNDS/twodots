@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, Fragment as ReactFragment } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import { getAnimaliPubblicati, Animale } from "@/lib/animali";
-import { getCristalli, getCordini, getSmalti, getFontDedica, getConfezioni, getImpostazioni, getPetCiondolo, ItemColore, FontDedica, Confezione, Impostazioni, PetCiondolo } from "@/lib/configuratore";
+import { getCristalli, getCordini, getSmalti, getFontDedica, getConfezioni, getImpostazioni, getPetCiondolo, getPetSizes, ItemColore, FontDedica, Confezione, Impostazioni, PetCiondolo, PetSize } from "@/lib/configuratore";
 import styles from "@styles/configura.module.css";
 import { useCarrello } from "@/lib/carrello";
 import Viewer3D from "@/components/Viewer3D";
@@ -29,7 +29,9 @@ type Configurazione = {
   dedicaPet: string;
   fontDedicaPet: FontDedica | null;
   confezione: Confezione | null;
-  quantita: number;
+  sizePet: string | null;
+  quantitaHum: number;
+  quantitaPet: number;
 };
 
 const EMPTY: Configurazione = {
@@ -48,7 +50,9 @@ const EMPTY: Configurazione = {
   dedicaPet: "",
   fontDedicaPet: null,
   confezione: null,
-  quantita: 1,
+  sizePet: null,
+  quantitaHum: 1,
+  quantitaPet: 0,
 };
 
 const STEP_DESC: Record<number, string> = {
@@ -62,6 +66,7 @@ const STEP_DESC: Record<number, string> = {
   7: "Aggiungi un ciondolo abbinato da agganciare al collare del tuo animale.",
   9: "Scegli come vuoi ricevere il tuo ordine.",
   10: "Quante copie di questo bijoux vuoi aggiungere al carrello?",
+  11: "Quanti ciondoli PET vuoi aggiungere? Deve essere uguale o inferiore alla quantità YOU.",
 };
 
 function ciondoloGradient(colore: "nero" | "bianco"): string {
@@ -273,15 +278,16 @@ function BannerLimiteRaggiunto({ maxPezzi, onPreventivo }: { maxPezzi: number; o
   );
 }
 
-function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua }: {
+function PetConfig({ config, cristalli, fonts, impostazioni, sizes, update, onContinua }: {
   config: Configurazione;
   cristalli: ItemColore[];
   fonts: FontDedica[];
   impostazioni: Impostazioni;
+  sizes: PetSize[];
   update: (p: Partial<Configurazione>) => void;
   onContinua: () => void;
 }) {
-  const [subStep, setSubStep] = useState(0);
+  const [subStep, setSubStep] = useState(-1);
   const [showPreviewPet, setShowPreviewPet] = useState(false);
 
   const fontPet = config.fontDedicaPet || config.fontDedicaHum || fonts[0];
@@ -289,10 +295,33 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
   return (
     <div className={styles.stepBody}>
 
+      {sizes.length > 0 && (
+        <div className={styles.step}>
+          <button className={`${styles.stepHeader} ${subStep === -1 ? styles.stepHeaderAttivo : ""}`} onClick={() => setSubStep(-1)}>
+            <span className={styles.stepNum}>a</span>
+            <span className={styles.stepTitolo}>Taglia PET</span>
+            {config.sizePet && <span className={styles.stepValore}>{sizes.find(s => s.slug === config.sizePet)?.etichetta || config.sizePet}</span>}
+          </button>
+          {subStep === -1 && (
+            <div className={styles.stepBody}>
+              <div className={styles.sizeGrid}>
+                {sizes.map(s => (
+                  <button key={s.id}
+                    className={`${styles.sizeBtn} ${config.sizePet === s.slug ? styles.sizeBtnSel : ""}`}
+                    onClick={() => { update({ sizePet: s.slug }); setSubStep(0); }}>
+                    {s.etichetta}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 0 ? styles.stepHeaderAttivo : ""}`} onClick={() => setSubStep(0)}>
-          <span className={styles.stepNum}>a</span>
-          <span className={styles.stepTitolo}>Colore ciondolo PET</span>
+          <span className={styles.stepNum}>b</span>
+          <span className={styles.stepTitolo}>Colore bijoux PET</span>
           {config.coloreCiondoloPet && <span className={styles.stepValore}>{config.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}</span>}
         </button>
         {subStep === 0 && (
@@ -312,7 +341,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
 
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 1 ? styles.stepHeaderAttivo : ""}`} onClick={() => config.coloreCiondoloPet && setSubStep(1)}>
-          <span className={styles.stepNum}>b</span>
+          <span className={styles.stepNum}>c</span>
           <span className={styles.stepTitolo}>Swarovski Occhio sinistro PET</span>
           {config.occhioSxPet && <span className={styles.stepValore}>{config.occhioSxPet.nome}</span>}
         </button>
@@ -327,7 +356,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
 
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 2 ? styles.stepHeaderAttivo : ""}`} onClick={() => config.occhioSxPet && setSubStep(2)}>
-          <span className={styles.stepNum}>c</span>
+          <span className={styles.stepNum}>d</span>
           <span className={styles.stepTitolo}>Swarovski Occhio destro PET</span>
           {config.occhioDxPet && <span className={styles.stepValore}>{config.occhioDxPet.nome}</span>}
         </button>
@@ -342,7 +371,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
 
       <div className={styles.step}>
         <button className={`${styles.stepHeader} ${subStep === 3 ? styles.stepHeaderAttivo : ""}`} onClick={() => config.occhioDxPet && setSubStep(3)}>
-          <span className={styles.stepNum}>d</span>
+          <span className={styles.stepNum}>e</span>
           <span className={styles.stepTitolo}>Dedica PET <span className={styles.opzionale}>(opzionale)</span></span>
           {config.dedicaPet && <span className={styles.stepValore}>"{config.dedicaPet}"</span>}
         </button>
@@ -360,6 +389,7 @@ function PetConfig({ config, cristalli, fonts, impostazioni, update, onContinua 
                 </div>
               </div>
             )}
+            <p className={styles.hintFont}>Dopo aver inserito il testo si attiva il bottone "Anteprima testo" per visualizzare il font selezionato.</p>
             {fontPet && (() => {
               const font = fontPet;
               const maxTotale = font.righe * font.caratteriPerRiga;
@@ -415,6 +445,7 @@ function ConfiguraInner() {
   const [stepAttivo, setStepAttivo] = useState(animaleParam ? 1 : 0);
   const [loading, setLoading] = useState(true);
   const [animali, setAnimali] = useState<Animale[]>([]);
+  const [petSizes, setPetSizes] = useState<PetSize[]>([]);
   const [cristalli, setCristalli] = useState<ItemColore[]>([]);
   const [cordini, setCordini] = useState<ItemColore[]>([]);
   const [smalti, setSmalti] = useState<ItemColore[]>([]);
@@ -443,8 +474,8 @@ function ConfiguraInner() {
 
   useEffect(() => {
     async function carica() {
-      const [a, cr, co, sm, fo, conf, imp, pet] = await Promise.all([
-        getAnimaliPubblicati(), getCristalli(), getCordini(), getSmalti(), getFontDedica(), getConfezioni(), getImpostazioni(), getPetCiondolo(),
+      const [a, cr, co, sm, fo, conf, imp, pet, sizes] = await Promise.all([
+        getAnimaliPubblicati(), getCristalli(), getCordini(), getSmalti(), getFontDedica(), getConfezioni(), getImpostazioni(), getPetCiondolo(), getPetSizes(),
       ]);
       setAnimali(a);
       setCristalli(cr.filter(x => x.attivo));
@@ -454,6 +485,7 @@ function ConfiguraInner() {
       setConfezioni(conf.filter(x => x.attivo));
       setImpostazioni(imp);
       setPetCiondolo(pet);
+      setPetSizes(sizes.filter(s => s.attivo));
       if (animaleParam) {
         const trovato = a.find(x => x.id === animaleParam);
         if (trovato) setConfig(p => ({ ...p, animale: trovato }));
@@ -496,11 +528,16 @@ function ConfiguraInner() {
   const prezzoDedicaHumCalc = config.dedicaHum.trim() ? (impostazioni.prezzoDedica || 0) : 0;
   const prezzoDedicaPetCalc = config.dedicaPet.trim() ? prezzoDedicaPetEffettivo : 0;
   const prezzoDedica = prezzoDedicaHumCalc + prezzoDedicaPetCalc;
-  const totalePerPezzo = prezzoHum + prezzoPet + prezzoConfezione + prezzoDedica;
-  const totale = totalePerPezzo * config.quantita;
+  const prezzoHumSolo = prezzoHum + prezzoConfezione + prezzoDedicaHumCalc;
+  const prezzoHumPet = prezzoHum + prezzoPet + prezzoConfezione + prezzoDedicaHumCalc + prezzoDedicaPetCalc;
+  const totalePerPezzo = config.aggiungPet ? prezzoHumPet : prezzoHumSolo;
+  const totale = config.aggiungPet
+    ? (config.quantitaPet * prezzoHumPet) + ((config.quantitaHum - config.quantitaPet) * prezzoHumSolo)
+    : config.quantitaHum * prezzoHumSolo;
 
   // ── PUNTO 2/3: quantità disponibile ──────────────────────────────────────
   const pezziDisponibili = impostazioni.maxPezzi - totalePezzi;
+  const petDisponibili = config.quantitaHum;
   const limiteMassimo = pezziDisponibili <= 0;
 
   async function handleAggiungiAlCarrello() {
@@ -524,8 +561,12 @@ function ConfiguraInner() {
         dedicaPet: config.dedicaPet,
         fontDedicaPet: config.fontDedicaPet,
         confezione: config.confezione!,
-        quantita: config.quantita,
-        prezzoTotale: totalePerPezzo,
+        quantitaHum: config.quantitaHum,
+        quantitaPet: config.aggiungPet ? config.quantitaPet : 0,
+        sizePet: config.sizePet,
+        etichettaSizePet: config.sizePet ? (petSizes.find(s => s.slug === config.sizePet)?.etichetta || null) : null,
+        prezzoHumSolo,
+        prezzoHumPet,
       });
       router.push("/carrello");
     } catch (e) {
@@ -547,7 +588,8 @@ function ConfiguraInner() {
     7: true,
     8: !config.aggiungPet || (!!config.coloreCiondoloPet && !!config.occhioSxPet && !!config.occhioDxPet),
     9: !!config.confezione,
-    10: config.quantita >= 1,
+    10: config.quantitaHum >= 1,
+    11: !config.aggiungPet || config.quantitaPet >= 0,
   };
 
   const tuttiCompletati = Object.values(stepCompletati).every(Boolean) && !!config.animale && !!config.coloreCiondolo && !!config.smalto && !!config.occhioSx && !!config.occhioDx && !!config.cordino && !!config.confezione;
@@ -649,7 +691,7 @@ function ConfiguraInner() {
             <div className={styles.step} id="step-1">
               <button className={`${styles.stepHeader} ${stepAttivo === 1 ? styles.stepHeaderAttivo : ""}`} onClick={() => stepCompletati[0] && setStepAttivo(1)}>
                 <span className={styles.stepNum}>02</span>
-                <span className={styles.stepTitolo}>Colore ciondolo</span>
+                <span className={styles.stepTitolo}>Colore bijoux</span>
                 {config.coloreCiondolo && <span className={styles.stepValore}>{config.coloreCiondolo === "nero" ? "Nero" : "Bianco"}</span>}
               </button>
               {stepAttivo === 1 && (
@@ -755,6 +797,7 @@ function ConfiguraInner() {
                   )}
                   <div className={styles.field}>
                     <label className={styles.fieldLabel}>Testo dedica</label>
+                    <p className={styles.hintFont}>Dopo aver inserito il testo si attiva il bottone "Anteprima testo" per visualizzare il font selezionato.</p>
                     {fontHum && (() => {
                       const font = fontHum;
                       const maxTotale = font.righe * font.caratteriPerRiga;
@@ -796,10 +839,12 @@ function ConfiguraInner() {
               )}
             </div>
 
+            {petSizes.length > 0 && (
+              <ReactFragment>
             <div className={styles.step} id="step-7">
               <button className={`${styles.stepHeader} ${stepAttivo === 7 ? styles.stepHeaderAttivo : ""}`} onClick={() => setStepAttivo(7)}>
                 <span className={styles.stepNum}>08</span>
-                <span className={styles.stepTitolo}>Aggiungi ciondolo PET <span className={styles.opzionale}>(opzionale)</span></span>
+                <span className={styles.stepTitolo}>Aggiungi bijoux PET <span className={styles.opzionale}>(opzionale)</span></span>
                 {config.aggiungPet && <span className={styles.stepValore}>Sì</span>}
               </button>
               {stepAttivo === 7 && (
@@ -807,7 +852,7 @@ function ConfiguraInner() {
                   <p className={styles.stepDesc}>{STEP_DESC[7]}</p>
                   <div className={styles.sceltaRow}>
                     <button className={`${styles.sceltaBtn} ${!config.aggiungPet ? styles.sceltaBtnSel : ""}`} onClick={() => { update({ aggiungPet: false }); setStepAttivo(9); }}>No grazie</button>
-                    <button className={`${styles.sceltaBtn} ${config.aggiungPet ? styles.sceltaBtnSel : ""}`} onClick={() => { update({ aggiungPet: true }); setStepAttivo(8); }}>Sì, aggiungi PET</button>
+                    <button className={`${styles.sceltaBtn} ${config.aggiungPet ? styles.sceltaBtnSel : ""}`} onClick={() => { update({ aggiungPet: true, quantitaPet: config.quantitaHum }); setStepAttivo(8); }}>Sì, aggiungi PET</button>
                   </div>
                 </div>
               )}
@@ -820,9 +865,11 @@ function ConfiguraInner() {
                   <span className={styles.stepTitolo}>Configura il PET</span>
                 </button>
                 {stepAttivo === 8 && (
-                  <PetConfig config={config} cristalli={cristalli} fonts={fonts} impostazioni={impostazioni} update={update} onContinua={() => setStepAttivo(9)} />
+                  <PetConfig config={config} cristalli={cristalli} fonts={fonts} impostazioni={impostazioni} sizes={petSizes} update={update} onContinua={() => setStepAttivo(9)} />
                 )}
               </div>
+            )}
+              </ReactFragment>
             )}
 
             <div className={styles.step} id="step-9">
@@ -848,31 +895,63 @@ function ConfiguraInner() {
               )}
             </div>
 
-            {/* ── PUNTO 3: step quantità ── */}
+            {/* ── STEP QUANTITÀ (HUM + eventuale PET) ── */}
             <div className={styles.step} id="step-10">
               <button className={`${styles.stepHeader} ${stepAttivo === 10 ? styles.stepHeaderAttivo : ""}`} onClick={() => stepCompletati[9] && setStepAttivo(10)}>
                 <span className={styles.stepNum}>{config.aggiungPet ? "11" : "10"}</span>
                 <span className={styles.stepTitolo}>Quantità</span>
-                {config.quantita > 1 && <span className={styles.stepValore}>× {config.quantita}</span>}
+                <span className={styles.stepValore}>
+                  {config.aggiungPet
+                    ? `YOU ×${config.quantitaHum} · PET ×${config.quantitaPet}`
+                    : config.quantitaHum > 1 ? `×${config.quantitaHum}` : ""}
+                </span>
               </button>
               {stepAttivo === 10 && (
                 <div className={styles.stepBody}>
-                  <p className={styles.stepDesc}>{STEP_DESC[10]}</p>
-                  <div className={styles.quantitaRow}>
-                    <button className={styles.quantitaBtn}
-                      disabled={config.quantita <= 1}
-                      onClick={() => update({ quantita: Math.max(1, config.quantita - 1) })}>
-                      −
-                    </button>
-                    <span className={styles.quantitaValore}>{config.quantita}</span>
-                    <button className={styles.quantitaBtn}
-                      disabled={config.quantita >= pezziDisponibili}
-                      onClick={() => update({ quantita: Math.min(pezziDisponibili, config.quantita + 1) })}>
-                      +
-                    </button>
+
+                  <div className={config.aggiungPet ? styles.quantitaGrid : ""}>
+                    <div>
+                      <p className={styles.quantitaLabel}>YOU</p>
+                      <div className={styles.quantitaRow}>
+                        <button className={styles.quantitaBtn}
+                          disabled={config.quantitaHum <= 1}
+                          onClick={() => update({ quantitaHum: Math.max(1, config.quantitaHum - 1), quantitaPet: Math.min(config.quantitaPet, config.quantitaHum - 1) })}>
+                          −
+                        </button>
+                        <span className={styles.quantitaValore}>{config.quantitaHum}</span>
+                        <button className={styles.quantitaBtn}
+                          disabled={config.quantitaHum >= pezziDisponibili}
+                          onClick={() => update({ quantitaHum: Math.min(pezziDisponibili, config.quantitaHum + 1) })}>
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    {config.aggiungPet && (
+                      <div>
+                        <p className={styles.quantitaLabel}>PET <span className={styles.opzionale}>(max YOU)</span></p>
+                        <div className={styles.quantitaRow}>
+                          <button className={styles.quantitaBtn}
+                            disabled={config.quantitaPet <= 1}
+                            onClick={() => update({ quantitaPet: Math.max(1, config.quantitaPet - 1) })}>
+                            −
+                          </button>
+                          <span className={styles.quantitaValore}>{config.quantitaPet}</span>
+                          <button className={styles.quantitaBtn}
+                            disabled={config.quantitaPet >= config.quantitaHum}
+                            onClick={() => update({ quantitaPet: Math.min(config.quantitaHum, config.quantitaPet + 1) })}>
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                  {config.aggiungPet && (
+                    <p className={styles.hint}>Per rimuovere il PET torna allo step precedente e seleziona "No grazie".</p>
+                  )}
+
                   {pezziDisponibili < impostazioni.maxPezzi && (
-                    <p className={styles.hint}>
+                    <p className={styles.hint} style={{ marginTop: 8 }}>
                       Puoi aggiungere ancora {pezziDisponibili} {pezziDisponibili === 1 ? "pezzo" : "pezzi"} su {impostazioni.maxPezzi} max.
                       {" "}<button className={styles.linkBtn} onClick={() => setShowPreventivo(true)}>Servono di più?</button>
                     </p>
@@ -1025,9 +1104,15 @@ function ConfiguraInner() {
                       );
                     })()}
 
+                    {config.sizePet && (
+                      <div className={styles.riepilogoRiga}>
+                        <span className={styles.riepilogoLabel}>PET taglia</span>
+                        <span className={styles.riepilogoValore}>{petSizes.find(s => s.slug === config.sizePet)?.etichetta || config.sizePet}</span>
+                      </div>
+                    )}
                     {config.coloreCiondoloPet && (
                       <div className={styles.riepilogoRiga}>
-                        <span className={styles.riepilogoLabel}>PET ciondolo</span>
+                        <span className={styles.riepilogoLabel}>PET bijoux</span>
                         <div className={styles.riepilogoColore}>
                           <div className={styles.riepilogoColoreDot} style={{ background: ciondoloGradient(config.coloreCiondoloPet) }} />
                           <span className={styles.riepilogoValore}>{config.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}</span>
@@ -1071,10 +1156,10 @@ function ConfiguraInner() {
 
               <div className={styles.prezzoBox}>
                 <div className={styles.prezzoRiga}><span>YOU</span><span>€{prezzoHum}</span></div>
-                {config.aggiungPet && <div className={styles.prezzoRiga}><span>PET</span><span>€{prezzoPet}</span></div>}
                 {config.dedicaHum && impostazioni.prezzoDedica > 0 && (
                   <div className={styles.prezzoRiga}><span>Dedica YOU</span><span>€{impostazioni.prezzoDedica}</span></div>
                 )}
+                {config.aggiungPet && <div className={styles.prezzoRiga}><span>PET</span><span>€{prezzoPet}</span></div>}
                 {config.dedicaPet.trim() !== "" && prezzoDedicaPetEffettivo > 0 && (
                   <div className={styles.prezzoRiga}>
                     <span>Dedica PET{hasDedicaHum ? " (sconto)" : ""}</span>
@@ -1082,8 +1167,11 @@ function ConfiguraInner() {
                   </div>
                 )}
                 {prezzoConfezione > 0 && <div className={styles.prezzoRiga}><span>Confezione</span><span>€{prezzoConfezione}</span></div>}
-                {config.quantita > 1 && (
-                  <div className={styles.prezzoRiga}><span>× {config.quantita} pezzi</span><span>€{totalePerPezzo} cad.</span></div>
+                {config.aggiungPet && config.quantitaPet > 0 && config.quantitaPet < config.quantitaHum && (
+                  <div className={styles.prezzoRiga}><span>× {config.quantitaPet} YOU+PET · × {config.quantitaHum - config.quantitaPet} solo YOU</span><span></span></div>
+                )}
+                {config.quantitaHum > 1 && !config.aggiungPet && (
+                  <div className={styles.prezzoRiga}><span>× {config.quantitaHum} pezzi</span><span>€{prezzoHumSolo} cad.</span></div>
                 )}
                 <div className={styles.prezzoTotale}><span>Totale</span><span>€{totale}</span></div>
               </div>

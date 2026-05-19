@@ -116,12 +116,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  min-width: 0;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .label {
@@ -142,6 +144,9 @@
   border-radius: 8px;
   padding: 8px 12px;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .input:focus { border-color: var(--admin-text); }

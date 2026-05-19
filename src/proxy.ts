@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const PASSWORD = process.env.SITE_PASSWORD || "twodots2024";
+const DISABLE_LOGIN = process.env.DISABLE_LOGIN === "true";
 
 const PUBLIC_PATHS = [
   "/",
@@ -12,6 +13,8 @@ const PUBLIC_PATHS = [
 ];
 
 export function proxy(request: NextRequest) {
+  if (DISABLE_LOGIN) return NextResponse.next();
+
   const { pathname } = request.nextUrl;
 
   if (PUBLIC_PATHS.some(p => pathname.startsWith(p))) {

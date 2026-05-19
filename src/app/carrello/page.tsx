@@ -38,7 +38,7 @@ export default function CarrelloPage() {
       const tutteLeRighe: any[] = [];
 
       for (const a of articoli) {
-        const righe = buildRigheCarrello({
+        const baseData = {
           animale: a.animale.nome,
           coloreCiondolo: a.coloreCiondolo === "nero" ? "Nero" : "Bianco",
           disegno: a.smalto.nome,
@@ -46,16 +46,38 @@ export default function CarrelloPage() {
           swarovskiDx: a.occhioDx.nome,
           cordino: a.cordino.nome,
           dedicaHum: a.dedicaHum,
-          aggiungPet: a.aggiungPet,
-          coloreCiondoloPet: a.coloreCiondoloPet === "nero" ? "Nero" : "Bianco",
-          swarovskiSxPet: a.occhioSxPet?.nome || "",
-          swarovskiDxPet: a.occhioDxPet?.nome || "",
-          dedicaPet: a.dedicaPet,
           confezione: a.confezione.nome,
           confezioneVariantId: confezioneVariantMap[a.confezione.id] || null,
-          quantita: a.quantita,
-        });
-        tutteLeRighe.push(...righe);
+        };
+
+        // Righe HUM+PET (quantitaPet pezzi)
+        if (a.aggiungPet && a.quantitaPet > 0) {
+          const righe = buildRigheCarrello({
+            ...baseData,
+            aggiungPet: true,
+            coloreCiondoloPet: a.coloreCiondoloPet === "nero" ? "Nero" : "Bianco",
+            swarovskiSxPet: a.occhioSxPet?.nome || "",
+            swarovskiDxPet: a.occhioDxPet?.nome || "",
+            dedicaPet: a.dedicaPet,
+            quantita: a.quantitaPet,
+          });
+          tutteLeRighe.push(...righe);
+        }
+
+        // Righe solo HUM (quantitaHum - quantitaPet pezzi)
+        const soloHum = a.quantitaHum - (a.aggiungPet ? a.quantitaPet : 0);
+        if (soloHum > 0) {
+          const righe = buildRigheCarrello({
+            ...baseData,
+            aggiungPet: false,
+            coloreCiondoloPet: "",
+            swarovskiSxPet: "",
+            swarovskiDxPet: "",
+            dedicaPet: "",
+            quantita: soloHum,
+          });
+          tutteLeRighe.push(...righe);
+        }
       }
 
       const cart = await creaCarrello(tutteLeRighe);
@@ -129,10 +151,9 @@ export default function CarrelloPage() {
                   <div key={a.id} className={styles.riepilogoRiga}>
                     <span>
                       {a.animale.nome}
-                      {a.aggiungPet ? " + PET" : ""}
-                      {a.quantita > 1 ? ` × ${a.quantita}` : ""}
+                      {a.aggiungPet && a.quantitaPet > 0 ? ` YOU ×${a.quantitaHum} + PET ×${a.quantitaPet}` : ` ×${a.quantitaHum}`}
                     </span>
-                    <span>€{a.prezzoTotale * a.quantita}</span>
+                    <span>€{(a.quantitaPet * a.prezzoHumPet) + ((a.quantitaHum - a.quantitaPet) * a.prezzoHumSolo)}</span>
                   </div>
                 ))}
                 {fasciaAttiva && (
@@ -175,17 +196,18 @@ function ArticoloCard({ articolo: a, onRimuovi }: { articolo: ArticoloCarrello; 
         </div>
         <div className={styles.cardInfo}>
           <p className={styles.cardNome}>{a.animale.nome}</p>
-          <p className={styles.cardSub}>Ciondolo {a.coloreCiondolo} · {a.smalto.nome}</p>
-          {a.aggiungPet && <p className={styles.cardSub}>+ PET ({a.coloreCiondoloPet})</p>}
-          {a.dedicaHum && <p className={styles.cardSub}>Dedica: "{a.dedicaHum}"</p>}
+          <p className={styles.cardSub}>Bijoux: {a.coloreCiondolo} · Disegno: {a.smalto.nome}</p>
+          {a.dedicaHum && <p className={styles.cardSub}>Dedica YOU: "{a.dedicaHum}"</p>}
+          {a.aggiungPet && <p className={styles.cardSub}>+ PET ({a.coloreCiondoloPet}{a.etichettaSizePet ? ` · ${a.etichettaSizePet}` : ""})</p>}
+          {a.aggiungPet && a.dedicaPet && <p className={styles.cardSub}>Dedica PET: "{a.dedicaPet}"</p>}
           <p className={styles.cardSub}>{a.confezione.nome}</p>
         </div>
         <div className={styles.cardDx}>
           <div className={styles.cardPrezzoBox}>
-            <span className={styles.cardQuantita}>Q.tà: {a.quantita}</span>
-            <p className={styles.cardPrezzo}>€{a.prezzoTotale * a.quantita}</p>
-            {a.quantita > 1 && (
-              <span className={styles.cardPrezzoUnitario}>€{a.prezzoTotale} cad.</span>
+            <span className={styles.cardQuantita}>YOU: {a.quantitaHum}{a.aggiungPet && a.quantitaPet > 0 ? ` · PET: ${a.quantitaPet}` : ""}</span>
+            <p className={styles.cardPrezzo}>€{(a.quantitaPet * a.prezzoHumPet) + ((a.quantitaHum - a.quantitaPet) * a.prezzoHumSolo)}</p>
+            {a.quantitaHum > 1 && (
+              <span className={styles.cardPrezzoUnitario}>€{a.prezzoHumPet} con PET · €{a.prezzoHumSolo} solo YOU</span>
             )}
           </div>
           <button className={styles.btnRimuovi} onClick={onRimuovi}>Rimuovi</button>

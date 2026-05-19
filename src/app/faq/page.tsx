@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import { getFaq, getFaqCategorie, Faq, FaqCategoria } from "@/lib/faq";
+import { CONTACT } from "@/config/constants";
 import styles from "@styles/faq.module.css";
 
 export default function FaqPage() {
@@ -80,6 +81,15 @@ export default function FaqPage() {
               </div>
             );
           })}
+        </div>
+
+        <div className={styles.contatti}>
+          <p className={styles.contattiTesto}>
+            Hai altre domande?{" "}
+            <a href={`mailto:${CONTACT.email}`} className={styles.contattiLink}>
+              Scrivici a {CONTACT.email}
+            </a>
+          </p>
         </div>
       </main>
       <Footer />

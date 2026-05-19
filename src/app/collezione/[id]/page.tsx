@@ -7,7 +7,6 @@ import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import AnimaleDetailClient from "@/components/AnimaleDetailClient";
 import { SITE } from "@/config/constants";
-import Script from "next/script";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -70,11 +69,10 @@ export default async function AnimaleDetail({ params }: Props) {
 
   return (
     <>
-      <Script
+      <script
         id="jsonld-product"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        strategy="beforeInteractive"
       />
       <BackgroundLogo />
       <Navbar />
