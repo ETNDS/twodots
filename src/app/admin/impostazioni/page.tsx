@@ -20,6 +20,7 @@ const EMPTY: ImpostazioniForm = {
   prezzoDedica: 0,
   prezzoDedicaPet: 0,
   maxPezzi: 5,
+  maxPetPerHum: 3,
 };
 
 export default function AdminImpostazioni() {
@@ -51,6 +52,7 @@ export default function AdminImpostazioni() {
           prezzoDedica,
           prezzoDedicaPet,
           maxPezzi: d.maxPezzi || 5,
+          maxPetPerHum: d.maxPetPerHum || 3,
         };
         setForm(f);
         if (d.prezzoDedicaPet === undefined) {

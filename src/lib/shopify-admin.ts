@@ -14,8 +14,9 @@ export type RigaDraftOrder = {
 
 export type DraftOrderInput = {
   righe: RigaDraftOrder[];
-  scontoFisso?: number;   // importo totale da sottrarre (sconto PET + YOU + arrotondamento)
-  titoloSconto?: string;  // descrizione mostrata su Shopify es. "Sconto + arrotondamento"
+  scontoFisso?: number;
+  titoloSconto?: string;
+  redirectUrl?: string;
   note?: string;
 };
 
@@ -29,6 +30,8 @@ export async function creaDraftOrder(input: DraftOrderInput): Promise<{ checkout
     ...(r.properties && r.properties.length > 0 ? { properties: r.properties } : {}),
   }));
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://2dotsmilano.it";
+
   const body = {
     draft_order: {
       line_items: lineItems,
@@ -41,6 +44,7 @@ export async function creaDraftOrder(input: DraftOrderInput): Promise<{ checkout
           title: input.titoloSconto || "Sconto",
         },
       } : {}),
+      redirect_url: `${siteUrl}/grazie`,
       ...(input.note ? { note: input.note } : {}),
     },
   };
