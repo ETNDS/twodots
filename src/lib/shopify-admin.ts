@@ -2,9 +2,6 @@
 // Usa Shopify Admin API (server-side only) per creare Draft Orders con prezzi custom.
 // NON importare questo file in componenti client — solo in API routes Next.js.
 
-const DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!;
-const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_TOKEN!;
-
 export type RigaDraftOrder = {
   title: string;
   price: string;
@@ -16,7 +13,6 @@ export type DraftOrderInput = {
   righe: RigaDraftOrder[];
   scontoFisso?: number;
   titoloSconto?: string;
-  redirectUrl?: string;
   note?: string;
 };
 
@@ -30,8 +26,6 @@ export async function creaDraftOrder(input: DraftOrderInput): Promise<{ checkout
     ...(r.properties && r.properties.length > 0 ? { properties: r.properties } : {}),
   }));
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://2dotsmilano.it";
-
   const body = {
     draft_order: {
       line_items: lineItems,
@@ -44,12 +38,14 @@ export async function creaDraftOrder(input: DraftOrderInput): Promise<{ checkout
           title: input.titoloSconto || "Sconto",
         },
       } : {}),
-      redirect_url: `${siteUrl}/grazie`,
       ...(input.note ? { note: input.note } : {}),
     },
   };
 
   console.log("[shopify-admin] Sending draft order:", JSON.stringify(body).slice(0, 500));
+
+  const DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!;
+  const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_TOKEN!;
 
   const res = await fetch(
     `https://${DOMAIN}/admin/api/2024-10/draft_orders.json`,
