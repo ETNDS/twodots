@@ -1,18 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-
-export async function POST(req: NextRequest) {
-  return NextResponse.json({ error: "disabled" }, { status: 503 });
-}
-
-
-
-/*
 // src/app/api/checkout/route.ts
+export const runtime = "nodejs";
 // API route server-side: riceve il carrello, costruisce la Draft Order con prezzi da Firestore,
 // la invia a Shopify Admin API e restituisce il checkoutUrl.
 
 import { NextRequest, NextResponse } from "next/server";
-import { creaDraftOrder, RigaDraftOrder } from "@/lib/shopify-admin";
+import { creaDraftOrder } from "@/lib/shopify-admin";
+
+type RigaDraftOrder = {
+  title: string;
+  price: string;
+  quantity: number;
+  properties?: { name: string; value: string }[];
+};
 import { ArticoloCarrello } from "@/lib/carrello";
 
 export type CheckoutPayload = {
@@ -158,4 +157,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Errore interno" }, { status: 500 });
   }
 }
-*/
