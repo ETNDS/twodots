@@ -11,6 +11,7 @@ type ImpostazioniForm = {
   prezzoDedica: number;
   prezzoDedicaPet: number;
   maxPezzi: number;
+  maxPetPerHum: number;
 };
 
 const EMPTY: ImpostazioniForm = {
@@ -31,6 +32,7 @@ export default function AdminImpostazioni() {
   const [prezzoDedicaStr, setPrezzoDedicaStr] = useState("0");
   const [prezzoDedicaPetStr, setPrezzoDedicaPetStr] = useState("0");
   const [maxPezziStr, setMaxPezziStr] = useState("5");
+  const [maxPetPerHumStr, setMaxPetPerHumStr] = useState("3");
 
   useEffect(() => {
     async function carica() {
@@ -62,6 +64,7 @@ export default function AdminImpostazioni() {
         setPrezzoDedicaStr(String(prezzoDedica));
         setPrezzoDedicaPetStr(String(prezzoDedicaPet));
         setMaxPezziStr(String(d.maxPezzi || 5));
+        setMaxPetPerHumStr(String(d.maxPetPerHum || 3));
       }
       setLoading(false);
     }

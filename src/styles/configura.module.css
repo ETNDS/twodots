@@ -109,7 +109,7 @@
   font-size: 13px;
   color: var(--color-navy);
   opacity: 0.6;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   line-height: 1.6;
 }
 
@@ -316,21 +316,30 @@
 .sceltaBtnSel { border-color: var(--color-navy); font-weight: 500; }
 
 .fontGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.fontGridLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  margin-top: 4px;
 }
 
 .fontCard {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 12px 8px;
+  padding: 5px 10px;
   background: var(--color-lavanda);
-  border: 2px solid transparent;
-  border-radius: 8px;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s;
   text-align: center;
@@ -340,11 +349,11 @@
 .fontCardSel { border-color: var(--color-navy); }
 
 .fontCardNome {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--color-navy);
   font-weight: 500;
-  line-height: 1.3;
   font-family: inherit;
+  white-space: nowrap;
 }
 
 .fontCardDesc {
@@ -412,7 +421,7 @@
 
 .dedicaTextarea:focus { border-color: var(--color-navy); }
 
-.field { margin-bottom: 16px; }
+.field { margin-bottom: 10px; }
 
 .fieldLabel {
   font-size: 11px;
@@ -521,8 +530,10 @@
 /* COLONNA DESTRA */
 
 .riepilogo {
-  position: sticky;
-  top: 80px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .introRow {
@@ -547,11 +558,12 @@
 
 .riepilogoInner {
   background: var(--color-navy);
-  border-radius: 16px;
-  padding: 20px;
+  padding: 20px 20px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
 }
 
 .anteprima {
@@ -577,6 +589,20 @@
   color: var(--color-lavanda);
   opacity: 0.2;
 }
+
+.riepilogoScroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  scrollbar-width: none;
+}
+
+.riepilogoScroll::-webkit-scrollbar { display: none; }
+
 
 .riepilogoDettagli {
   display: flex;
@@ -636,9 +662,35 @@
   margin: 4px 0;
 }
 
+.riepilogoPetGroup {
+  border-left: 1.5px solid rgba(234, 230, 244, 0.25);
+  margin-left: 4px;
+  padding-left: 10px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.riepilogoPetGroupLabel {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-lavanda);
+  opacity: 0.45;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.riepilogoPetItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .prezzoBox {
   border-top: 0.5px solid rgba(234,230,244,0.15);
-  padding-top: 12px;
+  border-bottom: 0.5px solid rgba(234,230,244,0.15);
+  padding: 12px 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -814,12 +866,22 @@
   text-align: center;
 }
 
+.fontPreviewSottotitolo {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.5;
+  text-align: center;
+  margin-top: 2px;
+  font-style: italic;
+}
+
 .fontPreviewHint {
   font-size: 10px;
   color: var(--color-navy);
   opacity: 0.4;
   text-align: center;
   line-height: 1.5;
+  margin-top: 12px;
 }
 
 /* Quantità */
@@ -1114,3 +1176,437 @@
 
 .sizeBtn:hover { border-color: rgba(13, 14, 46, 0.3); }
 .sizeBtnSel { border-color: var(--color-navy); font-weight: 500; }
+
+/* ── PET WIZARD ── */
+
+.petWizardOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.petWizard {
+  background: var(--color-lavanda-light);
+  border-radius: 16px;
+  width: 94%;
+  max-width: 760px;
+  height: 520px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.petWizardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 0.5px solid var(--color-lavanda-mid);
+  flex-shrink: 0;
+}
+
+.petWizardTitolo {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+.petWizardBody {
+  display: grid;
+  grid-template-columns: 160px 120px 1fr;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* COL 1 — anteprima + riepilogo (navy) */
+.petWizardCol1 {
+  background: var(--color-navy);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* COL 2 — step tabs (fissi) */
+.petWizardCol2 {
+  background: var(--color-lavanda);
+  border-right: 0.5px solid var(--color-lavanda-mid);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.petWizardTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.5;
+  text-align: left;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.petWizardTab:hover { opacity: 0.8; background: var(--color-lavanda-mid); }
+
+.petWizardTabAttivo {
+  opacity: 1;
+  background: var(--color-lavanda-mid);
+  font-weight: 500;
+}
+
+.petWizardTabDone { opacity: 0.75; }
+.petWizardTabDone.petWizardTabAttivo { opacity: 1; }
+
+.petWizardTabDot {
+  font-size: 10px;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+}
+
+.petWizardTabLabel { font-size: 12px; }
+
+/* COL 3 — contenuto step (scrolla) */
+.petWizardCol3 {
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.petWizardStepContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.petWizardFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 0.5px solid var(--color-lavanda-mid);
+  flex-shrink: 0;
+}
+
+/* ── PET CARDS IN STEP 7 ── */
+
+.petCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-lavanda);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+}
+
+.petCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.petCardNum {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.petCardDet {
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.8;
+}
+
+.petCardAzioni {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.petCardEdit {
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--color-navy);
+  background: none;
+  border: 1px solid rgba(13,14,46,0.25);
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.petCardEdit:hover { background: var(--color-lavanda-mid); }
+
+.petCardRemove {
+  font-size: 16px;
+  color: var(--color-navy);
+  opacity: 0.35;
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+
+.petCardRemove:hover { opacity: 0.7; }
+
+.petCardAdd {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.65;
+  background: none;
+  border: 1.5px dashed rgba(13,14,46,0.25);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all 0.15s;
+}
+
+.petCardAdd:hover { opacity: 1; border-color: var(--color-navy); }
+
+/* ── FONT GRID COMPACT (PetWizard) ── */
+
+.fontGridCompact {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.fontCardCompact {
+  font-family: inherit;
+  font-size: 10px;
+  color: var(--color-navy);
+  background: var(--color-lavanda);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 5px 3px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  line-height: 1.3;
+}
+
+.fontCardCompact:hover { border-color: rgba(13,14,46,0.3); }
+.fontCardCompact.fontCardSel { border-color: var(--color-navy); font-weight: 500; }
+
+.fontCardNomeCompact {
+  font-size: 10px;
+  display: block;
+}
+
+/* ── PET WIZARD MOBILE ── */
+
+@media (max-width: 640px) {
+
+  .petWizard {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .petWizardBody {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: unset;
+    overflow: hidden;
+  }
+
+  /* Barra navy compatta in cima */
+  .petWizardCol1 {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    flex-shrink: 0;
+    overflow-y: visible;
+    border-radius: 0;
+  }
+
+  .petWizardCol1 .anteprima {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 8px;
+  }
+
+  .petWizardCol1 .riepilogoDettagli {
+    flex: 1;
+    gap: 2px;
+  }
+
+  .petWizardCol1 .riepilogoRiga {
+    flex-direction: row;
+  }
+
+  /* Tab orizzontali scrollabili */
+  .petWizardCol2 {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 8px;
+    gap: 0;
+    border-right: none;
+    border-bottom: 0.5px solid var(--color-lavanda-mid);
+    background: var(--color-lavanda);
+    flex-shrink: 0;
+  }
+
+  .petWizardCol2::-webkit-scrollbar { display: none; }
+
+  .petWizardTab {
+    flex-direction: row;
+    white-space: nowrap;
+    padding: 10px 12px;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    width: auto;
+  }
+
+  .petWizardTabAttivo {
+    border-bottom-color: var(--color-navy);
+    background: none;
+  }
+
+  /* Contenuto step occupa lo spazio restante */
+  .petWizardCol3 {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 16px;
+  }
+}
+
+/* ── LAYOUT 3 COLONNE ── */
+
+.layout3col {
+  display: grid;
+  grid-template-columns: 220px 160px 1fr;
+  height: calc(100vh - 61px);
+  overflow: hidden;
+}
+
+.col1 {
+  background: var(--color-navy);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 0 16px 0;
+}
+
+.col2 {
+  background: var(--color-lavanda);
+  border-right: 0.5px solid var(--color-lavanda-mid);
+  overflow: hidden;
+  padding: 12px 8px;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stepListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.45;
+  text-align: left;
+  width: 100%;
+  transition: all 0.15s;
+}
+
+.stepListItem:hover { opacity: 0.8; background: var(--color-lavanda-mid); }
+
+.stepListItemAttivo {
+  opacity: 1;
+  background: white;
+  font-weight: 500;
+  border: 0.5px solid var(--color-lavanda-mid);
+}
+
+.stepListItemDone { opacity: 0.7; }
+
+.stepListDot { font-size: 9px; width: 14px; text-align: center; flex-shrink: 0; }
+.stepListItemDone .stepListDot { color: #1D9E75; }
+.stepListLabel { flex: 1; font-size: 12px; }
+.stepListNum { font-size: 9px; opacity: 0.35; }
+
+.col3 {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--color-lavanda-light);
+}
+
+.col3Inner {
+  padding: 24px 28px;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepWarning {
+  background: rgba(13, 14, 46, 0.05);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stepWarningTesto {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.stepWarningItem {
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.7;
+}
+
+.ctaBtnMobile { display: none; }
+
+.col1 { order: 3; }
+.col2 { order: 1; }
+.col3 { order: 2; }

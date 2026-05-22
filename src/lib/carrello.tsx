@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Confezione, FontDedica, ItemColore } from "@/lib/configuratore";
+import { Confezione, FontDedica, ItemColore, PetConfigurato } from "@/lib/configuratore";
 import { Animale } from "@/lib/animali";
 
 export type ArticoloCarrello = {
@@ -14,19 +14,13 @@ export type ArticoloCarrello = {
   cordino: ItemColore;
   dedicaHum: string;
   fontDedicaHum: FontDedica | null;
-  aggiungPet: boolean;
-  coloreCiondoloPet: "nero" | "bianco" | null;
-  occhioSxPet: ItemColore | null;
-  occhioDxPet: ItemColore | null;
-  dedicaPet: string;
-  fontDedicaPet: FontDedica | null;
-  sizePet: string | null;
-  etichettaSizePet: string | null;
+  pet: PetConfigurato[];
   confezione: Confezione;
   quantitaHum: number;
-  quantitaPet: number;
   prezzoHumSolo: number;
-  prezzoHumPet: number;
+  prezzoHumConPet: number;
+  scontoPetPercentuale: number;
+  codiceScontoPet: string | null;
 };
 
 type CarrelloCtx = {
@@ -63,9 +57,7 @@ export function CarrelloProvider({ children }: { children: ReactNode }) {
   }
 
   const totale = articoli.reduce((acc, a) => {
-    const righeConPet = a.quantitaPet;
-    const righeSoloHum = a.quantitaHum - a.quantitaPet;
-    return acc + (righeConPet * a.prezzoHumPet) + (righeSoloHum * a.prezzoHumSolo);
+    return acc + a.prezzoHumConPet * a.quantitaHum;
   }, 0);
 
   const totalePezzi = articoli.reduce((acc, a) => acc + a.quantitaHum, 0);

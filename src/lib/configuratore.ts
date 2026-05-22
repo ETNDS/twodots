@@ -40,6 +40,7 @@ export type Impostazioni = {
   prezzoDedica: number;
   prezzoDedicaPet: number;
   maxPezzi: number;
+  maxPetPerHum: number;
 };
 
 export type FasciaSconto = {
@@ -78,7 +79,7 @@ export const getConfezioni = () => getCollezione<Confezione>("confezioni");
 
 export async function getImpostazioni(): Promise<Impostazioni> {
   const snap = await getDoc(doc(db, "configuratore", "impostazioni"));
-  if (!snap.exists()) return { prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0, maxPezzi: 5 };
+  if (!snap.exists()) return { prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0, maxPezzi: 5, maxPetPerHum: 3 };
   const d = snap.data();
   return {
     prezzoBase: d.prezzoBase || 45,
@@ -86,6 +87,7 @@ export async function getImpostazioni(): Promise<Impostazioni> {
     prezzoDedica: d.prezzoDedica || 0,
     prezzoDedicaPet: d.prezzoDedicaPet || 0,
     maxPezzi: d.maxPezzi || 5,
+    maxPetPerHum: d.maxPetPerHum || 3,
   };
 }
 
@@ -147,4 +149,45 @@ export async function savePetSize(id: string | null, data: Omit<PetSize, "id">):
 
 export async function deletePetSize(id: string): Promise<void> {
   await deleteDoc(doc(db, "petSizes", id));
+}
+
+export type PetConfigurato = {
+  uid: string;
+  sizePet: string | null;
+  etichettaSizePet: string | null;
+  coloreCiondoloPet: "nero" | "bianco" | null;
+  occhioSxPet: ItemColore | null;
+  occhioDxPet: ItemColore | null;
+  dedicaPet: string;
+  fontDedicaPet: FontDedica | null;
+};
+
+export type FasciaScontoPet = {
+  id: string;
+  da: number;
+  percentuale: number;
+  codiceShopify: string;
+  attivo: boolean;
+  ordine: number;
+};
+
+export async function getFasceScontoPet(): Promise<FasciaScontoPet[]> {
+  const q = query(collection(db, "fasceScontoPet"), orderBy("ordine", "asc"));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }) as FasciaScontoPet);
+}
+
+export async function saveFasciaScontoPet(id: string | null, data: Omit<FasciaScontoPet, "id">): Promise<void> {
+  const ref = id ? doc(db, "fasceScontoPet", id) : doc(collection(db, "fasceScontoPet"));
+  await setDoc(ref, data);
+}
+
+export async function deleteFasciaScontoPet(id: string): Promise<void> {
+  await deleteDoc(doc(db, "fasceScontoPet", id));
+}
+
+export function calcolaScontoPet(fasce: FasciaScontoPet[], nPet: number): FasciaScontoPet | null {
+  const attive = fasce.filter(f => f.attivo && f.da <= nPet);
+  if (attive.length === 0) return null;
+  return attive.reduce((best, f) => f.da > best.da ? f : best);
 }

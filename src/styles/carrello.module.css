@@ -313,3 +313,102 @@
   border-top: 0.5px solid var(--admin-border);
   margin-top: 4px;
 }
+
+
+
+
+.cardPetGroup {
+  border-left: 1.5px solid rgba(13, 14, 46, 0.15);
+  margin-left: 4px;
+  padding-left: 10px;
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cardPetGroupLabel {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.cardPetItem {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.riepilogoPetGroup {
+  border-left: 1.5px solid rgba(13, 14, 46, 0.15);
+  margin-left: 4px;
+  padding-left: 10px;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.riepilogoPetGroupLabel {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.riepilogoArticolo {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.riepilogoSubtotale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  opacity: 0.8;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 0.5px solid rgba(13, 14, 46, 0.1);
+}
+
+.riepilogoUnitario {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-navy);
+  padding-top: 6px;
+  margin-top: 4px;
+  border-top: 0.5px solid rgba(13, 14, 46, 0.12);
+}
+
+.riepilogoMoltiplica {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-navy);
+  padding-top: 4px;
+  border-top: 0.5px solid rgba(13, 14, 46, 0.2);
+  margin-top: 2px;
+}
+
+.riepilogoTotalePreSconto {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.6;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 0.5px solid rgba(13, 14, 46, 0.15);
+}
