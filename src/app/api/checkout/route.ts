@@ -1,3 +1,12 @@
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  return NextResponse.json({ error: "disabled" }, { status: 503 });
+}
+
+
+
+/*
 // src/app/api/checkout/route.ts
 // API route server-side: riceve il carrello, costruisce la Draft Order con prezzi da Firestore,
 // la invia a Shopify Admin API e restituisce il checkoutUrl.
@@ -149,3 +158,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Errore interno" }, { status: 500 });
   }
 }
+*/
