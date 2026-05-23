@@ -66,3 +66,24 @@
 .scopriBtn:hover {
   opacity: 0.85;
 }
+
+
+
+@media (max-width: 768px) {
+  .section {
+    padding: 36px 16px;
+  }
+
+  .cardUnica {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .immagini {
+    gap: 14px;
+  }
+
+  .titolo {
+    font-size: 22px;
+  }
+}

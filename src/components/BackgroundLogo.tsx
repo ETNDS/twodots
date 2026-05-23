@@ -1,6 +1,21 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import styles from "@styles/backgroundLogo.module.css";
 
 export default function BackgroundLogo() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 769px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  if (!isDesktop) return null;
+
   return (
     <>
       <div className={styles.left}>

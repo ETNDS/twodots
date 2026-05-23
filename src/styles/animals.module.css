@@ -77,3 +77,24 @@
 .cardLink {
   text-decoration: none;
 }
+
+
+
+@media (max-width: 768px) {
+  .section {
+    padding: 36px 16px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .imageWrapper {
+    height: 110px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

@@ -38,9 +38,7 @@
   text-decoration: none;
 }
 
-.links a:hover {
-  opacity: 1;
-}
+.links a:hover { opacity: 1; }
 
 .actions {
   display: flex;
@@ -60,13 +58,9 @@
   transition: background 0.15s;
 }
 
-.cartBtn:hover {
-  background: rgba(13, 14, 46, 0.05);
-}
+.cartBtn:hover { background: rgba(13, 14, 46, 0.05); }
 
-.cartIcon {
-  font-size: 14px;
-}
+.cartIcon { font-size: 14px; }
 
 .cartCount {
   font-size: 12px;
@@ -86,3 +80,86 @@
 }
 
 .cta:hover { background: rgba(13, 14, 46, 0.05); }
+
+/* ── HAMBURGER ── */
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: var(--color-navy);
+  border-radius: 1px;
+}
+
+/* ── MENU MOBILE — fixed sotto la navbar, non dentro <nav> ── */
+
+.mobileMenu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .inner {
+    padding: 10px 16px;
+  }
+
+  .links {
+    display: none;
+  }
+
+  /* CTA rimane visibile ma più compatta */
+  .cta {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Menu dropdown compatto — allineato a destra sotto l'hamburger */
+  .mobileMenu {
+    display: flex;
+    position: fixed;
+    top: 52px;
+    right: 16px;
+    left: auto;
+    width: 180px;
+    z-index: 99;
+    flex-direction: column;
+    background: var(--color-lavanda);
+    border: 0.5px solid rgba(13, 14, 46, 0.15);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(13, 14, 46, 0.12);
+    padding: 8px 0;
+    gap: 0;
+  }
+
+  .mobileMenu a,
+  .mobileMenu span {
+    font-size: 13px;
+    color: var(--color-navy);
+    opacity: 0.8;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    display: block;
+  }
+
+  .mobileMenu a:hover,
+  .mobileMenu span:hover {
+    opacity: 1;
+    background: rgba(13, 14, 46, 0.04);
+  }
+}

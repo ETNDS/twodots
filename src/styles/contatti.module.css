@@ -133,3 +133,39 @@
 .altLink:hover {
   opacity: 0.7;
 }
+
+
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+    padding-bottom: 40px;
+  }
+
+  .intro {
+    padding: 24px 16px 24px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .form {
+    padding: 0 16px 36px;
+  }
+
+  .input,
+  .textarea {
+    box-sizing: border-box;
+  }
+
+  .btn {
+    align-self: stretch;
+    text-align: center;
+  }
+
+  .alternative {
+    padding: 28px 16px;
+  }
+}

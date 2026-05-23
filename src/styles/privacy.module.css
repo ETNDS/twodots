@@ -98,3 +98,24 @@
 .link:hover {
   opacity: 1;
 }
+
+
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+  }
+
+  .hero {
+    padding: 24px 16px 28px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .content {
+    padding: 28px 16px;
+  }
+}

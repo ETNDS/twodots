@@ -266,3 +266,60 @@
 .igLink:hover {
   opacity: 1;
 }
+
+
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+  }
+
+  .breadcrumb {
+    padding: 14px 16px 0;
+  }
+
+  /* Hero: immagine sopra, info sotto */
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 16px 32px;
+  }
+
+  .imgPrincipale {
+    height: 220px;
+  }
+
+  .nome {
+    font-size: 26px;
+  }
+
+  .prezzo {
+    font-size: 20px;
+  }
+
+  .ctaBtn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Galleria */
+  .galleria {
+    padding: 24px 16px;
+  }
+
+  .galleriaMain {
+    height: 220px;
+  }
+
+  .thumb {
+    width: 52px;
+    height: 52px;
+  }
+
+  /* Instagram */
+  .igBox {
+    padding: 16px 16px;
+  }
+}

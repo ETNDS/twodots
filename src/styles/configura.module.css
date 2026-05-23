@@ -402,6 +402,7 @@
 
 .dedicaTextarea {
   width: 100%;
+  box-sizing: border-box;
   background: var(--color-lavanda);
   border: 0.5px solid rgba(13,14,46,0.2);
   border-radius: 8px;
@@ -1419,9 +1420,14 @@
   display: block;
 }
 
+/* Tab visibile solo su mobile (es. tab Riepilogo nel PetWizard) */
+.petWizardTabMobileOnly {
+  display: none;
+}
+
 /* ── PET WIZARD MOBILE ── */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
 
   .petWizard {
     width: 100%;
@@ -1431,74 +1437,42 @@
     border-radius: 0;
   }
 
+  /* Layout rimane a griglia 3 colonne: col1 a larghezza 0, col2 (tabs) + col3 (contenuto) */
   .petWizardBody {
-    display: flex;
-    flex-direction: column;
-    grid-template-columns: unset;
-    overflow: hidden;
+    grid-template-columns: 0 80px 1fr;
+    height: calc(100dvh - 52px - 53px);
   }
 
-  /* Barra navy compatta in cima */
+  /* col1 (riepilogo navy) nascosta */
   .petWizardCol1 {
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    flex-shrink: 0;
-    overflow-y: visible;
-    border-radius: 0;
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0;
   }
 
-  .petWizardCol1 .anteprima {
-    width: 52px;
-    height: 52px;
-    flex-shrink: 0;
-    border-radius: 8px;
-  }
-
-  .petWizardCol1 .riepilogoDettagli {
-    flex: 1;
-    gap: 2px;
-  }
-
-  .petWizardCol1 .riepilogoRiga {
-    flex-direction: row;
-  }
-
-  /* Tab orizzontali scrollabili */
+  /* col2 (tab list) — rimane a sinistra, più stretta */
   .petWizardCol2 {
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0 8px;
-    gap: 0;
-    border-right: none;
-    border-bottom: 0.5px solid var(--color-lavanda-mid);
-    background: var(--color-lavanda);
-    flex-shrink: 0;
+    padding: 8px 4px;
   }
-
-  .petWizardCol2::-webkit-scrollbar { display: none; }
 
   .petWizardTab {
-    flex-direction: row;
-    white-space: nowrap;
-    padding: 10px 12px;
-    border-radius: 0;
-    border-bottom: 2px solid transparent;
-    width: auto;
+    padding: 7px 6px;
+    font-size: 11px;
   }
 
-  .petWizardTabAttivo {
-    border-bottom-color: var(--color-navy);
-    background: none;
+  .petWizardTabLabel {
+    font-size: 11px;
   }
 
-  /* Contenuto step occupa lo spazio restante */
+  /* col3 (contenuto step) — prende tutto il resto */
   .petWizardCol3 {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px 16px;
+    padding: 14px 14px;
+  }
+
+  /* Tab Riepilogo visibile solo su mobile */
+  .petWizardTabMobileOnly {
+    display: flex;
   }
 }
 
@@ -1564,6 +1538,8 @@
 .stepListDot { font-size: 9px; width: 14px; text-align: center; flex-shrink: 0; }
 .stepListItemDone .stepListDot { color: #1D9E75; }
 .stepListLabel { flex: 1; font-size: 12px; }
+.stepListLabelShort { display: none; }
+.stepListLabelFull { display: inline; }
 .stepListNum { font-size: 9px; opacity: 0.35; }
 
 .col3 {
@@ -1610,3 +1586,164 @@
 .col1 { order: 3; }
 .col2 { order: 1; }
 .col3 { order: 2; }
+
+/* ── RIEPILOGO MOBILE (visibile solo su mobile, dentro step Conferma) ── */
+.riepilogoMobileStep {
+  display: none;
+}
+
+/* ── LAYOUT MOBILE ── */
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+    padding-bottom: 0;
+  }
+
+  .intro {
+    padding: 10px 16px 8px;
+  }
+
+  .introLabel {
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+
+  .introTitolo {
+    font-size: 20px;
+  }
+
+  /* Layout principale: col1 (riepilogo navy) nascosta, col2 (step) + col3 (parametri) */
+  .layout3col {
+    grid-template-columns: 0 96px 1fr;
+    height: calc(100dvh - 52px - 56px); /* navbar + intro */
+    overflow: hidden;
+  }
+
+  /* col1 (riepilogo navy) — nascosta: larghezza 0 e overflow hidden */
+  .col1 {
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0;
+    order: 1;
+  }
+
+  /* ripristino order per col2 e col3 su mobile */
+  .col2 {
+    order: 2;
+    padding: 8px 4px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .col3 {
+    order: 3;
+    overflow-y: auto;
+    min-height: 0;
+    height: calc(100dvh - 52px - 56px);
+    padding-bottom: 70px;
+  }
+
+  .col3Inner {
+    padding: 14px 14px;
+    overflow-x: hidden;
+  }
+
+  .stepListItem {
+    padding: 7px 6px;
+    gap: 4px;
+  }
+
+  .stepListLabel {
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Su mobile non serve distinguere full/short — il TSX usa già label brevi */
+  .stepListLabelFull { display: inline; }
+  .stepListLabelShort { display: none; }
+
+  .stepListNum {
+    display: none;
+  }
+
+  /* col3 (parametri step) — prende tutto il resto */
+
+  /* Grids più compatte */
+  .coloriGrid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .coloreCircleInner {
+    width: 30px;
+    height: 30px;
+  }
+
+  .animaliGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .animaleImg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .confezioniGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quantitaGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Font grid — uniformo YOU e PET a 3 colonne su mobile */
+  .fontGrid {
+    gap: 4px;
+  }
+
+  .fontCard {
+    padding: 5px 6px;
+  }
+
+  .fontGridCompact {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .fontCardCompact {
+    font-size: 9px;
+    padding: 5px 2px;
+  }
+
+  .fontCardNomeCompact {
+    font-size: 9px;
+  }
+
+  .dedicaTextarea {
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .stepDesc {
+    font-size: 11px;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  /* Riepilogo mobile — visibile solo nello step Conferma su mobile */
+  .riepilogoMobileStep {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--color-navy);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 8px;
+  }
+}

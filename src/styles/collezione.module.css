@@ -145,3 +145,38 @@
 .imageWrapper img {
   filter: invert(1) brightness(2);
 }
+
+
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+  }
+
+  .intro {
+    padding: 24px 16px 20px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .imageWrapper {
+    height: 120px;
+  }
+
+  .info {
+    padding: 10px 12px 12px;
+  }
+
+  .nome {
+    font-size: 13px;
+  }
+}

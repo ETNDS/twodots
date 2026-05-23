@@ -160,3 +160,42 @@
   opacity: 0.7;
   line-height: 1.9;
 }
+
+
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+  }
+
+  .hero {
+    padding: 28px 16px 32px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .sectionDark,
+  .sectionLight {
+    padding: 36px 16px;
+  }
+
+  /* Tutte le sezioni a 2 colonne diventano colonna singola */
+  .sectionInner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .titleDark,
+  .titleLight {
+    font-size: 20px;
+  }
+
+  /* La grid materiali da 2x2 a colonna singola */
+  .materialsGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

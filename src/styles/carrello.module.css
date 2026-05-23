@@ -412,3 +412,54 @@
   margin-top: 4px;
   border-top: 0.5px solid rgba(13, 14, 46, 0.15);
 }
+
+
+
+/* ── CARRELLO MOBILE ── */
+
+@media (max-width: 768px) {
+
+  .main {
+    padding-top: 52px;
+    padding-bottom: 60px;
+  }
+
+  .intro {
+    padding: 16px 16px 12px;
+  }
+
+  .introTitolo {
+    font-size: 28px;
+  }
+
+  /* Stack verticale: lista poi riepilogo a tutta larghezza */
+  .layout {
+    grid-template-columns: 1fr;
+    padding: 16px 16px 24px;
+    gap: 16px;
+  }
+
+  /* Il riepilogo non è più sticky — scorre normalmente sotto la lista */
+  .riepilogo {
+    position: static;
+  }
+
+  .riepilogoInner {
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .cardImg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .btnCheckout {
+    font-size: 14px;
+    padding: 14px;
+  }
+}

@@ -6,3 +6,9 @@
   box-shadow: 0 0 80px rgba(13, 14, 46, 0.08);
 }
 
+@media (max-width: 768px) {
+  .main {
+    padding-top: 52px;
+    padding-bottom: 40px;
+  }
+}

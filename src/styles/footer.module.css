@@ -66,3 +66,44 @@
   opacity: 0.25;
   letter-spacing: 0.04em;
 }
+
+
+
+/* ── FOOTER MOBILE ── */
+
+.social {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.socialLink {
+  color: var(--color-lavanda);
+  opacity: 0.45;
+  display: flex;
+  align-items: center;
+}
+
+.socialLink:hover { opacity: 0.8; }
+
+@media (max-width: 768px) {
+
+  .inner {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .right {
+    align-items: flex-end;
+  }
+
+  .links {
+    gap: 12px;
+  }
+}

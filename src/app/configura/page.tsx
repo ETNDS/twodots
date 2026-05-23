@@ -258,6 +258,7 @@ function PetWizard({
     { id: 1, label: "Occhio sx", done: !!local.occhioSxPet },
     { id: 2, label: "Occhio dx", done: !!local.occhioDxPet },
     { id: 3, label: "Dedica", done: true },
+    { id: 99, label: "Riepilogo", done: false, mobileOnly: true },
   ];
 
   const prezzoDedicaPetEffettivo = hasDedicaHum
@@ -353,7 +354,7 @@ function PetWizard({
             {steps.map((s) => (
               <button
                 key={s.id}
-                className={`${styles.petWizardTab} ${subStep === s.id ? styles.petWizardTabAttivo : ""} ${s.done ? styles.petWizardTabDone : ""}`}
+                className={`${styles.petWizardTab} ${subStep === s.id ? styles.petWizardTabAttivo : ""} ${s.done ? styles.petWizardTabDone : ""} ${"mobileOnly" in s && s.mobileOnly ? styles.petWizardTabMobileOnly : ""}`}
                 onClick={() => setSubStep(s.id)}
               >
                 <span className={styles.petWizardTabDot}>{s.done ? "✓" : "○"}</span>
@@ -473,6 +474,63 @@ function PetWizard({
                     </>
                   );
                 })()}
+              </div>
+            )}
+
+            {/* STEP 99 — RIEPILOGO PET (solo mobile, tab nascosto su desktop) */}
+            {subStep === 99 && (
+              <div className={styles.petWizardStepContent}>
+                <div className={styles.riepilogoMobileStep}>
+                  {local.sizePet && (
+                    <div className={styles.riepilogoRiga}>
+                      <span className={styles.riepilogoLabel}>Taglia</span>
+                      <span className={styles.riepilogoValore}>{local.etichettaSizePet || local.sizePet}</span>
+                    </div>
+                  )}
+                  {local.coloreCiondoloPet && (
+                    <div className={styles.riepilogoRiga}>
+                      <span className={styles.riepilogoLabel}>Bijoux</span>
+                      <span className={styles.riepilogoValore}>{local.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}</span>
+                    </div>
+                  )}
+                  {local.occhioSxPet && (
+                    <div className={styles.riepilogoRiga}>
+                      <span className={styles.riepilogoLabel}>Occhio sx</span>
+                      <div className={styles.riepilogoColore}>
+                        <div className={styles.riepilogoColoreDot} style={{ background: local.occhioSxPet.coloreCSS }} />
+                        <span className={styles.riepilogoValore}>{local.occhioSxPet.nome}</span>
+                      </div>
+                    </div>
+                  )}
+                  {local.occhioDxPet && (
+                    <div className={styles.riepilogoRiga}>
+                      <span className={styles.riepilogoLabel}>Occhio dx</span>
+                      <div className={styles.riepilogoColore}>
+                        <div className={styles.riepilogoColoreDot} style={{ background: local.occhioDxPet.coloreCSS }} />
+                        <span className={styles.riepilogoValore}>{local.occhioDxPet.nome}</span>
+                      </div>
+                    </div>
+                  )}
+                  {local.dedicaPet && (
+                    <div className={styles.riepilogoRiga}>
+                      <span className={styles.riepilogoLabel}>Dedica</span>
+                      <span className={styles.riepilogoValore}>"{local.dedicaPet}"</span>
+                    </div>
+                  )}
+                  {local.dedicaPet && prezzoDedicaPetEffettivo > 0 && (
+                    <div className={styles.riepilogoRiga}>
+                      <span className={styles.riepilogoLabel}>Supplemento</span>
+                      <span className={styles.riepilogoValore}>€{prezzoDedicaPetEffettivo}</span>
+                    </div>
+                  )}
+                </div>
+                <button
+                  className={styles.nextBtn}
+                  disabled={!petCompleto}
+                  onClick={() => onSalva(local)}
+                >
+                  Salva PET
+                </button>
               </div>
             )}
 
@@ -729,8 +787,8 @@ function ConfiguraInner() {
             <div className={styles.stepList}>
               {[
                 { id: 0, num: "01", label: "Animale", done: !!config.animale },
-                { id: 1, num: "02", label: "Colore bijoux", done: !!config.coloreCiondolo },
-                { id: 2, num: "03", label: "Colore disegno", done: !!config.smalto },
+                { id: 1, num: "02", label: "Colore", done: !!config.coloreCiondolo },
+                { id: 2, num: "03", label: "Disegno", done: !!config.smalto },
                 { id: 3, num: "04", label: "Occhio sx", done: !!config.occhioSx },
                 { id: 4, num: "05", label: "Occhio dx", done: !!config.occhioDx },
                 { id: 5, num: "06", label: "Cordino", done: !!config.cordino },
@@ -741,6 +799,7 @@ function ConfiguraInner() {
                 { id: 11, num: petSizes.length > 0 ? "11" : "10", label: "Conferma", done: false },
               ].map((s) => (
                 <button key={s.id}
+                  title={s.label}
                   className={`${styles.stepListItem} ${stepAttivo === s.id ? styles.stepListItemAttivo : ""} ${s.done && stepAttivo !== s.id ? styles.stepListItemDone : ""}`}
                   onClick={() => setStepAttivo(s.id)}>
                   <span className={styles.stepListDot}>{s.done && stepAttivo !== s.id ? "✓" : "○"}</span>
@@ -975,6 +1034,94 @@ function ConfiguraInner() {
               {/* STEP 11 — CONFERMA FINALE */}
               {stepAttivo === 11 && (
                 <div className={styles.stepContent} id="step-11">
+
+                  {/* RIEPILOGO MOBILE — visibile solo su mobile (su desktop c'è col1) */}
+                  <div className={styles.riepilogoMobileStep}>
+                    <div className={styles.anteprimaWrapper}>
+                      <div className={styles.anteprima}>
+                        {show3DViewer ? (
+                          <Viewer3D
+                            glbUrl={config.animale!.modello3D!}
+                            coloreCiondolo={config.coloreCiondolo!}
+                            coloreDisegno={config.smalto!.coloreCSS}
+                            coloreOcchioSx={config.occhioSx!.coloreCSS}
+                            coloreOcchioDx={config.occhioDx!.coloreCSS}
+                            immagineOcchioSx={config.occhioSx!.immagini?.[0] || null}
+                            immagineOcchioDx={config.occhioDx!.immagini?.[0] || null}
+                            occhioSxPos={config.animale!.occhioSxPos || null}
+                            occhioDxPos={config.animale!.occhioDxPos || null}
+                          />
+                        ) : config.animale ? (
+                          (config.animale.immagineForma || config.animale.immagineDisegno) ? (
+                            <img src={config.animale.immagineForma || config.animale.immagineDisegno} alt={config.animale.nome} className={styles.anteprimaImg} />
+                          ) : (
+                            <div className={styles.anteprimaPlaceholder}><span>{config.animale.nome}</span></div>
+                          )
+                        ) : (
+                          <div className={styles.anteprimaPlaceholder}><span>2dots</span></div>
+                        )}
+                        {!!config.animale && (
+                          <div className={styles.watermark3D}>
+                            {Array.from({ length: 6 }).map((_, i) => <span key={i}>2DOTS·2DOTS·2DOTS·2DOTS</span>)}
+                          </div>
+                        )}
+                        {show3DViewer && <div className={styles.label3D}>↺ ruota</div>}
+                      </div>
+                    </div>
+                    <div className={styles.prezzoBox}>
+                      <div className={styles.prezzoRiga}><span>YOU</span><span>€{prezzoHumBase}</span></div>
+                      {hasDedicaHum && impostazioni.prezzoDedica > 0 && <div className={styles.prezzoRiga}><span>Dedica YOU</span><span>€{impostazioni.prezzoDedica}</span></div>}
+                      {config.pets.map((pet, i) => (
+                        <div key={pet.uid} className={styles.prezzoRiga}>
+                          <span>PET {i + 1}{pet.dedicaPet.trim() ? " + dedica" : ""}</span>
+                          <span>€{prezzoPetUnitario + (pet.dedicaPet.trim() ? prezzoDedicaPetEffettivo : 0)}</span>
+                        </div>
+                      ))}
+                      {scontoPetPerc > 0 && <div className={styles.prezzoRiga} style={{ color: "green" }}><span>Sconto PET {scontoPetPerc}%</span><span>−€{scontoImportoPet}</span></div>}
+                      {prezzoConfezione > 0 && <div className={styles.prezzoRiga}><span>Confezione</span><span>€{prezzoConfezione}</span></div>}
+                      {config.quantitaHum > 1 && <div className={styles.prezzoRiga}><span>× {config.quantitaHum} pezzi</span><span></span></div>}
+                      <div className={styles.prezzoTotale}><span>Totale</span><span>€{totale}</span></div>
+                    </div>
+                    <div className={styles.riepilogoDettagli}>
+                      {config.animale && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Animale</span><span className={styles.riepilogoValore}>{config.animale.nome}</span></div>}
+                      {config.coloreCiondolo && (
+                        <div className={styles.riepilogoRiga}>
+                          <span className={styles.riepilogoLabel}>Bijoux</span>
+                          <div className={styles.riepilogoColore}>
+                            <div className={styles.riepilogoColoreDot} style={{ background: ciondoloGradient(config.coloreCiondolo) }} />
+                            <span className={styles.riepilogoValore}>{config.coloreCiondolo === "nero" ? "Nero" : "Bianco"}</span>
+                          </div>
+                        </div>
+                      )}
+                      {config.smalto && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Disegno</span><div className={styles.riepilogoColore}><RiepilogoColore item={config.smalto} /><span className={styles.riepilogoValore}>{config.smalto.nome}</span></div></div>}
+                      {config.occhioSx && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Swarovski sx</span><div className={styles.riepilogoColore}><RiepilogoColore item={config.occhioSx} /><span className={styles.riepilogoValore}>{config.occhioSx.nome}</span></div></div>}
+                      {config.occhioDx && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Swarovski dx</span><div className={styles.riepilogoColore}><RiepilogoColore item={config.occhioDx} /><span className={styles.riepilogoValore}>{config.occhioDx.nome}</span></div></div>}
+                      {config.cordino && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Cordino</span><div className={styles.riepilogoColore}><RiepilogoColore item={config.cordino} /><span className={styles.riepilogoValore}>{config.cordino.nome}</span></div></div>}
+                      {config.dedicaHum && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Dedica</span><span className={styles.riepilogoValore}>"{config.dedicaHum}"</span></div>}
+                      {config.pets.length > 0 && (
+                        <div className={styles.riepilogoPetGroup}>
+                          <span className={styles.riepilogoPetGroupLabel}>↳ bijoux PET</span>
+                          {config.pets.map((pet, i) => (
+                            <div key={pet.uid} className={styles.riepilogoPetItem}>
+                              <div className={styles.riepilogoRiga}>
+                                <span className={styles.riepilogoLabel}>PET {i + 1}</span>
+                                <span className={styles.riepilogoValore}>
+                                  {pet.etichettaSizePet && `${pet.etichettaSizePet} · `}
+                                  {pet.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}
+                                </span>
+                              </div>
+                              {pet.occhioSxPet && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>sx</span><div className={styles.riepilogoColore}><RiepilogoColore item={pet.occhioSxPet} /><span className={styles.riepilogoValore}>{pet.occhioSxPet.nome}</span></div></div>}
+                              {pet.occhioDxPet && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>dx</span><div className={styles.riepilogoColore}><RiepilogoColore item={pet.occhioDxPet} /><span className={styles.riepilogoValore}>{pet.occhioDxPet.nome}</span></div></div>}
+                              {pet.dedicaPet && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>dedica</span><span className={styles.riepilogoValore}>"{pet.dedicaPet}"</span></div>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {config.confezione && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>Confezione</span><span className={styles.riepilogoValore}>{config.confezione.nome}</span></div>}
+                    </div>
+                  </div>
+                  {/* FINE RIEPILOGO MOBILE */}
+
                   <p className={styles.stepDesc}>
                     {tuttiCompletati
                       ? "La configurazione è completa. Puoi aggiungere al carrello o ricominciare."

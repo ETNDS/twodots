@@ -28,3 +28,16 @@
   opacity: 0.7;
   line-height: 1.9;
 }
+
+
+@media (max-width: 768px) {
+  .origin {
+    grid-template-columns: 1fr;
+    padding: 36px 16px;
+    gap: 20px;
+  }
+
+  .quote {
+    font-size: 16px;
+  }
+}

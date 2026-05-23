@@ -47,3 +47,27 @@
   align-items: center;
   justify-content: center;
 }
+
+
+
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 32px 16px 28px;
+    gap: 24px;
+  }
+
+  .tagline {
+    font-size: 32px;
+  }
+
+  .sub {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* immagine viene dopo il testo */
+  .image {
+    order: -1;
+  }
+}

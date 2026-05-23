@@ -229,3 +229,35 @@
   color: var(--color-navy);
   margin-bottom: 8px;
 }
+
+
+
+@media (max-width: 768px) {
+  .main {
+    padding-top: 52px;
+  }
+
+  .titolo {
+    font-size: 28px;
+    padding: 24px 16px 0;
+  }
+
+  .formBox {
+    margin: 20px 16px;
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .lista {
+    padding: 0 16px;
+  }
+
+  .homeSection {
+    padding: 36px 16px;
+  }
+
+  .homeGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

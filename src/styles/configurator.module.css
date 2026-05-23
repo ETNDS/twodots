@@ -79,3 +79,28 @@
 .btn:hover {
   opacity: 0.85;
 }
+
+
+
+@media (max-width: 768px) {
+  .section {
+    padding: 36px 16px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .step {
+    padding: 14px 10px;
+  }
+
+  .num {
+    font-size: 18px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

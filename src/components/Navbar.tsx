@@ -15,8 +15,10 @@ export default function Navbar() {
   const { articoli } = useCarrello();
   const nArticoli = articoli.length;
   const [showDialog, setShowDialog] = useState(false);
+  const [menuAperto, setMenuAperto] = useState(false);
 
   function handleIniziaOra() {
+    setMenuAperto(false);
     if (isConfigura) {
       setShowDialog(true);
       return;
@@ -56,9 +58,30 @@ export default function Navbar() {
             <button className={styles.cta} onClick={handleIniziaOra}>
               Inizia ora
             </button>
+            <button
+              className={styles.hamburger}
+              onClick={() => setMenuAperto(v => !v)}
+              aria-label="Menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
           </div>
         </div>
       </nav>
+
+      {/* MENU MOBILE — fuori dal <nav>, posizionato fixed sotto di esso */}
+      {menuAperto && (
+        <div className={styles.mobileMenu}>
+          <Link href="/home" onClick={() => setMenuAperto(false)}>Home</Link>
+          <Link href="/collezione" onClick={() => setMenuAperto(false)}>Collezione</Link>
+          <Link href="/bijoux-coppia" onClick={() => setMenuAperto(false)}>You &amp; Pet</Link>
+          <Link href="/configura" onClick={() => setMenuAperto(false)}>Configura</Link>
+          <Link href="/storia" onClick={() => setMenuAperto(false)}>Il progetto</Link>
+          <Link href="/faq" onClick={() => setMenuAperto(false)}>FAQ</Link>
+        </div>
+      )}
 
       {showDialog && (
         <Dialog
