@@ -42,7 +42,7 @@ export default function AnimaleDetailClient({ animale }: { animale: Animale }) {
           {has3D && (
             <div className={styles.viewer3DWrapper}>
               <Viewer3D
-                glbUrl={animale.modello3D}
+                glbUrl={animale.modello3D!}
                 coloreCiondolo={animale.defaultViewer?.coloreCiondolo ?? VIEWER_FALLBACK.coloreCiondolo}
                 coloreDisegno={animale.defaultViewer?.coloreDisegno ?? VIEWER_FALLBACK.coloreDisegno}
                 coloreOcchioSx={VIEWER_FALLBACK.coloreOcchioSx}
