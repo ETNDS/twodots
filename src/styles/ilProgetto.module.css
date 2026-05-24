@@ -199,3 +199,10 @@
     gap: 10px;
   }
 }
+
+
+
+.sectionMid {
+  background: var(--color-lavanda-mid);
+  padding: 56px 36px;
+}

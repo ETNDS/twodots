@@ -56,7 +56,7 @@ export default function Navbar() {
               </Link>
             )}
             <button className={styles.cta} onClick={handleIniziaOra}>
-              Inizia ora
+              Crea il tuo bijoux
             </button>
             <button
               className={styles.hamburger}
@@ -71,7 +71,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* MENU MOBILE — fuori dal <nav>, posizionato fixed sotto di esso */}
       {menuAperto && (
         <div className={styles.mobileMenu}>
           <Link href="/home" onClick={() => setMenuAperto(false)}>Home</Link>

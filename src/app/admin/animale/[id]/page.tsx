@@ -30,6 +30,8 @@ type AnimaleForm = {
   igLink: string;
   prezzo: number;
   prezzoPet: number;
+  defaultViewerColore: "nero" | "bianco";
+  defaultViewerDisegno: string;
 };
 
 const EMPTY: AnimaleForm = {
@@ -51,6 +53,8 @@ const EMPTY: AnimaleForm = {
   igLink: "",
   prezzo: 45,
   prezzoPet: 15,
+  defaultViewerColore: "nero",
+  defaultViewerDisegno: "#ffffff",
 };
 
 export default function AdminAnimale() {
@@ -116,6 +120,8 @@ export default function AdminAnimale() {
         igLink: d.igLink || "",
         prezzo: d.prezzo || 45,
         prezzoPet: d.prezzoPet || 15,
+        defaultViewerColore: d.defaultViewer?.coloreCiondolo || "nero",
+        defaultViewerDisegno: d.defaultViewer?.coloreDisegno || "#ffffff",
       };
       setForm(f);
       setOriginal(f);
@@ -211,6 +217,10 @@ export default function AdminAnimale() {
         igLink: form.igLink,
         prezzo: form.prezzo,
         prezzoPet: form.prezzoPet,
+        defaultViewer: {
+          coloreCiondolo: form.defaultViewerColore,
+          coloreDisegno: form.defaultViewerDisegno,
+        },
         updatedAt: now,
       };
       if (isNuovo) data.createdAt = now;
@@ -375,43 +385,39 @@ export default function AdminAnimale() {
 
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Prezzi</h2>
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label className={styles.label}>Prezzo YOU (€)</label>
-                <input className={styles.input} type="text" inputMode="decimal" value={prezzoStr}
-                  onChange={(e) => handleDecimalChange(e.target.value, setPrezzoStr, "prezzo")}
-                  placeholder="es. 45" />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.label}>Prezzo PET (€)</label>
-                <input className={styles.input} type="text" inputMode="decimal" value={prezzoPetStr}
-                  onChange={(e) => handleDecimalChange(e.target.value, setPrezzoPetStr, "prezzoPet")}
-                  placeholder="es. 15" />
-              </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Prezzo YOU (€)</label>
+              <input className={styles.input} type="text" inputMode="decimal" value={prezzoStr}
+                onChange={(e) => handleDecimalChange(e.target.value, setPrezzoStr, "prezzo")}
+                placeholder="es. 45" />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Prezzo PET (€)</label>
+              <input className={styles.input} type="text" inputMode="decimal" value={prezzoPetStr}
+                onChange={(e) => handleDecimalChange(e.target.value, setPrezzoPetStr, "prezzoPet")}
+                placeholder="es. 15" />
             </div>
           </div>
 
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Misure</h2>
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label className={styles.label}>Dimensione V (cm)</label>
-                <input className={styles.input} type="text" inputMode="decimal" value={dimVStr}
-                  onChange={(e) => handleDecimalChange(e.target.value, setDimVStr, "dimensioniV")}
-                  placeholder="es. 4.5" />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.label}>Dimensione H (cm)</label>
-                <input className={styles.input} type="text" inputMode="decimal" value={dimHStr}
-                  onChange={(e) => handleDecimalChange(e.target.value, setDimHStr, "dimensioniH")}
-                  placeholder="es. 3.2" />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.label}>Occhi (mm)</label>
-                <input className={styles.input} type="text" inputMode="decimal" value={occhiStr}
-                  onChange={(e) => handleDecimalChange(e.target.value, setOcchiStr, "occhiMm")}
-                  placeholder="es. 2" />
-              </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Dimensione V (cm)</label>
+              <input className={styles.input} type="text" inputMode="decimal" value={dimVStr}
+                onChange={(e) => handleDecimalChange(e.target.value, setDimVStr, "dimensioniV")}
+                placeholder="es. 4.5" />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Dimensione H (cm)</label>
+              <input className={styles.input} type="text" inputMode="decimal" value={dimHStr}
+                onChange={(e) => handleDecimalChange(e.target.value, setDimHStr, "dimensioniH")}
+                placeholder="es. 3.2" />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Occhi (mm)</label>
+              <input className={styles.input} type="text" inputMode="decimal" value={occhiStr}
+                onChange={(e) => handleDecimalChange(e.target.value, setOcchiStr, "occhiMm")}
+                placeholder="es. 2" />
             </div>
             <div className={styles.fieldRow}>
               <div className={styles.field}>
@@ -603,6 +609,45 @@ export default function AdminAnimale() {
                 {uploadingModello && <span className={styles.uploading}>Caricamento in corso...</span>}
               </div>
             )}
+          </div>
+
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Anteprima pagina dettaglio</h2>
+            <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 12 }}>
+              Colori usati nel viewer 3D della pagina pubblica dell&apos;animale.
+            </p>
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
+                <label className={styles.label}>Colore ciondolo</label>
+                <select
+                  className={styles.input}
+                  value={form.defaultViewerColore}
+                  onChange={(e) => update("defaultViewerColore", e.target.value as "nero" | "bianco")}
+                >
+                  <option value="nero">Nero</option>
+                  <option value="bianco">Bianco</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Colore disegno</label>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    type="color"
+                    value={form.defaultViewerDisegno}
+                    onChange={(e) => update("defaultViewerDisegno", e.target.value)}
+                    style={{ width: 40, height: 32, border: "none", cursor: "pointer", background: "none" }}
+                  />
+                  <input
+                    className={styles.input}
+                    type="text"
+                    value={form.defaultViewerDisegno}
+                    onChange={(e) => update("defaultViewerDisegno", e.target.value)}
+                    placeholder="#ffffff"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className={styles.section}>

@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SOCIAL, CONTACT } from "@/config/constants";
 import BackgroundLogo from "@/components/BackgroundLogo";
+import IconInstagram from "@/components/IconInstagram";
+import IconFacebook from "@/components/IconFacebook";
 import styles from "@styles/contatti.module.css";
 
 export default function Contatti() {
@@ -107,15 +109,14 @@ export default function Contatti() {
           <a className={styles.altLink} href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           <p className={styles.altText} style={{ marginTop: "16px" }}>Seguici su Instagram</p>
           <a className={styles.altLink} href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+            <IconInstagram size={16} />
             @twodotsdesign
           </a>
           <p className={styles.altText} style={{ marginTop: "16px" }}>Seguici su Facebook</p>
           <a className={styles.altLink} href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <IconFacebook size={16} />
             twodotsdesign
           </a>
-
         </div>
       </main>
       <Footer />

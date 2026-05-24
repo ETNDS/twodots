@@ -29,12 +29,11 @@ export default function HumPetPage() {
         <section className={styles.hero}>
           <p className={styles.label}>YOU & PET</p>
           <h1 className={styles.title}>
-            Il legame più autentico che hai.<br />
-            Era ora che si vedesse.
+            Lo stesso segno, per entrambi.
           </h1>
           <p className={styles.intro}>
-            Il tuo animale è parte di te. Ma fuori casa quel legame resta invisibile.
-            2dots ha creato il primo bijoux pensato per voi due — insieme.
+            Un bijoux per te, uno per ogni animale che ami. Stesso soggetto, stessa palette,
+            stessi cristalli Swarovski. Li configuri insieme — e diventano un unico gesto.
           </p>
         </section>
 
@@ -44,8 +43,8 @@ export default function HumPetPage() {
             <div className={styles.colCard}>
               <div className={styles.cardImg}>
                 <Image
-                  src="/images/hum-gatto-nero.jpg"
-                  alt="Ciondolo YOU — da portare al collo"
+                  src="/images/2dots-you.svg"
+                  alt="Ciondolo YOU 2dots — da portare al collo"
                   width={180}
                   height={180}
                   style={{ objectFit: "contain" }}
@@ -54,17 +53,16 @@ export default function HumPetPage() {
               <p className={styles.cardTag}>YOU</p>
               <h2 className={styles.cardTitle}>Il tuo ciondolo</h2>
               <p className={styles.cardText}>
-                Lo porti tu. Scegli l'animale, il colore della ceramica,
-                il tono degli occhi Swarovski, il cordino e una dedica
-                personalizzata sul retro.
+                Lo porti tu al collo. Scegli l&apos;animale, il colore della ceramica,
+                i cristalli Swarovski, il cordino e una dedica incisa sul retro.
               </p>
               <p className={styles.cardPrice}>€ 45</p>
             </div>
             <div className={styles.colCard}>
               <div className={styles.cardImg}>
                 <Image
-                  src="/images/pet-bianco.jpg"
-                  alt="Ciondolo PET — da agganciare al collare dell'animale"
+                  src="/images/2dots-pet.svg"
+                  alt="Ciondolo PET 2dots — da agganciare al collare"
                   width={180}
                   height={180}
                   style={{ objectFit: "contain" }}
@@ -73,9 +71,9 @@ export default function HumPetPage() {
               <p className={styles.cardTag}>PET</p>
               <h2 className={styles.cardTitle}>Il suo ciondolo</h2>
               <p className={styles.cardText}>
-                Lo porta il tuo animale, agganciato al collare.
-                Stesso stile, stessa palette. Scegli colore, occhi
-                e una dedica sul retro.
+                Lo porta il tuo animale, agganciato al collare. Stesso soggetto, stessa palette.
+                Scegli colore, occhi e dedica sul retro.
+                Hai più di un animale? Puoi aggiungere un PET per ognuno.
               </p>
               <p className={styles.cardPrice}>+ € 15 al bundle</p>
             </div>
@@ -85,11 +83,10 @@ export default function HumPetPage() {
         {/* CODICE UNIVOCO */}
         <section className={styles.sectionLight}>
           <div className={styles.centrato}>
-            <p className={styles.label}>IL CODICE</p>
-            <h2 className={styles.titleDark}>Due oggetti. Un codice. Un legame.</h2>
+            <p className={styles.label}>LA DEDICA</p>
+            <h2 className={styles.titleDark}>Ogni pezzo porta le tue parole.</h2>
             <p className={styles.textDark}>
-              Ogni coppia YOU + PET viene marchiata con un codice univoco inciso sul retro.
-              Un numero seriale che appartiene solo a voi due.
+              Una dedica per te e una per ciascun animale.
             </p>
           </div>
         </section>
@@ -98,10 +95,9 @@ export default function HumPetPage() {
         <section className={styles.sectionDark}>
           <div className={styles.centrato}>
             <p className={styles.labelLight}>I MATERIALI</p>
-            <h2 className={styles.titleLight}>Resina eco-sostenibile. Swarovski veri.</h2>
+            <h2 className={styles.titleLight}>Resina ecosostenibile. Swarovski originali.</h2>
             <p className={styles.textLight}>
-              Ogni ciondolo è stampato in 3D con resine certificate eco-sostenibili.
-              Gli occhi sono cristalli Swarovski originali, montati a mano.
+              Ogni ciondolo è in resina ecosostenibile con cristalli Swarovski originali.<br />Prodotto su richiesta, uno per uno.
             </p>
           </div>
         </section>
@@ -109,7 +105,7 @@ export default function HumPetPage() {
         {/* CTA */}
         <section className={styles.sectionCta}>
           <Link href="/configura" className={styles.ctaBtn}>
-            Configura il tuo bijoux
+            Crea il tuo bijoux
           </Link>
         </section>
 

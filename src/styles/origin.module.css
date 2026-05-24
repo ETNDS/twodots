@@ -29,6 +29,19 @@
   line-height: 1.9;
 }
 
+.link {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.5;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.link:hover {
+  opacity: 1;
+}
 
 @media (max-width: 768px) {
   .origin {

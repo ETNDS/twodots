@@ -1,23 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import { getAnimaliPubblicati, Animale } from "@/lib/animali";
 import styles from "@styles/collezione.module.css";
 
+function primaRiga(testo: string): string {
+  const righe = testo.split("\n");
+  for (const riga of righe) {
+    const pulita = riga.replace(/\*\*/g, "").replace(/\*/g, "").trim();
+    if (pulita && !pulita.startsWith("#")) return pulita;
+  }
+  return "";
+}
+
 export default function Collezione() {
   const [animali, setAnimali] = useState<Animale[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     async function carica() {
       try {
         const data = await getAnimaliPubblicati();
-        setAnimali(data);
+        const ordinati = data.slice().sort((a, b) => a.nome.localeCompare(b.nome, "it"));
+        setAnimali(ordinati);
         setLoading(false);
       } catch (e) {
         console.error("Errore:", e);
@@ -44,33 +53,43 @@ export default function Collezione() {
         ) : (
           <div className={styles.grid}>
             {animali.map((animale) => (
-              <div
+              <Link
                 key={animale.id}
-                className={styles.card}
-                onClick={() => router.push(`/collezione/${animale.id}`)}
-                style={{ cursor: "pointer" }}
+                href={`/collezione/${animale.id}`}
+                className={styles.cardLink}
               >
-                <div className={styles.imageWrapper}>
-                  {animale.immagineDisegno ? (
-                    <img
-                      src={animale.immagineDisegno}
-                      alt={`Ciondolo ${animale.nome} — bijoux artigianale Two Dots`}
-                      className={styles.image}
-                    />
-                  ) : (
-                    <div className={styles.placeholder}>
-                      <span>{animale.nome[0]}</span>
-                    </div>
-                  )}
+                <div className={styles.card}>
+                  <div className={styles.imageWrapper}>
+                    {animale.immagineDisegno ? (
+                      <img
+                        src={animale.immagineDisegno}
+                        alt={`Ciondolo ${animale.nome} — bijoux artigianale Two Dots`}
+                        className={styles.image}
+                      />
+                    ) : (
+                      <div className={styles.placeholder}>
+                        <span>{animale.nome[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.info}>
+                    <h2 className={styles.nome}>{animale.nome}</h2>
+                    <p className={styles.forma}>{primaRiga(animale.storia)}</p>
+                  </div>
                 </div>
-                <div className={styles.info}>
-                  <h2 className={styles.nome}>{animale.nome}</h2>
-                  <p className={styles.forma}>{animale.forma}</p>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
+
+        <div className={styles.ctaProponi}>
+          <p className={styles.ctaProponiTitolo}>Non hai trovato quello che cercavi?</p>
+          <p className={styles.ctaProponiSub}>Scrivici — stiamo sempre aggiungendo nuovi soggetti.</p>
+          <Link href="/contatti">
+            <button className={styles.ctaProponiBtn}>Scrivici</button>
+          </Link>
+        </div>
+
       </main>
       <Footer />
     </>

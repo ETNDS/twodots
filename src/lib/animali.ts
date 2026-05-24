@@ -25,6 +25,10 @@ export type Animale = {
   igLink: string;
   prezzo: number;
   prezzoPet: number;
+  defaultViewer?: {
+    coloreCiondolo: "nero" | "bianco";
+    coloreDisegno: string;
+  };
 };
 
 export async function getAnimaliPubblicati(): Promise<Animale[]> {

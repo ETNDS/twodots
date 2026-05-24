@@ -10,9 +10,9 @@
 .text { display: flex; flex-direction: column; }
 
 .tagline {
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1.15;
   color: var(--color-navy);
   letter-spacing: -0.02em;
   margin-bottom: 20px;
@@ -23,24 +23,53 @@
   color: var(--color-navy);
   opacity: 0.65;
   line-height: 1.8;
-  margin-bottom: 32px;
+  margin-bottom: 14px;
+}
+
+.stats {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  letter-spacing: 0.03em;
+  margin-bottom: 28px;
+}
+
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
 .cta {
   display: inline-block;
-  width: fit-content;
   background: var(--color-navy);
   color: var(--color-lavanda);
   font-size: 12px;
   font-family: inherit;
+  font-weight: 500;
   letter-spacing: 0.07em;
   padding: 12px 26px;
   border: none;
   border-radius: 22px;
   cursor: pointer;
+  transition: opacity 0.15s;
 }
 
 .cta:hover { opacity: 0.85; }
+
+.ctaSecondary {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-navy);
+  text-decoration: none;
+  border: 1px solid rgba(1, 1, 54, 0.35);
+  padding: 11px 22px;
+  border-radius: 22px;
+  transition: background 0.15s;
+}
+
+.ctaSecondary:hover { background: rgba(1, 1, 54, 0.05); }
 
 .image {
   display: flex;
@@ -58,16 +87,29 @@
   }
 
   .tagline {
-    font-size: 32px;
+    font-size: 28px;
   }
 
   .sub {
     font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .stats {
+    font-size: 10px;
     margin-bottom: 20px;
   }
 
-  /* immagine viene dopo il testo */
+  .ctaGroup {
+    gap: 10px;
+  }
+
   .image {
     order: -1;
+  }
+
+  .image img {
+    max-height: 260px;
+    width: auto;
   }
 }

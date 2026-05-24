@@ -1,0 +1,15 @@
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="300" height="300" fill="#f0eff5" rx="12"/>
+<rect x="0" y="0" width="300" height="300" fill="none" stroke="#c8c4d8" stroke-width="1.5" stroke-dasharray="6,4" rx="12"/>
+<text x="150" y="24" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#9990b8">PLACEHOLDER — 2dots-you.jpg</text>
+<rect x="110" y="40" width="80" height="140" rx="8" fill="#e8e0d5"/>
+<path d="M90 70 Q150 90 210 70" stroke="#9990b8" stroke-width="2" fill="none"/>
+<ellipse cx="150" cy="98" rx="28" ry="30" fill="#01014a" opacity="0.8"/>
+<path d="M138 88 Q142 80 150 83 Q158 80 162 88" fill="#01014a" opacity="0.9"/>
+<circle cx="143" cy="94" r="4" fill="#ccddff"/>
+<circle cx="157" cy="94" r="4" fill="#ccddff"/>
+<text x="150" y="210" font-family="sans-serif" font-size="13" font-weight="500" text-anchor="middle" fill="#6b6490">Ciondolo YOU al collo</text>
+<text x="150" y="230" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#9990b8">dettaglio ravvicinato · Swarovski visibili</text>
+<rect x="30" y="272" width="240" height="18" rx="4" fill="#01014a" opacity="0.06"/>
+<text x="150" y="285" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#01014a" opacity="0.5">/public/images/2dots-you.jpg</text>
+</svg>

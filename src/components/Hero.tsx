@@ -7,24 +7,31 @@ export default function Hero() {
     <section className={styles.hero}>
       <div className={styles.text}>
         <h1 className={styles.tagline}>
-          To love<br />
-          To shine<br />
-          Two Dots
+          Il tuo animale, da indossare.
         </h1>
         <p className={styles.sub}>
-          Bijoux in ceramica stampata in 3D. Ogni ciondolo porta il disegno
-          stilizzato di un animale, con due cristalli Swarovski come occhi.
+          Un pezzo unico che racconta il legame con il tuo animale.
+          Lo configuri tu — soggetto, colori, incisione.
+          Lo stesso segno per te e per il tuo pet.
         </p>
-        <Link href="/configura">
-          <button className={styles.cta}>Configura il tuo bijoux</button>
-        </Link>
+        <p className={styles.stats}>
+          13 soggetti · 21 colori Swarovski · incisione personalizzata · prodotto su richiesta
+        </p>
+        <div className={styles.ctaGroup}>
+          <Link href="/configura">
+            <button className={styles.cta}>Crea il tuo bijoux</button>
+          </Link>
+          <Link href="/bijoux-coppia" className={styles.ctaSecondary}>
+            Scopri You &amp; Pet
+          </Link>
+        </div>
       </div>
       <div className={styles.image}>
         <Image
-          src="/images/hum-gatto-nero.jpg"
-          alt="Ciondolo gatto"
-          width={210}
-          height={210}
+          src="/images/hero-main.svg"
+          alt="Donna con il suo animale — bijoux 2dots al collo"
+          width={400}
+          height={500}
           style={{ objectFit: "contain" }}
           priority
         />
