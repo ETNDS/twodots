@@ -45,7 +45,7 @@ export default function Collezione() {
           <p className={styles.label}>COLLEZIONE</p>
           <h1 className={styles.title}>Gli animali 2dots</h1>
           <p className={styles.sub}>
-            Ogni ciondolo ha la sua forma, il suo tratto, la sua storia.
+            Scegli il soggetto che senti più tuo e personalizzalo nei dettagli.
           </p>
         </div>
         {loading ? (
@@ -72,9 +72,13 @@ export default function Collezione() {
                       </div>
                     )}
                   </div>
+                  {animale.inEvidenza && (
+                    <div className={styles.badge}>Più scelto</div>
+                  )}
                   <div className={styles.info}>
                     <h2 className={styles.nome}>{animale.nome}</h2>
                     <p className={styles.forma}>{primaRiga(animale.storia)}</p>
+                    <p className={styles.disponibile}>Disponibile in versione YOU o YOU &amp; PET</p>
                   </div>
                 </div>
               </Link>
@@ -84,7 +88,7 @@ export default function Collezione() {
 
         <div className={styles.ctaProponi}>
           <p className={styles.ctaProponiTitolo}>Non hai trovato quello che cercavi?</p>
-          <p className={styles.ctaProponiSub}>Scrivici — stiamo sempre aggiungendo nuovi soggetti.</p>
+          <p className={styles.ctaProponiSub}>Scrivici il soggetto che hai in mente: valutiamo insieme fattibilità e tempi.</p>
           <Link href="/contatti">
             <button className={styles.ctaProponiBtn}>Scrivici</button>
           </Link>

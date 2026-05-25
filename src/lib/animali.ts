@@ -25,6 +25,7 @@ export type Animale = {
   igLink: string;
   prezzo: number;
   prezzoPet: number;
+  inEvidenza?: boolean;
   defaultViewer?: {
     coloreCiondolo: "nero" | "bianco";
     coloreDisegno: string;

@@ -1,5 +1,6 @@
 export const SOCIAL = {
   instagram: "https://www.instagram.com/twodotsmilano/",
+  instagramHandle: "@twodotsmilano",
   facebook: "https://www.facebook.com/profile.php?id=61589035059976",
 };
 

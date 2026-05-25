@@ -8,6 +8,7 @@ import MaterialiDettagli from "@/components/MaterialiDettagli";
 import Configurator from "@/components/Configurator";
 import RecensioniHome from "@/components/RecensioniHome";
 import Origin from "@/components/Origin";
+import RassicurazioniHome from "@/components/RassicurazioniHome";
 import CtaFinale from "@/components/CtaFinale";
 import styles from "@styles/page.module.css";
 
@@ -23,6 +24,7 @@ export default function Home() {
         <MaterialiDettagli />
         <Configurator />
         <RecensioniHome />
+        <RassicurazioniHome />
         <Origin />
         <CtaFinale />
       </main>

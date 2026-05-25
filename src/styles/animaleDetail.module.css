@@ -409,3 +409,42 @@
 .ctaSecondary:hover {
   opacity: 1;
 }
+
+.disponibile {
+  font-size: 12px;
+  color: var(--color-navy);
+  opacity: 0.55;
+  margin-top: 12px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.formaViewer {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.4;
+  text-align: center;
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+
+.formaBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.formaLabel {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-navy);
+  opacity: 0.4;
+  text-transform: uppercase;
+}
+
+.formaValore {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.6;
+}

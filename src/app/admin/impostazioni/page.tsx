@@ -141,7 +141,7 @@ export default function AdminImpostazioni() {
             <p style={{ fontSize: 12, color: "var(--admin-text-muted)", marginBottom: 16 }}>
               Questi prezzi vengono usati se l'animale non ha un prezzo specifico impostato.
             </p>
-            <div className={styles.fieldRow}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div className={styles.field}>
                 <label className={styles.label}>Prezzo base YOU (€)</label>
                 <input className={styles.input} type="text" inputMode="decimal"
@@ -164,7 +164,7 @@ export default function AdminImpostazioni() {
             <p style={{ fontSize: 12, color: "var(--admin-text-muted)", marginBottom: 16 }}>
               Il prezzo dedica PET viene calcolato automaticamente al 50% della dedica YOU.
             </p>
-            <div className={styles.fieldRow}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div className={styles.field}>
                 <label className={styles.label}>Supplemento dedica YOU (€)</label>
                 <input className={styles.input} type="text" inputMode="decimal"
@@ -187,7 +187,7 @@ export default function AdminImpostazioni() {
             <p style={{ fontSize: 12, color: "var(--admin-text-muted)", marginBottom: 16 }}>
               Oltre questa quantità l'utente viene indirizzato a richiedere un preventivo.
             </p>
-            <div className={styles.fieldRow}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div className={styles.field}>
                 <label className={styles.label}>Numero massimo pezzi per ordine</label>
                 <input className={styles.input} type="number" inputMode="numeric" min={1}

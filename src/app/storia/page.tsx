@@ -36,11 +36,11 @@ export default function IlProgetto() {
         </section>
 
         {/* ORIGINE */}
-        <section className={styles.sectionDark}>
+        <section className={styles.sectionNavy}>
           <div className={styles.sectionInner}>
             <div>
               <div className={styles.titleBox}>
-                <p className={styles.labelLight}>L'ORIGINE</p>
+                <p className={styles.labelLight}>L&apos;ORIGINE</p>
                 <h2 className={styles.titleLight}>Una @ scarabocchiata, l&apos;intuizione di TwoDots.</h2>
               </div>
             </div>
@@ -51,16 +51,17 @@ export default function IlProgetto() {
                   alt="Processo creativo TwoDots — schizzo a mano"
                   width={260}
                   height={174}
-                  style={{ objectFit: "cover", borderRadius: "8px", maxWidth: "260px", width: "auto", height: "auto", float: "right", marginLeft: "20px", marginBottom: "12px" }}
+                  style={{ objectFit: "cover", borderRadius: "8px", maxWidth: "260px", width: "auto", height: "auto", display: "block", margin: "16px auto" }}
                 />
               </div>
-              <p className={styles.textDarkOnLight}>
+              <p className={styles.textLight}>
                 Anni fa, mentre ragionavo su un problema di sviluppo software, ho scarabocchiato una @ al contrario.
                 Un tratto lungo, due puntini — e sul foglio c&apos;era una chiocciola. Non l&apos;avevo disegnata consapevolmente. Era lì.
               </p>
-              <p className={styles.textDarkOnLight} style={{ marginTop: "16px" }}>
+              <p className={styles.textLight} style={{ marginTop: "16px" }}>
                 Ho continuato a disegnare. Sono venuti fuori altri animali — ognuno con il suo tratto essenziale,
-                ognuno con i suoi due occhi. A un certo punto erano più di 30. Di questi, 13 sono già in produzione. Gli altri seguiranno — ognuno ha i suoi tempi, dal disegno al ciondolo finito.
+                ognuno con i suoi due occhi. A un certo punto erano più di 30. Di questi, 13 sono già in produzione.
+                Gli altri seguiranno — ognuno ha i suoi tempi, dal disegno al ciondolo finito.
               </p>
             </div>
           </div>
@@ -87,12 +88,15 @@ export default function IlProgetto() {
                 Non è un gadget. Non è un charm generico con la zampa.
                 È un oggetto che dice qualcosa di preciso — su di te, sul tuo animale, sul legame tra voi.
               </p>
+              <p className={styles.textDark} style={{ marginTop: "16px", fontStyle: "italic", opacity: 0.5 }}>
+                Per chi sceglie TwoDots significa indossare un segno che non urla, ma accompagna.
+              </p>
             </div>
           </div>
         </section>
 
         {/* IL PERCORSO */}
-        <section className={styles.sectionDark}>
+        <section className={styles.sectionNavy}>
           <div className={styles.sectionInner}>
             <div>
               <div className={styles.titleBox}>
@@ -101,7 +105,7 @@ export default function IlProgetto() {
               </div>
             </div>
             <div>
-              <p className={styles.textDarkOnLight}>
+              <p className={styles.textLight}>
                 Prima di arrivare alla resina ceramica ecosostenibile ho provato diversi altri materiali:
                 plexiglass, plexi ecosostenibile, galalite, ebano. Ognuno aveva qualcosa che non andava —
                 nella resa, nella lavorazione, nella coerenza col design.
@@ -112,10 +116,10 @@ export default function IlProgetto() {
                   alt="Incisione a punta di diamante sul retro del ciondolo"
                   width={260}
                   height={174}
-                  style={{ objectFit: "cover", borderRadius: "8px", maxWidth: "260px", width: "auto", height: "auto", float: "right", marginLeft: "20px", marginBottom: "12px" }}
+                  style={{ objectFit: "cover", borderRadius: "8px", maxWidth: "260px", width: "auto", height: "auto", display: "block", margin: "16px auto" }}
                 />
               </div>
-              <p className={styles.textDarkOnLight} style={{ marginTop: "16px" }}>
+              <p className={styles.textLight} style={{ marginTop: "16px" }}>
                 La resina ceramica è arrivata per ultima. È quella che restituisce meglio la forma,
                 che tiene l&apos;incisione, che si presta alla stampa 3D pezzo per pezzo.
                 Non è stata la scelta più semplice — è stata quella giusta.
@@ -125,11 +129,14 @@ export default function IlProgetto() {
         </section>
 
         {/* MATERIALI */}
-        <section className={styles.sectionDark}>
+        <section className={styles.sectionMid}>
           <div className={styles.sectionInner}>
             <div>
               <p className={styles.label}>I MATERIALI</p>
               <h2 className={styles.titleDark}>Costruito per durare. Come certi legami.</h2>
+              <p className={styles.textDarkSub} style={{ marginTop: "16px" }}>
+                Il risultato è un bijoux leggero, definito e pensato per durare nel tempo.
+              </p>
             </div>
             <div className={styles.materialsGrid}>
               <div className={styles.materialCard}>
@@ -175,9 +182,9 @@ export default function IlProgetto() {
               <Image
                 src="/images/2dots-storia-fondatore.svg"
                 alt="Il fondatore di TwoDots"
-                width={600}
-                height={400}
-                style={{ objectFit: "cover", borderRadius: "8px", maxWidth: "260px", width: "auto", height: "auto", float: "right", marginLeft: "20px", marginBottom: "12px" }}
+                width={260}
+                height={174}
+                style={{ objectFit: "cover", borderRadius: "8px", maxWidth: "260px", width: "auto", height: "auto", display: "block", margin: "16px auto" }}
               />
             </div>
             <p className={styles.textDarkCentered}>
@@ -189,7 +196,7 @@ export default function IlProgetto() {
               e dell&apos;impostazione — è lei che dà voce al progetto.
             </p>
             <p className={styles.textDarkCentered} style={{ marginTop: "16px" }}>
-              Se vuoi sapere qualcosa, proporre un animale, o semplicemente curiosare — scrivici.
+              Se vuoi creare qualcosa che ti rappresenti davvero, scrivici o inizia dal configuratore.
             </p>
             <a href={`mailto:${CONTACT.email}`} className={styles.emailLink}>
               {CONTACT.email}

@@ -539,8 +539,18 @@
 
 .introRow {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.introSub {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.5;
+  line-height: 1.5;
+  margin-top: 10px;
 }
 
 .resetBtn {
@@ -1746,4 +1756,32 @@
     padding: 16px;
     margin-bottom: 8px;
   }
+}
+
+
+
+.stepNote {
+  font-size: 11px;
+  color: var(--color-navy);
+  opacity: 0.5;
+  line-height: 1.6;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.stepNoteLink {
+  color: var(--color-navy);
+  opacity: 0.7;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.stepNoteLink:hover {
+  opacity: 1;
 }

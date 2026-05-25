@@ -10,7 +10,6 @@ import styles from "@styles/animaleDetail.module.css";
 
 const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
 
-// Colori default per il viewer nella pagina di dettaglio
 // Valori default viewer — sovrascrivibili per animale tramite defaultViewer nel db
 const VIEWER_FALLBACK = {
   coloreCiondolo: "nero" as const,
@@ -59,6 +58,13 @@ export default function AnimaleDetailClient({ animale }: { animale: Animale }) {
             </div>
           )}
 
+          {animale.forma && (
+            <div className={styles.formaBox}>
+              <span className={styles.formaLabel}>Forma bijoux:</span>
+              <span className={styles.formaValore}>{animale.forma}</span>
+            </div>
+          )}
+
           {/* IMMAGINE PRINCIPALE — solo se non c'è 3D */}
           {!has3D && (
             <div className={styles.imgPrincipale}>
@@ -88,11 +94,10 @@ export default function AnimaleDetailClient({ animale }: { animale: Animale }) {
         <div className={styles.heroInfo}>
           <p className={styles.label}>COLLEZIONE</p>
           <h1 className={styles.nome}>{animale.nome}</h1>
-          {animale.forma && <p className={styles.forma}>{animale.forma}</p>}
-
           <div className={styles.storia}>
             <ReactMarkdown>{animale.storia}</ReactMarkdown>
           </div>
+          <p className={styles.disponibile}>Disponibile in più configurazioni, con incisione personalizzata e opzione PET.</p>
 
           {/* MATERIALI */}
           <div className={styles.materialiRiga}>
@@ -125,6 +130,9 @@ export default function AnimaleDetailClient({ animale }: { animale: Animale }) {
           </Link>
           <Link href="/bijoux-coppia" className={styles.ctaSecondary}>
             Scopri You &amp; Pet →
+          </Link>
+          <Link href="/contatti" className={styles.ctaSecondary}>
+            Hai una richiesta speciale? →
           </Link>
         </div>
       </div>

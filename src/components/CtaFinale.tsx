@@ -47,25 +47,13 @@ export default function CtaFinale() {
         </div>
       </div>
 
-      <div className={styles.bloccoSinistra}>
-        <p className={styles.label}>NUOVO SOGGETTO</p>
-        <h3 className={styles.titolo}>Non trovi l&apos;animale per te?</h3>
-        <p className={styles.sub}>Stiamo sempre aggiungendo nuovi soggetti. Scrivici.</p>
-        <Link href="/contatti">
-          <button className={styles.btnSecondary}>Scrivici</button>
-        </Link>
-      </div>
 
       <div className={styles.bloccoDestra}>
-        <p className={styles.label}>UN REGALO</p>
-        <h3 className={styles.titolo}>Regala twodots</h3>
-        <div className={styles.carouselWrapper}>
-          <p className={`${styles.carousel} ${visibile ? styles.visibile : styles.nascosto}`}>
-            {destinatari[indice]}
-          </p>
-        </div>
-        <Link href="/configura">
-          <button className={styles.btnSecondary}>Scegli il regalo</button>
+        <p className={styles.label}>RICHIESTE SPECIALI</p>
+        <h3 className={styles.titolo}>Hai una richiesta speciale?</h3>
+        <p className={styles.sub}>Un soggetto che non trovi, una dedica particolare, un'idea regalo da costruire insieme.</p>
+        <Link href="/contatti">
+          <button className={styles.btnSecondary}>Scrivici</button>
         </Link>
       </div>
 

@@ -22,7 +22,10 @@ export default function Animals() {
   const scrollLeft = useRef(0);
 
   useEffect(() => {
-    getAnimaliPubblicati().then((data) => setAnimali(data));
+    getAnimaliPubblicati().then((data) => {
+      const shuffled = data.sort(() => Math.random() - 0.5).slice(0, 6);
+      setAnimali(shuffled);
+    });
   }, []);
 
   function scroll(dir: "left" | "right") {
@@ -55,7 +58,8 @@ export default function Animals() {
   return (
     <section className={styles.section}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Ogni animale ha il suo carattere</h2>
+        <p className={styles.label}>LA COLLEZIONE</p>
+        <h2 className={styles.title}>Non scegli solo un animale. Scegli un segno in cui riconoscerti.</h2>
       </div>
       <div className={styles.sliderOuter}>
         <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={() => scroll("left")} aria-label="Precedente">←</button>

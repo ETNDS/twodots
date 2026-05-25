@@ -296,6 +296,7 @@
   }
 
   .sectionCta {
+  padding-bottom: 56px;
     padding: 36px 16px;
     text-align: center;
   }
@@ -305,4 +306,176 @@
     text-align: center;
     box-sizing: border-box;
   }
+}
+
+
+
+.heroCta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+  align-items: center;
+}
+
+.cardClaim {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  margin: 8px 0;
+  font-style: italic;
+}
+
+.listaDettagli {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.listaDettagli li {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.7;
+  line-height: 1.6;
+  padding-left: 20px;
+  position: relative;
+}
+
+.listaDettagli li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  opacity: 0.4;
+}
+
+.sectionMid {
+  background: var(--color-lavanda-mid);
+  padding: 56px 36px;
+}
+
+.ctaTitolo {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-lavanda);
+  margin-bottom: 8px;
+}
+
+.ctaSub {
+  font-size: 13px;
+  color: var(--color-lavanda);
+  opacity: 0.6;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.ctaGroup {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .heroCta {
+    flex-direction: column;
+  }
+  .ctaGroup {
+    flex-direction: column;
+  }
+  .sectionMid {
+    padding: 36px 16px;
+  }
+}
+
+.btnPrimary {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.btnPrimary:hover {
+  opacity: 0.8;
+}
+
+.btnSecondary {
+  background: transparent;
+  color: var(--color-navy);
+  font-size: 12px;
+  font-family: inherit;
+  letter-spacing: 0.07em;
+  padding: 11px 26px;
+  border: 1px solid var(--color-navy);
+  border-radius: 22px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.btnSecondary:hover {
+  opacity: 1;
+}
+
+.bloccoDettagli {
+  max-width: 520px;
+}
+
+.bloccoDettagli .listaDettagli li {
+  text-align: left;
+}
+
+.sectionCta {
+  background: var(--color-lavanda-light);
+  padding: 56px 36px 72px;
+  text-align: center;
+}
+
+.listaDettagli li::before {
+  left: 0;
+}
+
+.bloccoDettagli p {
+  text-align: left;
+}
+
+.bloccoDettagli,
+.bloccoDettagli p,
+.bloccoDettagli h2,
+.bloccoDettagli ul {
+  text-align: left;
+  align-items: flex-start;
+}
+
+.sectionCta .btnPrimary {
+  background: var(--color-navy);
+  color: var(--color-lavanda);
+}
+
+.sectionCta .btnSecondary {
+  color: var(--color-navy);
+  border-color: var(--color-navy);
+}
+
+.sectionCta .ctaTitolo {
+  color: var(--color-navy);
+}
+
+.sectionCta .ctaSub {
+  color: var(--color-navy);
+  opacity: 0.6;
+}
+
+.sectionCta .ctaGroup {
+  justify-content: center;
 }

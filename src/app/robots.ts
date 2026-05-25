@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { SITE } from "@/config/constants";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -9,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/", "/login/"],
       },
     ],
-    sitemap: "https://www.twodotsdesign.it/sitemap.xml",
+    sitemap: `${SITE.url}/sitemap.xml`,
   };
 }

@@ -1,5 +1,6 @@
 import { collection, getDocs, addDoc, updateDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "@/lib/firebase";
 
 export type StatoRecensione = "bozza" | "approvata" | "rifiutata";
 
@@ -11,6 +12,7 @@ export type Recensione = {
   commento: string;
   stato: StatoRecensione;
   createdAt: Date | null;
+  immagineUrl?: string;
 };
 
 export async function getTutteRecensioni(): Promise<Recensione[]> {
@@ -26,6 +28,7 @@ export async function getTutteRecensioni(): Promise<Recensione[]> {
       commento: data.commento || "",
       stato: data.stato || "bozza",
       createdAt: data.createdAt?.toDate() || null,
+      immagineUrl: data.immagineUrl || undefined,
     };
   });
 }
@@ -40,11 +43,24 @@ export async function aggiungiRecensione(dati: {
   email: string;
   stelle: number;
   commento: string;
+  immagineFile?: File | null;
 }): Promise<void> {
+  let immagineUrl: string | undefined;
+
+  if (dati.immagineFile) {
+    const storageRef = ref(storage, `recensioni/${Date.now()}_${dati.immagineFile.name}`);
+    await uploadBytes(storageRef, dati.immagineFile);
+    immagineUrl = await getDownloadURL(storageRef);
+  }
+
   await addDoc(collection(db, "recensioni"), {
-    ...dati,
+    nome: dati.nome,
+    email: dati.email,
+    stelle: dati.stelle,
+    commento: dati.commento,
     stato: "bozza",
     createdAt: serverTimestamp(),
+    ...(immagineUrl ? { immagineUrl } : {}),
   });
 }
 

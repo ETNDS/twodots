@@ -21,6 +21,7 @@ type AnimaleForm = {
   dimensioniH: number;
   occhiMm: number;
   pubblicato: boolean;
+  inEvidenza: boolean;
   immagineDisegno: string;
   immagineForma: string;
   immaginiCiondolo: string[];
@@ -44,6 +45,7 @@ const EMPTY: AnimaleForm = {
   dimensioniH: 0,
   occhiMm: 2,
   pubblicato: false,
+  inEvidenza: false,
   immagineDisegno: "",
   immagineForma: "",
   immaginiCiondolo: [],
@@ -111,6 +113,7 @@ export default function AdminAnimale() {
         dimensioniH: d.dimensioni?.h || 0,
         occhiMm: d.occhiMm || 2,
         pubblicato: d.pubblicato || false,
+        inEvidenza: d.inEvidenza ?? false,
         immagineDisegno: d.immagineDisegno || "",
         immagineForma: d.immagineForma || "",
         immaginiCiondolo: d.immaginiCiondolo?.filter((x: string) => x) || [],
@@ -208,6 +211,7 @@ export default function AdminAnimale() {
         dimensioni: { v: form.dimensioniV, h: form.dimensioniH },
         occhiMm: form.occhiMm,
         pubblicato: form.pubblicato,
+      inEvidenza: form.inEvidenza,
         immagineDisegno: form.immagineDisegno,
         immagineForma: form.immagineForma,
         immaginiCiondolo: form.immaginiCiondolo,
@@ -436,6 +440,12 @@ export default function AdminAnimale() {
                   onChange={(e) => update("pubblicato", e.target.checked)}
                   className={styles.toggleInput} />
                 <span className={styles.toggleText}>{form.pubblicato ? "Pubblicato" : "Bozza"}</span>
+              </label>
+              <label className={styles.toggleLabel}>
+                <input type="checkbox" checked={form.inEvidenza}
+                  onChange={(e) => update("inEvidenza", e.target.checked)}
+                  className={styles.toggleInput} />
+                <span className={styles.toggleText}>{form.inEvidenza ? "In evidenza" : "Non in evidenza"}</span>
               </label>
               {!canPubblicato && (
                 <p className={styles.toggleNote}>Richiede: nome, storia, immagine disegno e almeno una foto ciondolo.</p>

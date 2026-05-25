@@ -46,10 +46,9 @@ export default function Contatti() {
       <main className={styles.main}>
         <div className={styles.intro}>
           <p className={styles.label}>CONTATTI</p>
-          <h1 className={styles.title}>Parliamo.</h1>
+          <h1 className={styles.title}>Hai una richiesta speciale?</h1>
           <p className={styles.sub}>
-            Hai domande sul progetto, vuoi sapere quando siamo pronti al lancio
-            o semplicemente vuoi dirci cosa ne pensi? Scrivici.
+            Un soggetto che non trovi, una dedica particolare, un bijoux YOU &amp; PET, un&apos;idea regalo, un preventivo per ordini multipli. Scrivici — rispondiamo a tutti.
           </p>
         </div>
 
@@ -110,7 +109,7 @@ export default function Contatti() {
           <p className={styles.altText} style={{ marginTop: "16px" }}>Seguici su Instagram</p>
           <a className={styles.altLink} href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <IconInstagram size={16} />
-            @twodotsdesign
+            {SOCIAL.instagramHandle}
           </a>
           <p className={styles.altText} style={{ marginTop: "16px" }}>Seguici su Facebook</p>
           <a className={styles.altLink} href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 8 }}>

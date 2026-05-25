@@ -22,14 +22,18 @@ export default function HumPet() {
           <h2 className={styles.titolo}>
             Lo stesso segno, per entrambi.
           </h2>
-          <p className={styles.descrizione}>
-            Un bijoux per te, uno per il tuo animale. Stesso soggetto, stessa palette,
-            stessi cristalli Swarovski. Li configuri insieme — e diventano un unico gesto.
-            Prodotti su richiesta, uno per uno.
-          </p>
+           <p className={styles.descrizione}>
+             You&amp;Pet nasce per chi non cerca un accessorio a tema animale, ma un dettaglio condiviso, discreto e personale.
+             Un bijoux per te, uno per il tuo animale. Stesso soggetto, stessa palette,
+             stessi cristalli Swarovski. Li configuri insieme — e diventano un unico gesto.
+             Prodotti su richiesta, uno per uno. Lo indossi tu, lo porta lui: stessa idea, stessa presenza, due modi diversi di viverla.
+           </p>
           <Link href="/bijoux-coppia" className={styles.scopriBtn}>
             Scopri come funziona →
           </Link>
+          <p className={styles.regaloHint}>
+            È anche un regalo — per chi porta il proprio animale nell&apos;anima.
+          </p>
         </div>
       </div>
     </section>

@@ -59,17 +59,22 @@ const EMPTY: Configurazione = {
   quantitaHum: 1,
 };
 
+
+const STEP_NOTE: Record<number, string> = {
+  6: "Puoi incidere nomi, date o una breve frase. Il configuratore ti mostra in tempo reale quanti caratteri puoi ancora usare.",
+  7: "Il PET è disponibile in tre misure per adattarsi alla taglia del tuo animale. Il prezzo viene aggiornato in tempo reale nel riepilogo a destra.",
+};
 const STEP_DESC: Record<number, string> = {
-  0: "Scegli il tuo animale preferito. Ogni animale ha un proprio ciondolo che vedi nel riepilogo a destra.",
-  1: "Scegli il colore del bijoux.",
-  2: "Scegli il colore dello smalto che colora il disegno dell'animale.",
-  3: "Scegli il cristallo Swarovski per l'occhio sinistro.",
-  4: "Scegli il cristallo Swarovski per l'occhio destro.",
-  5: "Scegli il colore del cordino composto da materiale ecosostenibile 100% riciclato.",
-  6: "Puoi incidere una dedica personalizzata sul retro del bijoux.",
-  7: "Aggiungi uno o più ciondoli abbinati da agganciare al collare del tuo animale.",
-  9: "Scegli come vuoi ricevere il tuo ordine.",
-  10: "Quante copie di questo bijoux vuoi aggiungere al carrello?",
+  0: "Scegli il soggetto che senti più tuo — è lui che darà carattere al tuo bijoux.",
+  1: "Scegli la base: il colore della resina ceramica definisce il tono visivo di tutto il pezzo.",
+  2: "Lo smalto colora il disegno dell'animale e crea il contrasto bicolore del bijoux.",
+  3: "",  // testo dinamico nel JSX
+  4: "Scegli il secondo punto luce — puoi tenerlo uguale o cambiarlo per un effetto unico.",
+  5: "Il cordino è in materiale riciclato al 100%. Uno nero è fisso, scegli il secondo colore.",
+  6: "Un nome, una data, una parola. Incisa a punta di diamante — o lascia il retro libero.",
+  7: "Vuoi creare il set coordinato? Aggiungi un PET — stesso stile, stessi cristalli Swarovski. Puoi aggiungere una dedica sul retro.",
+  9: "Scegli la confezione: sacchetto in cotone o scatola — entrambi già pronti per essere un regalo.",
+  10: "Vuoi più copie? Aggiungile qui — oltre il limite massimo contattaci per un preventivo.",
 };
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
@@ -580,6 +585,7 @@ function ConfiguraInner() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showPreviewHum, setShowPreviewHum] = useState(false);
   const [showPreventivo, setShowPreventivo] = useState(false);
+  const [showPreventivoConfirm, setShowPreventivoConfirm] = useState(false);
   const [petWizardAperto, setPetWizardAperto] = useState(false);
   const [petInEditing, setPetInEditing] = useState<PetConfigurato | null>(null);
 
@@ -772,8 +778,9 @@ function ConfiguraInner() {
       <main className={styles.main}>
         <div className={styles.intro}>
           <p className={styles.introLabel}>CONFIGURA</p>
+          <h1 className={styles.introTitolo}>Crea il tuo bijoux</h1>
           <div className={styles.introRow}>
-            <h1 className={styles.introTitolo}>Crea il tuo bijoux</h1>
+            <p className={styles.introSub}>In pochi passaggi costruisci il bijoux che non esiste ancora.</p>
             <button className={styles.resetBtn} onClick={() => setShowResetDialog(true)}>Ricomincia</button>
           </div>
         </div>
@@ -859,7 +866,7 @@ function ConfiguraInner() {
               {/* STEP 3 — OCCHIO SX */}
               {stepAttivo === 3 && (
                 <div className={styles.stepContent} id="step-3">
-                  <p className={styles.stepDesc}>{STEP_DESC[3]}</p>
+                  <p className={styles.stepDesc}>Scegli il primo punto luce — {cristalli.length} colori Swarovski originali, anche diversi tra loro.</p>
                   <div className={styles.coloriGrid}>
                     {cristalli.map((c) => <ColoreCircle key={c.id} item={c} selezionato={config.occhioSx?.id === c.id} onClick={() => { update({ occhioSx: c }); setStepAttivo(4); }} />)}
                   </div>
@@ -890,6 +897,7 @@ function ConfiguraInner() {
               {stepAttivo === 6 && (
                 <div className={styles.stepContent} id="step-6">
                   <p className={styles.stepDesc}>{STEP_DESC[6]}</p>
+                  <p className={styles.stepNote}>{STEP_NOTE[6]}</p>
                   <div className={styles.field}>
                     <p className={styles.hintFont}>Dopo aver inserito il testo e selezionato il carattere si attiva il bottone "Anteprima testo" per visualizzare l'aspetto del testo con il font selezionato.</p>
                     {fontHum && (() => {
@@ -943,6 +951,7 @@ function ConfiguraInner() {
               {petSizes.length > 0 && stepAttivo === 7 && (
                 <div className={styles.stepContent} id="step-7">
                   <p className={styles.stepDesc}>{STEP_DESC[7]}</p>
+                  <p className={styles.stepNote}>{STEP_NOTE[7]}</p>
 
                   {config.pets.map((pet, i) => (
                     <div key={pet.uid} className={styles.petCard}>
@@ -1002,6 +1011,7 @@ function ConfiguraInner() {
               {/* STEP 10 — QUANTITÀ */}
               {stepAttivo === 10 && (
                 <div className={styles.stepContent} id="step-10">
+                  <p className={styles.stepNote}>Puoi aggiungere fino a {impostazioni.maxPezzi} pezzi in un unico ordine. Se ti serve una quantità maggiore, <button className={styles.stepNoteLink} onClick={() => setShowPreventivoConfirm(true)}>chiedi un preventivo</button>.</p>
                   <p className={styles.stepDesc}>
                     {config.pets.length === 0
                       ? "Quante copie di questo bijoux vuoi aggiungere al carrello?"
@@ -1124,7 +1134,7 @@ function ConfiguraInner() {
 
                   <p className={styles.stepDesc}>
                     {tuttiCompletati
-                      ? "La configurazione è completa. Puoi aggiungere al carrello o ricominciare."
+                      ? "Hai terminato la configurazione. Il tuo bijoux è pronto per essere realizzato."
                       : "Completa tutti gli step prima di procedere."}
                   </p>
                   {tuttiCompletati && (
@@ -1269,6 +1279,17 @@ function ConfiguraInner() {
         </div>
       </main>
       <Footer />
+
+      {showPreventivoConfirm && (
+        <Dialog
+          titolo="Richiedere un preventivo?"
+          testo="Uscendo dal configuratore perderai le scelte fatte finora."
+          confermaTesto="Sì, prosegui"
+          annullaTesto="Annulla"
+          onConferma={() => { setShowPreventivoConfirm(false); setShowPreventivo(true); }}
+          onAnnulla={() => setShowPreventivoConfirm(false)}
+        />
+      )}
 
       {showResetDialog && (
         <Dialog titolo="Ricominciare?" testo="Perderai tutte le scelte fatte finora." confermaTesto="Sì, ricomincia" annullaTesto="Annulla"

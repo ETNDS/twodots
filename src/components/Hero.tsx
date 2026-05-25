@@ -7,15 +7,15 @@ export default function Hero() {
     <section className={styles.hero}>
       <div className={styles.text}>
         <h1 className={styles.tagline}>
-          Il tuo animale, da indossare.
+          Non è solo un ciondolo. È il vostro segno.
         </h1>
         <p className={styles.sub}>
-          Un pezzo unico che racconta il legame con il tuo animale.
-          Lo configuri tu — soggetto, colori, incisione.
-          Lo stesso segno per te e per il tuo pet.
+          Un bijoux che racconta il legame con il tuo animale, quello che scegli ogni giorno.
+          Lo configuri tu: soggetto, colori, incisione e dettagli.
+          Lo stesso segno, per te o per entrambi.
         </p>
         <p className={styles.stats}>
-          13 soggetti · 21 colori Swarovski · incisione personalizzata · prodotto su richiesta
+          13 soggetti · 21 colori Swarovski · incisione personalizzata · aggiungi il PET al tuo bijoux
         </p>
         <div className={styles.ctaGroup}>
           <Link href="/configura">

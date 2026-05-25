@@ -5,12 +5,10 @@
   padding-bottom: 50px;
   min-height: 100vh;
 }
-
 .hero {
   background: var(--color-lavanda);
   padding: 64px 36px 56px;
 }
-
 .label {
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -18,7 +16,6 @@
   opacity: 0.45;
   margin-bottom: 14px;
 }
-
 .labelLight {
   font-size: 10px;
   letter-spacing: 0.12em;
@@ -26,7 +23,6 @@
   opacity: 0.45;
   margin-bottom: 14px;
 }
-
 .title {
   font-size: 36px;
   font-weight: 500;
@@ -35,7 +31,6 @@
   line-height: 1.15;
   margin-bottom: 20px;
 }
-
 .intro {
   font-size: 14px;
   color: var(--color-navy);
@@ -43,24 +38,28 @@
   line-height: 1.85;
   max-width: 520px;
 }
-
 .sectionDark {
   background: var(--color-navy-section);
   padding: 56px 36px;
 }
-
+.sectionNavy {
+  background: var(--color-navy);
+  padding: 56px 36px;
+}
 .sectionLight {
   background: var(--color-lavanda-light);
   padding: 56px 36px;
 }
-
+.sectionMid {
+  background: var(--color-lavanda-mid);
+  padding: 56px 36px;
+}
 .sectionInner {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
   align-items: start;
 }
-
 .sectionInnerCentered {
   display: flex;
   flex-direction: column;
@@ -69,8 +68,6 @@
   max-width: 560px;
   margin: 0 auto;
 }
-
-/* Box titolo con bordo navy */
 .titleBox {
   background: var(--color-navy);
   border-radius: 14px;
@@ -78,35 +75,30 @@
   display: inline-flex;
   flex-direction: column;
 }
-
 .titleLight {
   font-size: 24px;
   font-weight: 500;
   color: var(--color-lavanda);
   line-height: 1.3;
 }
-
 .titleDark {
   font-size: 24px;
   font-weight: 500;
   color: var(--color-navy);
   line-height: 1.3;
 }
-
 .textLight {
   font-size: 13px;
   color: var(--color-lavanda);
   opacity: 0.7;
   line-height: 1.9;
 }
-
 .textDark {
   font-size: 13px;
   color: var(--color-navy);
   opacity: 0.65;
   line-height: 1.9;
 }
-
 .textDarkCentered {
   font-size: 13px;
   color: var(--color-navy);
@@ -114,34 +106,37 @@
   line-height: 1.9;
   text-align: center;
 }
-
+.textDarkSub {
+  font-size: 13px;
+  color: var(--color-navy);
+  opacity: 0.7;
+  line-height: 1.9;
+  font-style: italic;
+  margin-top: 20px;
+}
 .materialsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
-
 .materialCard {
   background: var(--color-navy);
   border-radius: 12px;
   padding: 20px;
   border: 0.5px solid rgba(234, 230, 244, 0.1);
 }
-
 .materialTitle {
   font-size: 13px;
   font-weight: 500;
   color: var(--color-lavanda);
   margin-bottom: 8px;
 }
-
 .materialText {
   font-size: 12px;
   color: var(--color-lavanda);
   opacity: 0.55;
   line-height: 1.75;
 }
-
 .emailLink {
   font-size: 14px;
   font-weight: 500;
@@ -149,60 +144,38 @@
   text-decoration: none;
   margin-top: 12px;
 }
-
 .emailLink:hover {
   opacity: 0.7;
 }
-
-.textDarkOnLight {
-  font-size: 13px;
-  color: var(--color-navy);
-  opacity: 0.7;
-  line-height: 1.9;
+.storiaImg {
+  margin-bottom: 8px;
 }
-
-
-
 @media (max-width: 768px) {
-
   .main {
     padding-top: 52px;
   }
-
   .hero {
     padding: 28px 16px 32px;
   }
-
   .title {
     font-size: 24px;
   }
-
   .sectionDark,
-  .sectionLight {
+  .sectionNavy,
+  .sectionLight,
+  .sectionMid {
     padding: 36px 16px;
   }
-
-  /* Tutte le sezioni a 2 colonne diventano colonna singola */
   .sectionInner {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-
   .titleDark,
   .titleLight {
     font-size: 20px;
   }
-
-  /* La grid materiali da 2x2 a colonna singola */
   .materialsGrid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
-}
-
-
-
-.sectionMid {
-  background: var(--color-lavanda-mid);
-  padding: 56px 36px;
 }
