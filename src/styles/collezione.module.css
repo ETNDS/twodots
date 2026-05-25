@@ -267,3 +267,20 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+.sezioneLabel {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+  opacity: 0.4;
+  margin-bottom: 12px;
+  margin-top: 4px;
+}
+
+.separatore {
+  height: 1px;
+  background: var(--color-navy);
+  opacity: 0.08;
+  margin: 24px 0;
+}

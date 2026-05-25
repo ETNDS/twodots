@@ -585,7 +585,6 @@ function ConfiguraInner() {
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showPreviewHum, setShowPreviewHum] = useState(false);
   const [showPreventivo, setShowPreventivo] = useState(false);
-  const [showPreventivoConfirm, setShowPreventivoConfirm] = useState(false);
   const [petWizardAperto, setPetWizardAperto] = useState(false);
   const [petInEditing, setPetInEditing] = useState<PetConfigurato | null>(null);
 
@@ -599,7 +598,7 @@ function ConfiguraInner() {
         getAnimaliPubblicati(), getCristalli(), getCordini(), getSmalti(), getFontDedica(),
         getConfezioni(), getImpostazioni(), getPetCiondolo(), getPetSizes(), getFasceScontoPet(),
       ]);
-      setAnimali(a);
+      setAnimali(a.sort((x, y) => x.nome.localeCompare(y.nome, "it")));
       setCristalli(cr.filter(x => x.attivo));
       setCordini(co.filter(x => x.attivo));
       setSmalti(sm.filter(x => x.attivo));
@@ -825,15 +824,30 @@ function ConfiguraInner() {
               {stepAttivo === 0 && (
                 <div className={styles.stepContent} id="step-0">
                   <p className={styles.stepDesc}>{STEP_DESC[0]}</p>
-                  <div className={styles.animaliGrid}>
-                    {animali.map((a) => (
-                      <button key={a.id} className={`${styles.animaleCard} ${config.animale?.id === a.id ? styles.animaleCardSel : ""}`}
-                        onClick={() => { update({ animale: a }); setStepAttivo(1); }}>
-                        <div className={styles.animaleImg}>{a.immagineDisegno && <img src={a.immagineDisegno} alt={a.nome} />}</div>
-                        <span className={styles.animaleNome}>{a.nome}</span>
-                      </button>
-                    ))}
-                  </div>
+                  {(() => {
+                    const inEvidenza = animali.filter(a => a.inEvidenza).sort((x, y) => x.nome.localeCompare(y.nome, "it"));
+                    const altri = animali.filter(a => !a.inEvidenza).sort((x, y) => x.nome.localeCompare(y.nome, "it"));
+                    return (
+                      <>
+                        {inEvidenza.length > 0 && (
+                          <>
+                            <p className={styles.animaliLabel}>I più scelti</p>
+                            <div className={styles.animaliGrid}>
+                              {inEvidenza.map(a => (
+                                <AnimaleCard key={a.id} a={a} selezionato={config.animale?.id === a.id} onClick={() => { update({ animale: a }); setStepAttivo(1); }} />
+                              ))}
+                            </div>
+                            <div className={styles.animaliSeparatore} />
+                          </>
+                        )}
+                        <div className={styles.animaliGrid}>
+                          {altri.map(a => (
+                            <AnimaleCard key={a.id} a={a} selezionato={config.animale?.id === a.id} onClick={() => { update({ animale: a }); setStepAttivo(1); }} />
+                          ))}
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               )}
 
@@ -1011,7 +1025,7 @@ function ConfiguraInner() {
               {/* STEP 10 — QUANTITÀ */}
               {stepAttivo === 10 && (
                 <div className={styles.stepContent} id="step-10">
-                  <p className={styles.stepNote}>Puoi aggiungere fino a {impostazioni.maxPezzi} pezzi in un unico ordine. Se ti serve una quantità maggiore, <button className={styles.stepNoteLink} onClick={() => setShowPreventivoConfirm(true)}>chiedi un preventivo</button>.</p>
+                  <p className={styles.stepNote}>Puoi aggiungere fino a {impostazioni.maxPezzi} pezzi in un unico ordine. Se ti serve una quantità maggiore, <button className={styles.stepNoteLink} onClick={() => setShowPreventivo(true)}>chiedi un preventivo</button>.</p>
                   <p className={styles.stepDesc}>
                     {config.pets.length === 0
                       ? "Quante copie di questo bijoux vuoi aggiungere al carrello?"
@@ -1280,18 +1294,7 @@ function ConfiguraInner() {
       </main>
       <Footer />
 
-      {showPreventivoConfirm && (
-        <Dialog
-          titolo="Richiedere un preventivo?"
-          testo="Uscendo dal configuratore perderai le scelte fatte finora."
-          confermaTesto="Sì, prosegui"
-          annullaTesto="Annulla"
-          onConferma={() => { setShowPreventivoConfirm(false); setShowPreventivo(true); }}
-          onAnnulla={() => setShowPreventivoConfirm(false)}
-        />
-      )}
-
-      {showResetDialog && (
+            {showResetDialog && (
         <Dialog titolo="Ricominciare?" testo="Perderai tutte le scelte fatte finora." confermaTesto="Sì, ricomincia" annullaTesto="Annulla"
           onConferma={() => { setShowResetDialog(false); setConfig(EMPTY); setStepAttivo(0); setMaxStepRaggiunto(0); }}
           onAnnulla={() => setShowResetDialog(false)} />
@@ -1321,6 +1324,13 @@ function ConfiguraInner() {
     </>
   );
 }
+
+const AnimaleCard = ({ a, selezionato, onClick }: { a: Animale; selezionato: boolean; onClick: () => void }) => (
+  <button className={`${styles.animaleCard} ${selezionato ? styles.animaleCardSel : ""}`} onClick={onClick}>
+    <div className={styles.animaleImg}>{a.immagineDisegno && <img src={a.immagineDisegno} alt={a.nome} />}</div>
+    <span className={styles.animaleNome}>{a.nome}</span>
+  </button>
+);
 
 export default function Configura() {
   return (

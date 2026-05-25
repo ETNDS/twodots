@@ -1653,7 +1653,7 @@
     overflow-y: auto;
     min-height: 0;
     height: calc(100dvh - 52px - 56px);
-    padding-bottom: 70px;
+    padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px));
   }
 
   .col3Inner {
@@ -1685,13 +1685,14 @@
 
   /* Grids più compatte */
   .coloriGrid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding-right: 8px;
   }
 
   .coloreCircleInner {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
   }
 
   .animaliGrid {
@@ -1784,4 +1785,21 @@
 
 .stepNoteLink:hover {
   opacity: 1;
+}
+
+.animaliLabel {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-navy);
+  opacity: 0.4;
+  margin-bottom: 8px;
+  margin-top: 4px;
+}
+
+.animaliSeparatore {
+  height: 1px;
+  background: var(--color-navy);
+  opacity: 0.08;
+  margin: 16px 0;
 }

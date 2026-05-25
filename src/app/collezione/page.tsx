@@ -17,24 +17,54 @@ function primaRiga(testo: string): string {
   return "";
 }
 
+function AnimaleCard({ animale }: { animale: Animale }) {
+  return (
+    <Link href={`/collezione/${animale.id}`} className={styles.cardLink}>
+      <div className={styles.card}>
+        <div className={styles.imageWrapper}>
+          {animale.immagineDisegno ? (
+            <img
+              src={animale.immagineDisegno}
+              alt={`Ciondolo ${animale.nome} — bijoux artigianale Two Dots`}
+              className={styles.image}
+            />
+          ) : (
+            <div className={styles.placeholder}>
+              <span>{animale.nome[0]}</span>
+            </div>
+          )}
+        </div>
+        {animale.inEvidenza && (
+          <div className={styles.badge}>Più scelto</div>
+        )}
+        <div className={styles.info}>
+          <h2 className={styles.nome}>{animale.nome}</h2>
+          <p className={styles.forma}>{primaRiga(animale.storia)}</p>
+          <p className={styles.disponibile}>Disponibile in versione YOU o YOU &amp; PET</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default function Collezione() {
   const [animali, setAnimali] = useState<Animale[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function carica() {
-      try {
-        const data = await getAnimaliPubblicati();
-        const ordinati = data.slice().sort((a, b) => a.nome.localeCompare(b.nome, "it"));
-        setAnimali(ordinati);
-        setLoading(false);
-      } catch (e) {
-        console.error("Errore:", e);
-        setLoading(false);
-      }
-    }
-    carica();
+    getAnimaliPubblicati().then((data) => {
+      setAnimali(data);
+      setLoading(false);
+    });
   }, []);
+
+  const inEvidenza = animali
+    .filter(a => a.inEvidenza)
+    .sort((a, b) => a.nome.localeCompare(b.nome, "it"));
+
+  const altri = animali
+    .filter(a => !a.inEvidenza)
+    .sort((a, b) => a.nome.localeCompare(b.nome, "it"));
 
   return (
     <>
@@ -48,42 +78,28 @@ export default function Collezione() {
             Scegli il soggetto che senti più tuo e personalizzalo nei dettagli.
           </p>
         </div>
+
         {loading ? (
           <div className={styles.loading}>Caricamento...</div>
         ) : (
-          <div className={styles.grid}>
-            {animali.map((animale) => (
-              <Link
-                key={animale.id}
-                href={`/collezione/${animale.id}`}
-                className={styles.cardLink}
-              >
-                <div className={styles.card}>
-                  <div className={styles.imageWrapper}>
-                    {animale.immagineDisegno ? (
-                      <img
-                        src={animale.immagineDisegno}
-                        alt={`Ciondolo ${animale.nome} — bijoux artigianale Two Dots`}
-                        className={styles.image}
-                      />
-                    ) : (
-                      <div className={styles.placeholder}>
-                        <span>{animale.nome[0]}</span>
-                      </div>
-                    )}
-                  </div>
-                  {animale.inEvidenza && (
-                    <div className={styles.badge}>Più scelto</div>
-                  )}
-                  <div className={styles.info}>
-                    <h2 className={styles.nome}>{animale.nome}</h2>
-                    <p className={styles.forma}>{primaRiga(animale.storia)}</p>
-                    <p className={styles.disponibile}>Disponibile in versione YOU o YOU &amp; PET</p>
-                  </div>
+          <>
+            {inEvidenza.length > 0 && (
+              <>
+                <p className={styles.sezioneLabel}>I più scelti</p>
+                <div className={styles.grid}>
+                  {inEvidenza.map((animale) => (
+                    <AnimaleCard key={animale.id + "-ev"} animale={animale} />
+                  ))}
                 </div>
-              </Link>
-            ))}
-          </div>
+                <div className={styles.separatore} />
+              </>
+            )}
+            <div className={styles.grid}>
+              {altri.map((animale) => (
+                <AnimaleCard key={animale.id} animale={animale} />
+              ))}
+            </div>
+          </>
         )}
 
         <div className={styles.ctaProponi}>
