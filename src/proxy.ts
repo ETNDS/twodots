@@ -5,7 +5,6 @@ const PASSWORD = process.env.SITE_PASSWORD || "twodots2024";
 const DISABLE_LOGIN = process.env.DISABLE_LOGIN === "true";
 
 const PUBLIC_PATHS = [
-  "/",
   "/login",
   "/api",
   "/_next",
