@@ -5,6 +5,7 @@ const PASSWORD = process.env.SITE_PASSWORD || "twodots2024";
 const DISABLE_LOGIN = process.env.DISABLE_LOGIN === "true";
 
 const PUBLIC_PATHS = [
+  "/",
   "/login",
   "/api",
   "/_next",
@@ -16,7 +17,7 @@ export function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (PUBLIC_PATHS.some(p => pathname.startsWith(p))) {
+  if (PUBLIC_PATHS.some(p => pathname === "/" || pathname.startsWith(p))) {
     return NextResponse.next();
   }
 

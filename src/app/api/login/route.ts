@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
   response.cookies.set("site-auth", PASSWORD, {
     httpOnly: true,
     secure: true,
-    maxAge: 60 * 60 * 24 * 30, // 30 giorni
     path: "/",
   });
   return response;
