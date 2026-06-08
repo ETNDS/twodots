@@ -35,8 +35,8 @@ export default function Navbar() {
               <Image
                 src="/images/twodots-logo-transparent.png"
                 alt="Two Dots"
-                width={30}
-                height={30}
+                width={42}
+                height={42}
                 priority
               />
             </Link>

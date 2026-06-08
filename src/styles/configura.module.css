@@ -1450,7 +1450,7 @@
   /* Layout rimane a griglia 3 colonne: col1 a larghezza 0, col2 (tabs) + col3 (contenuto) */
   .petWizardBody {
     grid-template-columns: 0 80px 1fr;
-    height: calc(100dvh - 52px - 53px);
+    height: calc(100dvh - var(--navbar-height) - 53px);
   }
 
   /* col1 (riepilogo navy) nascosta */
@@ -1491,7 +1491,7 @@
 .layout3col {
   display: grid;
   grid-template-columns: 220px 160px 1fr;
-  height: calc(100vh - 61px);
+  height: calc(100vh - var(--navbar-height));
   overflow: hidden;
 }
 
@@ -1627,7 +1627,7 @@
   /* Layout principale: col1 (riepilogo navy) nascosta, col2 (step) + col3 (parametri) */
   .layout3col {
     grid-template-columns: 0 96px 1fr;
-    height: calc(100dvh - 52px - 56px); /* navbar + intro */
+    height: calc(100dvh - var(--navbar-height) - 56px); /* navbar + intro */
     overflow: hidden;
   }
 
@@ -1652,7 +1652,7 @@
     order: 3;
     overflow-y: auto;
     min-height: 0;
-    height: calc(100dvh - 52px - 56px);
+    height: calc(100dvh - var(--navbar-height) - 56px);
     padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px));
   }
 
@@ -1802,4 +1802,34 @@
   background: var(--color-navy);
   opacity: 0.08;
   margin: 16px 0;
+}
+
+/* ── PREVIEW 3D PROGRESS ─────────────────────────────────────────────────── */
+
+.preview3DProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 4px 4px;
+}
+
+.preview3DProgressBar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.preview3DProgressFill {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.preview3DProgressLabel {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
 }

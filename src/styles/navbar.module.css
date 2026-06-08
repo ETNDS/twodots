@@ -14,10 +14,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 36px;
+  padding: 0 36px;
+  height: var(--navbar-height);
 }
 
 .logo { display: flex; align-items: center; }
+.logo img { width: 60px !important; height: 60px !important; }
 
 .links { display: flex; gap: 24px; }
 
@@ -111,7 +113,8 @@
 @media (max-width: 768px) {
 
   .inner {
-    padding: 10px 16px;
+    padding: 0 16px;
+    height: var(--navbar-height);
   }
 
   .links {
@@ -132,7 +135,7 @@
   .mobileMenu {
     display: flex;
     position: fixed;
-    top: 52px;
+    top: var(--navbar-height);
     right: 16px;
     left: auto;
     width: 180px;

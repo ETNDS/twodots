@@ -92,6 +92,25 @@ function newPetUid() {
   return Date.now().toString() + Math.random().toString(36).slice(2);
 }
 
+// ── PREVIEW 3D PROGRESS ──────────────────────────────────────────────────────
+// Componente riutilizzabile per HUM e PET.
+// Mostra una barra sotto l'anteprima con "preview pronta in X/5".
+// Sparisce quando show3D è true.
+
+function Preview3DProgress({ completati, totale }: { completati: number; totale: number }) {
+  const perc = Math.round((completati / totale) * 100);
+  return (
+    <div className={styles.preview3DProgress}>
+      <div className={styles.preview3DProgressBar}>
+        <div className={styles.preview3DProgressFill} style={{ width: `${perc}%` }} />
+      </div>
+      <span className={styles.preview3DProgressLabel}>
+        preview pronta in {completati}/{totale}
+      </span>
+    </div>
+  );
+}
+
 // ── COLORE CIRCLE ────────────────────────────────────────────────────────────
 
 function ColoreCircle({ item, selezionato, onClick }: { item: ItemColore; selezionato: boolean; onClick: () => void }) {
@@ -257,6 +276,15 @@ function PetWizard({
   const show3DPet = !!(petCiondolo?.modello3D && local.coloreCiondoloPet && local.occhioSxPet && local.occhioDxPet);
   const petCompleto = !!local.coloreCiondoloPet && !!local.occhioSxPet && !!local.occhioDxPet && (sizes.length === 0 || !!local.sizePet);
 
+  // Progresso 3D per il PET: colore + occhio sx + occhio dx = 3 step fondamentali
+  const pet3DTotale = sizes.length > 0 ? 4 : 3;
+  const pet3DCompletati = [
+    sizes.length > 0 ? local.sizePet : true,
+    local.coloreCiondoloPet,
+    local.occhioSxPet,
+    local.occhioDxPet,
+  ].filter(Boolean).length;
+
   const steps = [
     ...(sizes.length > 0 ? [{ id: -1, label: "Taglia", done: !!local.sizePet }] : []),
     { id: 0, label: "Colore", done: !!local.coloreCiondoloPet },
@@ -308,6 +336,9 @@ function PetWizard({
               </div>
               {show3DPet && <div className={styles.label3D}>↺ ruota</div>}
             </div>
+            {!show3DPet && (
+              <Preview3DProgress completati={pet3DCompletati} totale={pet3DTotale} />
+            )}
             <div className={styles.riepilogoDettagli}>
               {local.sizePet && (
                 <div className={styles.riepilogoRiga}>
@@ -622,8 +653,21 @@ function ConfiguraInner() {
     carica();
   }, [animaleParam]);
 
+  // ── UPDATE con lock step fondamentali ──────────────────────────────────────
+  // I 5 step fondamentali per il 3D (animale, coloreCiondolo, smalto, occhioSx, occhioDx)
+  // possono essere cambiati ma non azzerati a null una volta impostati.
   function update(partial: Partial<Configurazione>) {
-    setConfig(p => ({ ...p, ...partial }));
+    setConfig(p => {
+      const next = { ...p, ...partial };
+      // Lock: se un campo fondamentale era già valorizzato, non può tornare a null
+      const campiLockati: (keyof Configurazione)[] = ["animale", "coloreCiondolo", "smalto", "occhioSx", "occhioDx"];
+      for (const campo of campiLockati) {
+        if (p[campo] !== null && next[campo] === null) {
+          (next as Record<string, unknown>)[campo] = p[campo];
+        }
+      }
+      return next;
+    });
   }
 
   // ── PREZZI ──────────────────────────────────────────────────────────────────
@@ -743,6 +787,9 @@ function ConfiguraInner() {
 
   const fontHum = config.fontDedicaHum || fonts[0];
   const show3DViewer = !!(config.animale?.modello3D && config.coloreCiondolo && config.smalto && config.occhioSx && config.occhioDx);
+
+  // Progresso 3D per il bijoux HUM: animale + colore + smalto + occhio sx + occhio dx = 5 step
+  const hum3DCompletati = [config.animale, config.coloreCiondolo, config.smalto, config.occhioSx, config.occhioDx].filter(Boolean).length;
 
   if (loading) return (
     <><BackgroundLogo /><Navbar /><main className={styles.main}><p className={styles.loading}>Caricamento...</p></main><Footer /></>
@@ -1091,6 +1138,9 @@ function ConfiguraInner() {
                         )}
                         {show3DViewer && <div className={styles.label3D}>↺ ruota</div>}
                       </div>
+                      {!show3DViewer && (
+                        <Preview3DProgress completati={hum3DCompletati} totale={5} />
+                      )}
                     </div>
                     <div className={styles.prezzoBox}>
                       <div className={styles.prezzoRiga}><span>YOU</span><span>€{prezzoHumBase}</span></div>
@@ -1225,6 +1275,9 @@ function ConfiguraInner() {
                   )}
                   {show3DViewer && <div className={styles.label3D}>↺ ruota</div>}
                 </div>
+                {!show3DViewer && (
+                  <Preview3DProgress completati={hum3DCompletati} totale={5} />
+                )}
               </div>
 
 

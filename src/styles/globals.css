@@ -18,6 +18,8 @@
   --admin-text-muted: rgba(13, 14, 46, 0.4);
   --admin-border: rgba(13, 14, 46, 0.08);
   --admin-hover: #EAE6F4;
+
+  --navbar-height: 64px
 }
 
 body {
