@@ -26,22 +26,70 @@
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
 }
 
-.navLink {
-  font-size: 13px;
+.navGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.navGroupBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: var(--admin-sidebar-text);
-  opacity: 0.5;
-  text-decoration: none;
+  opacity: 0.4;
   padding: 8px 12px;
   border-radius: 8px;
+  text-align: left;
   transition: opacity 0.15s;
 }
 
+.navGroupBtn:hover {
+  opacity: 0.7;
+  background: rgba(234, 230, 244, 0.05);
+}
+
+.navGroupBtnActive {
+  opacity: 0.9;
+}
+
+.navGroupArrow {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.navGroupItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-left: 8px;
+  margin-bottom: 4px;
+}
+
+.navLink {
+  font-size: 12px;
+  color: var(--admin-sidebar-text);
+  opacity: 0.45;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: opacity 0.15s;
+  display: block;
+}
+
 .navLink:hover {
-  opacity: 0.8;
+  opacity: 0.75;
   background: rgba(234, 230, 244, 0.05);
 }
 
@@ -53,23 +101,6 @@
 .sidebarFooter {
   padding-top: 20px;
   border-top: 0.5px solid rgba(234, 230, 244, 0.08);
-}
-
-.logoutLink {
-  font-size: 12px;
-  color: var(--admin-sidebar-text);
-  opacity: 0.3;
-  text-decoration: none;
-}
-
-.logoutLink:hover {
-  opacity: 0.6;
-}
-
-.content {
-  flex: 1;
-  padding: 40px;
-  overflow-y: auto;
 }
 
 .logoutBtn {
@@ -86,4 +117,10 @@
 
 .logoutBtn:hover {
   opacity: 0.6;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
 }

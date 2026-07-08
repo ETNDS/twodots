@@ -7,7 +7,7 @@ import { Animale } from "@/lib/animali";
 export type ArticoloCarrello = {
   id: string;
   animale: Animale;
-  coloreCiondolo: "nero" | "bianco";
+  coloreCiondolo: string;
   smalto: ItemColore;
   occhioSx: ItemColore;
   occhioDx: ItemColore;

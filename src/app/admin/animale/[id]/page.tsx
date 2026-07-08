@@ -5,11 +5,13 @@ import { useRouter, useParams } from "next/navigation";
 import { doc, getDoc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "@/lib/firebase";
+import { getColoriResina, ItemColore } from "@/lib/configuratore";
 import ReactMarkdown from "react-markdown";
 import styles from "@styles/adminAnimale.module.css";
 import ImmagineCard from "@/components/ImmagineCard";
+import dynamic from "next/dynamic";
 
-type OcchioPos = { x: number; y: number; z: number };
+const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
 
 type AnimaleForm = {
   id: string;
@@ -26,12 +28,10 @@ type AnimaleForm = {
   immagineForma: string;
   immaginiCiondolo: string[];
   modello3D: string;
-  occhioSxPos: OcchioPos | null;
-  occhioDxPos: OcchioPos | null;
   igLink: string;
   prezzo: number;
   prezzoPet: number;
-  defaultViewerColore: "nero" | "bianco";
+  defaultViewerColore: string;
   defaultViewerDisegno: string;
 };
 
@@ -50,12 +50,10 @@ const EMPTY: AnimaleForm = {
   immagineForma: "",
   immaginiCiondolo: [],
   modello3D: "",
-  occhioSxPos: null,
-  occhioDxPos: null,
   igLink: "",
   prezzo: 45,
   prezzoPet: 15,
-  defaultViewerColore: "nero",
+  defaultViewerColore: "#1a1a1a",
   defaultViewerDisegno: "#ffffff",
 };
 
@@ -71,6 +69,20 @@ export default function AdminAnimale() {
   const [showPreview, setShowPreview] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDeleteModelloDialog, setShowDeleteModelloDialog] = useState(false);
+  const [coloriResina, setColoriResina] = useState<ItemColore[]>([]);
+  const [confirmDeleteTarget, setConfirmDeleteTarget] = useState<"disegno" | "forma" | null>(null);
+
+  // Colori preview viewer 3D (solo test, non salvati)
+  const [previewCiondolo, setPreviewCiondolo] = useState("#1a1a1a");
+  const [previewSmalto, setPreviewSmalto] = useState("#ffffff");
+  const [previewOcchioSx, setPreviewOcchioSx] = useState("#e07010");
+  const [previewOcchioDx, setPreviewOcchioDx] = useState("#e07010");
+  const [appliedColors, setAppliedColors] = useState({
+    ciondolo: "#1a1a1a",
+    smalto: "#ffffff",
+    occhioSx: "#e07010",
+    occhioDx: "#e07010",
+  });
   const [uploadingDisegno, setUploadingDisegno] = useState(false);
   const [uploadingForma, setUploadingForma] = useState(false);
   const [uploadingCiondolo, setUploadingCiondolo] = useState(false);
@@ -84,13 +96,6 @@ export default function AdminAnimale() {
   const [prezzoStr, setPrezzoStr] = useState("45");
   const [prezzoPetStr, setPrezzoPetStr] = useState("15");
 
-  // Stringhe per i campi posizione occhi
-  const [sxX, setSxX] = useState("");
-  const [sxY, setSxY] = useState("");
-  const [sxZ, setSxZ] = useState("");
-  const [dxX, setDxX] = useState("");
-  const [dxY, setDxY] = useState("");
-  const [dxZ, setDxZ] = useState("");
 
   useEffect(() => {
     if (isNuovo) {
@@ -118,12 +123,10 @@ export default function AdminAnimale() {
         immagineForma: d.immagineForma || "",
         immaginiCiondolo: d.immaginiCiondolo?.filter((x: string) => x) || [],
         modello3D: d.modello3D || "",
-        occhioSxPos: d.occhioSxPos || null,
-        occhioDxPos: d.occhioDxPos || null,
         igLink: d.igLink || "",
         prezzo: d.prezzo || 45,
         prezzoPet: d.prezzoPet || 15,
-        defaultViewerColore: d.defaultViewer?.coloreCiondolo || "nero",
+        defaultViewerColore: d.defaultViewer?.coloreCiondolo || "#1a1a1a",
         defaultViewerDisegno: d.defaultViewer?.coloreDisegno || "#ffffff",
       };
       setForm(f);
@@ -133,21 +136,12 @@ export default function AdminAnimale() {
       setOcchiStr(d.occhiMm ? String(d.occhiMm) : "2");
       setPrezzoStr(d.prezzo ? String(d.prezzo) : "45");
       setPrezzoPetStr(d.prezzoPet ? String(d.prezzoPet) : "15");
-      if (d.occhioSxPos) {
-        setSxX(String(d.occhioSxPos.x));
-        setSxY(String(d.occhioSxPos.y));
-        setSxZ(String(d.occhioSxPos.z));
-      }
-      if (d.occhioDxPos) {
-        setDxX(String(d.occhioDxPos.x));
-        setDxY(String(d.occhioDxPos.y));
-        setDxZ(String(d.occhioDxPos.z));
-      }
       if (d.createdAt?.toDate) setCreatedAt(d.createdAt.toDate().toLocaleString("it-IT"));
       if (d.updatedAt?.toDate) setUpdatedAt(d.updatedAt.toDate().toLocaleString("it-IT"));
       setLoading(false);
     }
     carica();
+    getColoriResina().then(res => setColoriResina(res.filter(r => r.attivo)));
   }, [isNuovo, params.id, router]);
 
   const isDirty = JSON.stringify(form) !== JSON.stringify(original);
@@ -181,23 +175,6 @@ export default function AdminAnimale() {
     if (!isNaN(num)) update(key, num);
   }
 
-  function handleOcchioChange(
-    raw: string,
-    setStr: (s: string) => void,
-    occhio: "sx" | "dx",
-    campo: "x" | "y" | "z"
-  ) {
-    const normalized = raw.replace(",", ".");
-    setStr(raw);
-    const num = parseFloat(normalized);
-    if (isNaN(num)) return;
-    const key = occhio === "sx" ? "occhioSxPos" : "occhioDxPos";
-    setForm(prev => {
-      const current = prev[key] || { x: 0, y: 0, z: 0 };
-      return { ...prev, [key]: { ...current, [campo]: num } };
-    });
-  }
-
   async function handleSave() {
     if (!form.id.trim()) { alert("Inserisci un ID per l'animale."); return; }
     setSaving(true);
@@ -216,8 +193,6 @@ export default function AdminAnimale() {
         immagineForma: form.immagineForma,
         immaginiCiondolo: form.immaginiCiondolo,
         modello3D: form.modello3D,
-        occhioSxPos: form.occhioSxPos,
-        occhioDxPos: form.occhioDxPos,
         igLink: form.igLink,
         prezzo: form.prezzo,
         prezzoPet: form.prezzoPet,
@@ -316,11 +291,7 @@ export default function AdminAnimale() {
     setForm(prev => ({
       ...prev,
       modello3D: "",
-      occhioSxPos: null,
-      occhioDxPos: null,
-    }));
-    setSxX(""); setSxY(""); setSxZ("");
-    setDxX(""); setDxY(""); setDxZ("");
+            }));
     setShowDeleteModelloDialog(false);
   }
 
@@ -499,7 +470,7 @@ export default function AdminAnimale() {
                 <img src={form.immagineDisegno} alt="Disegno" />
                 <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 4 }}>
                   <button title="Scarica" onClick={() => window.open(form.immagineDisegno, "_blank")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>💾</button>
-                  <button title="Elimina" onClick={handleDeleteDisegno} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
+                  <button title="Elimina" onClick={() => setConfirmDeleteTarget("disegno")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
                 </div>
               </div>
             ) : (
@@ -525,7 +496,7 @@ export default function AdminAnimale() {
                 <img src={form.immagineForma} alt="Forma ciondolo" />
                 <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 4 }}>
                   <button title="Scarica" onClick={() => window.open(form.immagineForma, "_blank")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>💾</button>
-                  <button title="Elimina" onClick={handleDeleteForma} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
+                  <button title="Elimina" onClick={() => setConfirmDeleteTarget("forma")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
                 </div>
               </div>
             ) : (
@@ -547,67 +518,75 @@ export default function AdminAnimale() {
               File GLB per l'anteprima 3D nel configuratore.
             </p>
             {form.modello3D ? (
-              <>
-                <div className={styles.imgPreview}>
-                  <p style={{ fontSize: 12, wordBreak: "break-all", color: "var(--admin-text-muted)", marginBottom: 8 }}>
-                    ✓ {decodeURIComponent(form.modello3D.split("/").pop()?.split("?")[0] || "")}
-                  </p>
-                  <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 4 }}>
+              <div>
+                <p style={{ fontSize: 12, wordBreak: "break-all", color: "var(--admin-text-muted)", marginBottom: 12 }}>
+                  ✓ {decodeURIComponent(form.modello3D.split("/").pop()?.split("?")[0] || "")}
+                </p>
+
+                {/* Box bordato: viewer + colori */}
+                <div style={{ border: "1px solid var(--admin-border)", borderRadius: 10, padding: 16, display: "flex", gap: 20, alignItems: "flex-start", flexWrap: "wrap" }}>
+                  {/* Viewer 3D */}
+                  <div style={{ width: 280, height: 280, flexShrink: 0, borderRadius: 8, overflow: "hidden", background: "#f5f5f5" }}>
+                    <Viewer3D
+                        glbUrl={form.modello3D}
+                      coloreCiondolo={appliedColors.ciondolo}
+                      coloreDisegno={appliedColors.smalto}
+                      coloreOcchioSx={appliedColors.occhioSx}
+                      coloreOcchioDx={appliedColors.occhioDx}
+                    />
+                  </div>
+
+                  {/* Color picker + Applica */}
+                  <div style={{ flex: 1, minWidth: 180 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {([
+                        { label: "Ciondolo", value: previewCiondolo, set: setPreviewCiondolo },
+                        { label: "Smalto", value: previewSmalto, set: setPreviewSmalto },
+                        { label: "Occhio sx", value: previewOcchioSx, set: setPreviewOcchioSx },
+                        { label: "Occhio dx", value: previewOcchioDx, set: setPreviewOcchioDx },
+                      ] as { label: string; value: string; set: (v: string) => void }[]).map(({ label, value, set }) => (
+                        <div key={label}>
+                          <label style={{ fontSize: 11, color: "var(--admin-text-muted)", display: "block", marginBottom: 4 }}>{label}</label>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, border: "1px solid var(--admin-border)", borderRadius: 6, padding: "4px 8px" }}>
+                            <input
+                              type="color"
+                              value={value}
+                              onChange={(e) => set(e.target.value)}
+                              style={{ width: 22, height: 22, padding: 0, border: "none", borderRadius: 4, cursor: "pointer", flexShrink: 0 }}
+                            />
+                            <input
+                              type="text"
+                              value={value}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                if (/^#[0-9a-fA-F]{0,6}$/.test(v)) set(v);
+                              }}
+                              onBlur={(e) => {
+                                if (!/^#[0-9a-fA-F]{6}$/.test(e.target.value)) set(value);
+                              }}
+                              style={{ flex: 1, fontSize: 12, fontFamily: "monospace", border: "none", outline: "none", background: "transparent", color: "var(--admin-text)", width: 0 }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setAppliedColors({ ciondolo: previewCiondolo, smalto: previewSmalto, occhioSx: previewOcchioSx, occhioDx: previewOcchioDx })}
+                      title="Aggiorna i colori mostrati nell'anteprima 3D qui sopra"
+                      style={{ marginTop: 10, padding: "6px 16px", fontSize: 12, fontWeight: 600, borderRadius: 6, border: "1px solid #999", background: "#444", color: "#fff", cursor: "pointer" }}
+                    >
+                      Applica colori all&apos;anteprima
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bottoni carica/cancella sotto */}
+                <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
                   <button title="Scarica" onClick={() => window.open(form.modello3D, "_blank")} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>💾</button>
                   <button title="Elimina" onClick={() => setShowDeleteModelloDialog(true)} style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14 }}>🗑️</button>
                 </div>
-                </div>
-
-                <div style={{ marginTop: 16 }}>
-                  <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 8 }}>
-                    Posizione occhio sinistro nel viewer 3D
-                  </p>
-                  <div className={styles.fieldRow}>
-                    <div className={styles.field}>
-                      <label className={styles.label}>X</label>
-                      <input className={styles.input} type="text" inputMode="decimal" value={sxX}
-                        onChange={(e) => handleOcchioChange(e.target.value, setSxX, "sx", "x")}
-                        placeholder="0.00" />
-                    </div>
-                    <div className={styles.field}>
-                      <label className={styles.label}>Y</label>
-                      <input className={styles.input} type="text" inputMode="decimal" value={sxY}
-                        onChange={(e) => handleOcchioChange(e.target.value, setSxY, "sx", "y")}
-                        placeholder="0.00" />
-                    </div>
-                    <div className={styles.field}>
-                      <label className={styles.label}>Z</label>
-                      <input className={styles.input} type="text" inputMode="decimal" value={sxZ}
-                        onChange={(e) => handleOcchioChange(e.target.value, setSxZ, "sx", "z")}
-                        placeholder="0.00" />
-                    </div>
-                  </div>
-
-                  <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 8, marginTop: 12 }}>
-                    Posizione occhio destro nel viewer 3D
-                  </p>
-                  <div className={styles.fieldRow}>
-                    <div className={styles.field}>
-                      <label className={styles.label}>X</label>
-                      <input className={styles.input} type="text" inputMode="decimal" value={dxX}
-                        onChange={(e) => handleOcchioChange(e.target.value, setDxX, "dx", "x")}
-                        placeholder="0.00" />
-                    </div>
-                    <div className={styles.field}>
-                      <label className={styles.label}>Y</label>
-                      <input className={styles.input} type="text" inputMode="decimal" value={dxY}
-                        onChange={(e) => handleOcchioChange(e.target.value, setDxY, "dx", "y")}
-                        placeholder="0.00" />
-                    </div>
-                    <div className={styles.field}>
-                      <label className={styles.label}>Z</label>
-                      <input className={styles.input} type="text" inputMode="decimal" value={dxZ}
-                        onChange={(e) => handleOcchioChange(e.target.value, setDxZ, "dx", "z")}
-                        placeholder="0.00" />
-                    </div>
-                  </div>
-                </div>
-              </>
+              </div>
             ) : (
               <div className={styles.uploadArea}>
                 <label className={styles.uploadBtn}>
@@ -621,7 +600,6 @@ export default function AdminAnimale() {
             )}
           </div>
 
-
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Anteprima pagina dettaglio</h2>
             <p style={{ fontSize: 11, color: "var(--admin-text-muted)", marginBottom: 12 }}>
@@ -633,10 +611,11 @@ export default function AdminAnimale() {
                 <select
                   className={styles.input}
                   value={form.defaultViewerColore}
-                  onChange={(e) => update("defaultViewerColore", e.target.value as "nero" | "bianco")}
+                  onChange={(e) => update("defaultViewerColore", e.target.value)}
                 >
-                  <option value="nero">Nero</option>
-                  <option value="bianco">Bianco</option>
+                  {coloriResina.map(r => (
+                    <option key={r.id} value={r.coloreCSS}>{r.nome}</option>
+                  ))}
                 </select>
               </div>
               <div className={styles.field}>
@@ -708,11 +687,37 @@ export default function AdminAnimale() {
           <div className={styles.dialog}>
             <h2 className={styles.dialogTitle}>Elimina modello 3D</h2>
             <p className={styles.dialogText}>
-              Eliminando il modello 3D verranno azzerati anche i valori di posizione degli occhi. Continuare?
+              Eliminando il modello 3D verrà rimosso il file. Continuare?
             </p>
             <div className={styles.dialogActions}>
               <button className={styles.dialogCancelBtn} onClick={() => setShowDeleteModelloDialog(false)}>Annulla</button>
               <button className={styles.dialogDeleteBtn} onClick={handleDeleteModello}>Elimina</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmDeleteTarget && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>
+              Elimina {confirmDeleteTarget === "disegno" ? "disegno animale" : "forma ciondolo"}
+            </h2>
+            <p className={styles.dialogText}>
+              Questa immagine verrà rimossa. Continuare?
+            </p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setConfirmDeleteTarget(null)}>Annulla</button>
+              <button
+                className={styles.dialogDeleteBtn}
+                onClick={() => {
+                  if (confirmDeleteTarget === "disegno") handleDeleteDisegno();
+                  if (confirmDeleteTarget === "forma") handleDeleteForma();
+                  setConfirmDeleteTarget(null);
+                }}
+              >
+                Elimina
+              </button>
             </div>
           </div>
         </div>

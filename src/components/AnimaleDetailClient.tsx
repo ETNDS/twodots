@@ -12,7 +12,7 @@ const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
 
 // Valori default viewer — sovrascrivibili per animale tramite defaultViewer nel db
 const VIEWER_FALLBACK = {
-  coloreCiondolo: "nero" as const,
+  coloreCiondolo: "#1a1a1a",
   coloreDisegno: "#ffffff",
   coloreOcchioSx: "#ccddff",
   coloreOcchioDx: "#ccddff",
@@ -46,8 +46,6 @@ export default function AnimaleDetailClient({ animale }: { animale: Animale }) {
                 coloreDisegno={animale.defaultViewer?.coloreDisegno ?? VIEWER_FALLBACK.coloreDisegno}
                 coloreOcchioSx={VIEWER_FALLBACK.coloreOcchioSx}
                 coloreOcchioDx={VIEWER_FALLBACK.coloreOcchioDx}
-                occhioSxPos={animale.occhioSxPos}
-                occhioDxPos={animale.occhioDxPos}
               />
               <div className={styles.watermark3D}>
                 {[...Array(6)].map((_, i) => (

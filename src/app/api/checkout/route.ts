@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
           price: prezzoPet.toFixed(2),
           quantity: qty,
           properties: [
-            { name: "Colore bijoux", value: pet.coloreCiondoloPet === "nero" ? "Nero" : "Bianco" },
+            { name: "Colore bijoux", value: pet.coloreCiondoloPet?.nome ?? "" },
             ...(pet.occhioSxPet ? [{ name: "Swarovski sx", value: pet.occhioSxPet.nome }] : []),
             ...(pet.occhioDxPet ? [{ name: "Swarovski dx", value: pet.occhioDxPet.nome }] : []),
             ...(pet.dedicaPet ? [{ name: "Dedica", value: pet.dedicaPet }] : []),

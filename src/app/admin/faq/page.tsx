@@ -22,6 +22,29 @@ export default function FaqAdmin() {
   const [faq, setFaq] = useState<Faq[]>([]);
   const [categorie, setCategorie] = useState<FaqCategoria[]>([]);
   const [loading, setLoading] = useState(true);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; tipo: "faq" | "cat" } | null>(null);
+  const [sortKey, setSortKey] = useState<string>("ordine");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  function handleSort(key: string) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  }
+
+  function sortIcon(key: string) {
+    if (sortKey !== key) return null;
+    return <span style={{ opacity: 0.6, fontSize: 10 }}>{sortDir === "asc" ? " ↑" : " ↓"}</span>;
+  }
+
+  function sorted<T>(data: T[]): T[] {
+    return [...data].sort((a: any, b: any) => {
+      const va = a[sortKey]; const vb = b[sortKey];
+      if (va == null) return 1; if (vb == null) return -1;
+      const cmp = typeof va === "number" ? va - vb : String(va).localeCompare(String(vb));
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }
+
   const [editingFaq, setEditingFaq] = useState<(Faq & { isNew?: boolean }) | null>(null);
   const [editingCat, setEditingCat] = useState<(FaqCategoria & { isNew?: boolean }) | null>(null);
   const [saving, setSaving] = useState(false);
@@ -51,9 +74,9 @@ export default function FaqAdmin() {
   }
 
   async function handleDeleteFaq(id: string) {
-    if (!confirm("Eliminare questa domanda?")) return;
     await deleteFaq(id);
     await carica();
+    setConfirmDelete(null);
   }
 
   // ── CATEGORIE CRUD ────────────────────────────────────────────────────────
@@ -72,9 +95,9 @@ export default function FaqAdmin() {
   }
 
   async function handleDeleteCat(id: string) {
-    if (!confirm("Eliminare questa categoria? Le domande associate rimarranno nel database ma non saranno più visibili.")) return;
     await deleteFaqCategoria(id);
     await carica();
+    setConfirmDelete(null);
   }
 
   return (
@@ -114,13 +137,13 @@ export default function FaqAdmin() {
 
           <div className={localStyles.grid}>
             <div className={localStyles.gridHeader}>
-              <span>Ord.</span>
-              <span>Categoria</span>
-              <span>Domanda</span>
+              <span onClick={() => handleSort("ordine")} style={{ cursor: "pointer", userSelect: "none" }}>Ord{sortIcon("ordine")}</span>
+              <span onClick={() => handleSort("categoriaSlug")} style={{ cursor: "pointer", userSelect: "none" }}>Categoria{sortIcon("categoriaSlug")}</span>
+              <span onClick={() => handleSort("domanda")} style={{ cursor: "pointer", userSelect: "none" }}>Domanda{sortIcon("domanda")}</span>
               <span>Stato</span>
               <span></span>
             </div>
-            {faq.map(f => (
+            {sorted(faq).map(f => (
               <div key={f.id} className={localStyles.gridRow}>
                 <span className={localStyles.colOrdine}>{f.ordine}</span>
                 <span className={localStyles.colCategoria}>
@@ -131,8 +154,8 @@ export default function FaqAdmin() {
                   {f.attivo ? "Attiva" : "Nascosta"}
                 </span>
                 <div className={localStyles.colAzioni}>
-                  <button className={localStyles.btnEdit} onClick={() => setEditingFaq({ ...f })}>Modifica</button>
-                  <button className={localStyles.btnDelete} onClick={() => handleDeleteFaq(f.id)}>Elimina</button>
+                  <button className={localStyles.btnEdit} onClick={() => setEditingFaq({ ...f })} title="Modifica">✏️</button>
+                  <button className={localStyles.btnDelete} onClick={() => setConfirmDelete({ id: f.id, tipo: "faq" })} title="Elimina">🗑️</button>
                 </div>
               </div>
             ))}
@@ -152,13 +175,13 @@ export default function FaqAdmin() {
 
           <div className={localStyles.grid}>
             <div className={localStyles.gridHeader}>
-              <span>Ord.</span>
-              <span>Nome</span>
-              <span>Slug</span>
+              <span onClick={() => handleSort("ordine")} style={{ cursor: "pointer", userSelect: "none" }}>Ord{sortIcon("ordine")}</span>
+              <span onClick={() => handleSort("nome")} style={{ cursor: "pointer", userSelect: "none" }}>Nome{sortIcon("nome")}</span>
+              <span onClick={() => handleSort("slug")} style={{ cursor: "pointer", userSelect: "none" }}>Codice{sortIcon("slug")}</span>
               <span>Stato</span>
               <span></span>
             </div>
-            {categorie.map(c => (
+            {sorted(categorie).map(c => (
               <div key={c.id} className={localStyles.gridRow}>
                 <span className={localStyles.colOrdine}>{c.ordine}</span>
                 <span className={localStyles.colNome}>{c.nome}</span>
@@ -167,8 +190,8 @@ export default function FaqAdmin() {
                   {c.attivo ? "Attiva" : "Nascosta"}
                 </span>
                 <div className={localStyles.colAzioni}>
-                  <button className={localStyles.btnEdit} onClick={() => setEditingCat({ ...c })}>Modifica</button>
-                  <button className={localStyles.btnDelete} onClick={() => handleDeleteCat(c.id)}>Elimina</button>
+                  <button className={localStyles.btnEdit} onClick={() => setEditingCat({ ...c })} title="Modifica">✏️</button>
+                  <button className={localStyles.btnDelete} onClick={() => setConfirmDelete({ id: c.id, tipo: "cat" })} title="Elimina">🗑️</button>
                 </div>
               </div>
             ))}
@@ -281,6 +304,23 @@ export default function FaqAdmin() {
           </div>
         </div>
       )}
+
+      {confirmDelete && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>Elimina elemento</h2>
+            <p className={styles.dialogText}>Eliminare questo elemento? L&apos;operazione è irreversibile.</p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setConfirmDelete(null)}>Annulla</button>
+              <button className={styles.dialogDeleteBtn} onClick={() => {
+                if (confirmDelete.tipo === "faq") handleDeleteFaq(confirmDelete.id);
+                else handleDeleteCat(confirmDelete.id);
+              }}>Elimina</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

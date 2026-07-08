@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import BackgroundLogo from "@/components/BackgroundLogo";
 import { getAnimaliPubblicati, Animale } from "@/lib/animali";
 import {
-  getCristalli, getCordini, getSmalti, getFontDedica, getConfezioni,
+  getCristalli, getCordini, getSmalti, getColoriResina, getFontDedica, getConfezioni,
   getImpostazioni, getPetCiondolo, getPetSizes, getFasceScontoPet, calcolaScontoPet,
   ItemColore, FontDedica, Confezione, Impostazioni, PetCiondolo, PetSize,
   PetConfigurato, FasciaScontoPet
@@ -21,7 +21,7 @@ import Dialog from "@/components/Dialog";
 
 type Configurazione = {
   animale: Animale | null;
-  coloreCiondolo: "nero" | "bianco" | null;
+  coloreCiondolo: ItemColore | null;
   smalto: ItemColore | null;
   occhioSx: ItemColore | null;
   occhioDx: ItemColore | null;
@@ -78,11 +78,6 @@ const STEP_DESC: Record<number, string> = {
 };
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
-
-function ciondoloGradient(colore: "nero" | "bianco"): string {
-  if (colore === "nero") return "radial-gradient(ellipse at 50% 30%, #888 0%, #1a1a1a 50%, #000 100%)";
-  return "radial-gradient(ellipse at 50% 30%, #fff 0%, #e0e0e0 50%, #aaa 100%)";
-}
 
 function coloreGradient(css: string): string {
   return `radial-gradient(circle at 35% 35%, white 0%, ${css} 45%, color-mix(in srgb, ${css} 60%, black) 100%)`;
@@ -251,11 +246,12 @@ function ModuloPreventivo({ maxPezzi, onClose }: { maxPezzi: number; onClose: ()
 // ── PET WIZARD ───────────────────────────────────────────────────────────────
 
 function PetWizard({
-  pet, cristalli, fonts, sizes, petCiondolo, impostazioni, hasDedicaHum,
+  pet, cristalli, coloriResina, fonts, sizes, petCiondolo, impostazioni, hasDedicaHum,
   onSalva, onAnnulla
 }: {
   pet: PetConfigurato;
   cristalli: ItemColore[];
+  coloriResina: ItemColore[];
   fonts: FontDedica[];
   sizes: PetSize[];
   petCiondolo: PetCiondolo | null;
@@ -273,7 +269,7 @@ function PetWizard({
   }
 
   const fontPet = local.fontDedicaPet || fonts[0];
-  const show3DPet = !!(petCiondolo?.modello3D && local.coloreCiondoloPet && local.occhioSxPet && local.occhioDxPet);
+  const show3DPet = !!petCiondolo?.modello3D;
   const petCompleto = !!local.coloreCiondoloPet && !!local.occhioSxPet && !!local.occhioDxPet && (sizes.length === 0 || !!local.sizePet);
 
   // Progresso 3D per il PET: colore + occhio sx + occhio dx = 3 step fondamentali
@@ -317,14 +313,10 @@ function PetWizard({
               {show3DPet ? (
                 <Viewer3D
                   glbUrl={petCiondolo!.modello3D}
-                  coloreCiondolo={local.coloreCiondoloPet!}
+                  coloreCiondolo={local.coloreCiondoloPet?.coloreCSS ?? null}
                   coloreDisegno={null}
-                  coloreOcchioSx={local.occhioSxPet!.coloreCSS}
-                  coloreOcchioDx={local.occhioDxPet!.coloreCSS}
-                  immagineOcchioSx={local.occhioSxPet!.immagini?.[0] || null}
-                  immagineOcchioDx={local.occhioDxPet!.immagini?.[0] || null}
-                  occhioSxPos={petCiondolo!.occhioSxPos}
-                  occhioDxPos={petCiondolo!.occhioDxPos}
+                  coloreOcchioSx={local.occhioSxPet?.coloreCSS ?? null}
+                  coloreOcchioDx={local.occhioDxPet?.coloreCSS ?? null}
                 />
               ) : petCiondolo?.immagineForma ? (
                 <img src={petCiondolo.immagineForma} alt="PET" className={styles.anteprimaImg} />
@@ -336,7 +328,7 @@ function PetWizard({
               </div>
               {show3DPet && <div className={styles.label3D}>↺ ruota</div>}
             </div>
-            {!show3DPet && (
+            {pet3DCompletati < pet3DTotale && (
               <Preview3DProgress completati={pet3DCompletati} totale={pet3DTotale} />
             )}
             <div className={styles.riepilogoDettagli}>
@@ -349,7 +341,7 @@ function PetWizard({
               {local.coloreCiondoloPet && (
                 <div className={styles.riepilogoRiga}>
                   <span className={styles.riepilogoLabel}>Bijoux</span>
-                  <span className={styles.riepilogoValore}>{local.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}</span>
+                  <span className={styles.riepilogoValore}>{local.coloreCiondoloPet?.nome}</span>
                 </div>
               )}
               {local.occhioSxPet && (
@@ -387,6 +379,19 @@ function PetWizard({
 
           {/* COL 2 — STEP LIST (tab fissi) */}
           <div className={styles.petWizardCol2}>
+            {petCiondolo?.modello3D && (
+              <div className={styles.viewerMini}>
+                <Viewer3D
+                  glbUrl={petCiondolo.modello3D}
+                  coloreCiondolo={local.coloreCiondoloPet?.coloreCSS ?? null}
+                  coloreDisegno={null}
+                  coloreOcchioSx={local.occhioSxPet?.coloreCSS ?? null}
+                  coloreOcchioDx={local.occhioDxPet?.coloreCSS ?? null}
+                  height="120px"
+                  zoom={3.5}
+                />
+              </div>
+            )}
             {steps.map((s) => (
               <button
                 key={s.id}
@@ -422,17 +427,8 @@ function PetWizard({
             {subStep === 0 && (
               <div className={styles.petWizardStepContent}>
                 <p className={styles.stepDesc}>Scegli il colore del bijoux PET.</p>
-                <div className={styles.sceltaRow}>
-                  {(["nero", "bianco"] as const).map((c) => (
-                    <button key={c}
-                      className={`${styles.coloreCiondoloBtn} ${local.coloreCiondoloPet === c ? styles.coloreCiondoloBtnSel : ""}`}
-                      onClick={() => { upd({ coloreCiondoloPet: c }); setSubStep(1); }}>
-                      <div className={styles.coloreCiondoloBall} style={{ background: c === "nero"
-                        ? "radial-gradient(ellipse at 50% 30%, #888 0%, #1a1a1a 50%, #000 100%)"
-                        : "radial-gradient(ellipse at 50% 30%, #fff 0%, #e0e0e0 50%, #aaa 100%)" }} />
-                      <span className={styles.coloreCiondoloNome}>{c === "nero" ? "Nero" : "Bianco"}</span>
-                    </button>
-                  ))}
+                <div className={styles.coloriGrid}>
+                  {coloriResina.map((r) => <ColoreCircle key={r.id} item={r} selezionato={local.coloreCiondoloPet?.id === r.id} onClick={() => { upd({ coloreCiondoloPet: r }); setSubStep(1); }} />)}
                 </div>
               </div>
             )}
@@ -526,7 +522,7 @@ function PetWizard({
                   {local.coloreCiondoloPet && (
                     <div className={styles.riepilogoRiga}>
                       <span className={styles.riepilogoLabel}>Bijoux</span>
-                      <span className={styles.riepilogoValore}>{local.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}</span>
+                      <span className={styles.riepilogoValore}>{local.coloreCiondoloPet?.nome}</span>
                     </div>
                   )}
                   {local.occhioSxPet && (
@@ -606,6 +602,7 @@ function ConfiguraInner() {
   const [cristalli, setCristalli] = useState<ItemColore[]>([]);
   const [cordini, setCordini] = useState<ItemColore[]>([]);
   const [smalti, setSmalti] = useState<ItemColore[]>([]);
+  const [coloriResina, setColoriResina] = useState<ItemColore[]>([]);
   const [fonts, setFonts] = useState<FontDedica[]>([]);
   const [confezioni, setConfezioni] = useState<Confezione[]>([]);
   const [impostazioni, setImpostazioni] = useState<Impostazioni>({ prezzoBase: 45, prezzoPet: 15, prezzoDedica: 0, prezzoDedicaPet: 0, maxPezzi: 5, maxPetPerHum: 3 });
@@ -625,14 +622,15 @@ function ConfiguraInner() {
 
   useEffect(() => {
     async function carica() {
-      const [a, cr, co, sm, fo, conf, imp, pet, sizes, fsp] = await Promise.all([
-        getAnimaliPubblicati(), getCristalli(), getCordini(), getSmalti(), getFontDedica(),
+      const [a, cr, co, sm, re, fo, conf, imp, pet, sizes, fsp] = await Promise.all([
+        getAnimaliPubblicati(), getCristalli(), getCordini(), getSmalti(), getColoriResina(), getFontDedica(),
         getConfezioni(), getImpostazioni(), getPetCiondolo(), getPetSizes(), getFasceScontoPet(),
       ]);
       setAnimali(a.sort((x, y) => x.nome.localeCompare(y.nome, "it")));
       setCristalli(cr.filter(x => x.attivo));
       setCordini(co.filter(x => x.attivo));
       setSmalti(sm.filter(x => x.attivo));
+      setColoriResina(re.filter(x => x.attivo));
       setFonts(fo.filter(x => x.attivo));
       fo.filter(x => x.attivo).forEach(f => {
         const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(f.famiglia)}:wght@400;500;700&display=swap`;
@@ -758,7 +756,7 @@ function ConfiguraInner() {
       aggiungi({
         id: Date.now().toString(),
         animale: config.animale!,
-        coloreCiondolo: config.coloreCiondolo!,
+        coloreCiondolo: config.coloreCiondolo!.coloreCSS,
         smalto: config.smalto!,
         occhioSx: config.occhioSx!,
         occhioDx: config.occhioDx!,
@@ -786,7 +784,7 @@ function ConfiguraInner() {
   }
 
   const fontHum = config.fontDedicaHum || fonts[0];
-  const show3DViewer = !!(config.animale?.modello3D && config.coloreCiondolo && config.smalto && config.occhioSx && config.occhioDx);
+  const show3DViewer = !!config.animale?.modello3D;
 
   // Progresso 3D per il bijoux HUM: animale + colore + smalto + occhio sx + occhio dx = 5 step
   const hum3DCompletati = [config.animale, config.coloreCiondolo, config.smalto, config.occhioSx, config.occhioDx].filter(Boolean).length;
@@ -835,8 +833,22 @@ function ConfiguraInner() {
 
         <div className={styles.layout3col}>
 
-          {/* COL SINISTRA — step list */}
+          {/* COL SINISTRA — viewer mini + step list */}
           <div className={styles.col2}>
+            {config.animale?.modello3D && (
+              <div className={styles.viewerMini}>
+                <Viewer3D
+                  glbUrl={config.animale.modello3D}
+                  coloreCiondolo={config.coloreCiondolo?.coloreCSS ?? null}
+                  coloreDisegno={config.smalto?.coloreCSS ?? null}
+                  coloreOcchioSx={config.occhioSx?.coloreCSS ?? null}
+                  coloreOcchioDx={config.occhioDx?.coloreCSS ?? null}
+                  height="120px"
+                  zoom={3.5}
+                />
+                <div className={styles.viewerMiniLabel}>↺</div>
+              </div>
+            )}
             <div className={styles.stepList}>
               {[
                 { id: 0, num: "01", label: "Animale", done: !!config.animale },
@@ -902,14 +914,8 @@ function ConfiguraInner() {
               {stepAttivo === 1 && (
                 <div className={styles.stepContent} id="step-1">
                   <p className={styles.stepDesc}>{STEP_DESC[1]}</p>
-                  <div className={styles.sceltaRow}>
-                    {(["nero", "bianco"] as const).map((c) => (
-                      <button key={c} className={`${styles.coloreCiondoloBtn} ${config.coloreCiondolo === c ? styles.coloreCiondoloBtnSel : ""}`}
-                        onClick={() => { update({ coloreCiondolo: c }); setStepAttivo(2); }}>
-                        <div className={styles.coloreCiondoloBall} style={{ background: ciondoloGradient(c) }} />
-                        <span className={styles.coloreCiondoloNome}>{c === "nero" ? "Nero" : "Bianco"}</span>
-                      </button>
-                    ))}
+                  <div className={styles.coloriGrid}>
+                    {coloriResina.map((r) => <ColoreCircle key={r.id} item={r} selezionato={config.coloreCiondolo?.id === r.id} onClick={() => { update({ coloreCiondolo: r }); setStepAttivo(2); }} />)}
                   </div>
                 </div>
               )}
@@ -1020,7 +1026,7 @@ function ConfiguraInner() {
                         <span className={styles.petCardNum}>PET {i + 1}</span>
                         <span className={styles.petCardDet}>
                           {pet.etichettaSizePet && `${pet.etichettaSizePet} · `}
-                          {pet.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}
+                          {pet.coloreCiondoloPet?.nome}
                           {pet.occhioSxPet && ` · ${pet.occhioSxPet.nome}`}
                           {pet.dedicaPet && ` · "${pet.dedicaPet}"`}
                         </span>
@@ -1113,15 +1119,11 @@ function ConfiguraInner() {
                         {show3DViewer ? (
                           <Viewer3D
                             glbUrl={config.animale!.modello3D!}
-                            coloreCiondolo={config.coloreCiondolo!}
-                            coloreDisegno={config.smalto!.coloreCSS}
-                            coloreOcchioSx={config.occhioSx!.coloreCSS}
-                            coloreOcchioDx={config.occhioDx!.coloreCSS}
-                            immagineOcchioSx={config.occhioSx!.immagini?.[0] || null}
-                            immagineOcchioDx={config.occhioDx!.immagini?.[0] || null}
-                            occhioSxPos={config.animale!.occhioSxPos || null}
-                            occhioDxPos={config.animale!.occhioDxPos || null}
-                          />
+                            coloreCiondolo={config.coloreCiondolo?.coloreCSS ?? null}
+                            coloreDisegno={config.smalto?.coloreCSS ?? null}
+                            coloreOcchioSx={config.occhioSx?.coloreCSS ?? null}
+                            coloreOcchioDx={config.occhioDx?.coloreCSS ?? null}
+                                                                  />
                         ) : config.animale ? (
                           (config.animale.immagineForma || config.animale.immagineDisegno) ? (
                             <img src={config.animale.immagineForma || config.animale.immagineDisegno} alt={config.animale.nome} className={styles.anteprimaImg} />
@@ -1162,8 +1164,8 @@ function ConfiguraInner() {
                         <div className={styles.riepilogoRiga}>
                           <span className={styles.riepilogoLabel}>Bijoux</span>
                           <div className={styles.riepilogoColore}>
-                            <div className={styles.riepilogoColoreDot} style={{ background: ciondoloGradient(config.coloreCiondolo) }} />
-                            <span className={styles.riepilogoValore}>{config.coloreCiondolo === "nero" ? "Nero" : "Bianco"}</span>
+                            <div className={styles.riepilogoColoreDot} style={{ background: config.coloreCiondolo?.coloreCSS }} />
+                            <span className={styles.riepilogoValore}>{config.coloreCiondolo?.nome}</span>
                           </div>
                         </div>
                       )}
@@ -1181,7 +1183,7 @@ function ConfiguraInner() {
                                 <span className={styles.riepilogoLabel}>PET {i + 1}</span>
                                 <span className={styles.riepilogoValore}>
                                   {pet.etichettaSizePet && `${pet.etichettaSizePet} · `}
-                                  {pet.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}
+                                  {pet.coloreCiondoloPet?.nome}
                                 </span>
                               </div>
                               {pet.occhioSxPet && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>sx</span><div className={styles.riepilogoColore}><RiepilogoColore item={pet.occhioSxPet} /><span className={styles.riepilogoValore}>{pet.occhioSxPet.nome}</span></div></div>}
@@ -1250,15 +1252,11 @@ function ConfiguraInner() {
                   {show3DViewer ? (
                     <Viewer3D
                       glbUrl={config.animale!.modello3D!}
-                      coloreCiondolo={config.coloreCiondolo!}
-                      coloreDisegno={config.smalto!.coloreCSS}
-                      coloreOcchioSx={config.occhioSx!.coloreCSS}
-                      coloreOcchioDx={config.occhioDx!.coloreCSS}
-                      immagineOcchioSx={config.occhioSx!.immagini?.[0] || null}
-                      immagineOcchioDx={config.occhioDx!.immagini?.[0] || null}
-                      occhioSxPos={config.animale!.occhioSxPos || null}
-                      occhioDxPos={config.animale!.occhioDxPos || null}
-                    />
+                      coloreCiondolo={config.coloreCiondolo?.coloreCSS ?? null}
+                      coloreDisegno={config.smalto?.coloreCSS ?? null}
+                      coloreOcchioSx={config.occhioSx?.coloreCSS ?? null}
+                      coloreOcchioDx={config.occhioDx?.coloreCSS ?? null}
+                                    />
                   ) : config.animale ? (
                     (config.animale.immagineForma || config.animale.immagineDisegno) ? (
                       <img src={config.animale.immagineForma || config.animale.immagineDisegno} alt={config.animale.nome} className={styles.anteprimaImg} />
@@ -1304,8 +1302,8 @@ function ConfiguraInner() {
                   <div className={styles.riepilogoRiga}>
                     <span className={styles.riepilogoLabel}>Bijoux</span>
                     <div className={styles.riepilogoColore}>
-                      <div className={styles.riepilogoColoreDot} style={{ background: ciondoloGradient(config.coloreCiondolo) }} />
-                      <span className={styles.riepilogoValore}>{config.coloreCiondolo === "nero" ? "Nero" : "Bianco"}</span>
+                      <div className={styles.riepilogoColoreDot} style={{ background: config.coloreCiondolo?.coloreCSS }} />
+                      <span className={styles.riepilogoValore}>{config.coloreCiondolo?.nome}</span>
                     </div>
                   </div>
                 )}
@@ -1324,7 +1322,7 @@ function ConfiguraInner() {
                           <span className={styles.riepilogoLabel}>PET {i + 1}</span>
                           <span className={styles.riepilogoValore}>
                             {pet.etichettaSizePet && `${pet.etichettaSizePet} · `}
-                            {pet.coloreCiondoloPet === "nero" ? "Nero" : "Bianco"}
+                            {pet.coloreCiondoloPet?.nome}
                           </span>
                         </div>
                         {pet.occhioSxPet && <div className={styles.riepilogoRiga}><span className={styles.riepilogoLabel}>sx</span><div className={styles.riepilogoColore}><RiepilogoColore item={pet.occhioSxPet} /><span className={styles.riepilogoValore}>{pet.occhioSxPet.nome}</span></div></div>}
@@ -1370,6 +1368,7 @@ function ConfiguraInner() {
           petCiondolo={petCiondolo}
           impostazioni={impostazioni}
           hasDedicaHum={hasDedicaHum}
+          coloriResina={coloriResina}
           onSalva={salvaPet}
           onAnnulla={() => { setPetWizardAperto(false); setPetInEditing(null); }}
         />

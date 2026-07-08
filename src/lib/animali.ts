@@ -1,12 +1,6 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-export type OcchioPos = {
-  x: number;
-  y: number;
-  z: number;
-};
-
 export type Animale = {
   id: string;
   nome: string;
@@ -18,8 +12,6 @@ export type Animale = {
   immagineForma: string;
   immaginiCiondolo: string[];
   modello3D?: string;
-  occhioSxPos?: OcchioPos;
-  occhioDxPos?: OcchioPos;
   pubblicato: boolean;
   ordine: number;
   igLink: string;
@@ -27,7 +19,7 @@ export type Animale = {
   prezzoPet: number;
   inEvidenza?: boolean;
   defaultViewer?: {
-    coloreCiondolo: "nero" | "bianco";
+    coloreCiondolo: string;
     coloreDisegno: string;
   };
 };

@@ -17,6 +17,29 @@ export default function PetSizesAdmin() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<(PetSize & { isNew?: boolean }) | null>(null);
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<string>("ordine");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  function handleSort(key: string) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  }
+
+  function sortIcon(key: string) {
+    if (sortKey !== key) return null;
+    return <span style={{ opacity: 0.6, fontSize: 10 }}>{sortDir === "asc" ? " ↑" : " ↓"}</span>;
+  }
+
+  function sorted<T>(data: T[]): T[] {
+    return [...data].sort((a: any, b: any) => {
+      const va = a[sortKey]; const vb = b[sortKey];
+      if (va == null) return 1; if (vb == null) return -1;
+      const cmp = typeof va === "number" ? va - vb : String(va).localeCompare(String(vb));
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }
+
 
   async function carica() {
     const data = await getPetSizes();
@@ -41,9 +64,9 @@ export default function PetSizesAdmin() {
   }
 
   async function handleElimina(id: string) {
-    if (!confirm("Eliminare questa taglia?")) return;
     await deletePetSize(id);
     await carica();
+    setConfirmDelete(null);
   }
 
   return (
@@ -65,13 +88,13 @@ export default function PetSizesAdmin() {
       ) : (
         <div className={localStyles.grid}>
           <div className={localStyles.gridHeader}>
-            <span>Ord.</span>
-            <span>Etichetta</span>
-            <span>Slug</span>
+            <span onClick={() => handleSort("ordine")} style={{ cursor: "pointer", userSelect: "none" }}>Ord{sortIcon("ordine")}</span>
+            <span onClick={() => handleSort("etichetta")} style={{ cursor: "pointer", userSelect: "none" }}>Etichetta{sortIcon("etichetta")}</span>
+<span onClick={() => handleSort("slug")} style={{ cursor: "pointer", userSelect: "none" }}>Codice{sortIcon("slug")}</span>
             <span>Stato</span>
             <span></span>
           </div>
-          {sizes.map(s => (
+          {sorted(sizes).map(s => (
             <div key={s.id} className={localStyles.gridRow}>
               <span className={localStyles.colOrdine}>{s.ordine}</span>
               <span>{s.etichetta}</span>
@@ -80,8 +103,8 @@ export default function PetSizesAdmin() {
                 {s.attivo ? "Attiva" : "Nascosta"}
               </span>
               <div className={localStyles.colAzioni}>
-                <button className={localStyles.btnEdit} onClick={() => setEditing({ ...s })}>Modifica</button>
-                <button className={localStyles.btnDelete} onClick={() => handleElimina(s.id)}>Elimina</button>
+                <button className={localStyles.btnEdit} onClick={() => setEditing({ ...s })} title="Modifica">✏️</button>
+                <button className={localStyles.btnDelete} onClick={() => setConfirmDelete(s.id)} title="Elimina">🗑️</button>
               </div>
             </div>
           ))}
@@ -90,6 +113,19 @@ export default function PetSizesAdmin() {
               Nessuna taglia configurata — se vuota, lo step taglia non viene mostrato.
             </p>
           )}
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>Elimina taglia</h2>
+            <p className={styles.dialogText}>Eliminare questa taglia? L&apos;operazione è irreversibile.</p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setConfirmDelete(null)}>Annulla</button>
+              <button className={styles.dialogDeleteBtn} onClick={() => handleElimina(confirmDelete)} title="Elimina">🗑️</button>
+            </div>
+          </div>
         </div>
       )}
 

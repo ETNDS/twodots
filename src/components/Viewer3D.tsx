@@ -4,58 +4,13 @@ import { useEffect, useRef } from "react";
 
 type Props = {
   glbUrl: string;
-  coloreCiondolo: "nero" | "bianco" | null;
+  coloreCiondolo: string | null;
   coloreDisegno: string | null;
   coloreOcchioSx: string | null;
   coloreOcchioDx: string | null;
-  immagineOcchioSx?: string | null;
-  immagineOcchioDx?: string | null;
-  occhioSxPos?: { x: number; y: number; z: number } | null;
-  occhioDxPos?: { x: number; y: number; z: number } | null;  
+  height?: string | number;
+  zoom?: number;
 };
-
-async function buildEyeMaterial(THREE: any, colore: string | null, immagine: string | null | undefined): Promise<any> {
-  // 1. Se c'è immagine, prova a usarla come texture
-  if (immagine) {
-    try {
-      const texture = await new Promise<any>((resolve, reject) => {
-        const loader = new THREE.TextureLoader();
-        loader.load(immagine, resolve, undefined, reject);
-      });
-      texture.colorSpace = THREE.SRGBColorSpace;
-      return new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.05,
-        metalness: 0.3,
-        transparent: true,
-      });
-    } catch {
-      // fallthrough a effetto cristallo
-    }
-  }
-
-  // 2. Effetto cristallo/gemma con MeshPhysicalMaterial
-  if (colore) {
-    return new THREE.MeshPhysicalMaterial({
-      color: colore,
-      roughness: 0.05,
-      metalness: 0.1,
-      transmission: 0.6,
-      thickness: 0.5,
-      ior: 2.4,
-      reflectivity: 1,
-      transparent: true,
-      opacity: 0.92,
-    });
-  }
-
-  // 3. Fallback colore piatto
-  return new THREE.MeshStandardMaterial({
-    color: "#aaddff",
-    roughness: 0.05,
-    metalness: 0.4,
-  });
-}
 
 export default function Viewer3D({
   glbUrl,
@@ -63,20 +18,17 @@ export default function Viewer3D({
   coloreDisegno,
   coloreOcchioSx,
   coloreOcchioDx,
-  immagineOcchioSx,
-  immagineOcchioDx,
-  occhioSxPos,
-  occhioDxPos,
+  height = "280px",
+  zoom = 1,
 }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const rendererRef = useRef<any>(null);
+  const animIdRef = useRef<number>(0);
   const stateRef = useRef<{
-    renderer: any;
-    eyeSx: any;
-    eyeDx: any;
-    corpeMat: any;
+    ciondoloMat: any;
     disegnoMat: any;
-    animId: number;
-    THREE: any;
+    occhioSxMat: any;
+    occhioDxMat: any;
   } | null>(null);
 
   useEffect(() => {
@@ -97,16 +49,15 @@ export default function Viewer3D({
       renderer.setSize(w, h);
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
+      rendererRef.current = renderer;
       mountRef.current.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
-
       const camera = new THREE.PerspectiveCamera(45, w / h, 0.01, 100);
       camera.position.set(0, 0, 4);
       camera.lookAt(0, 0, 0);
 
-      const ambient = new THREE.AmbientLight(0xffffff, 1.5);
-      scene.add(ambient);
+      scene.add(new THREE.AmbientLight(0xffffff, 1.5));
       const dir1 = new THREE.DirectionalLight(0xffffff, 2);
       dir1.position.set(2, 4, 3);
       scene.add(dir1);
@@ -117,62 +68,49 @@ export default function Viewer3D({
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(0, 0, 0);
       controls.enablePan = false;
-      controls.minDistance = 3;
-      controls.maxDistance = 3.5;
+      controls.minDistance = 3 * zoom;
+      controls.maxDistance = 3.5 * zoom;
       controls.autoRotate = false;
       controls.update();
-
-      // Costruisci materiali occhi con fallback
-      const [eyeSxMat, eyeDxMat] = await Promise.all([
-        buildEyeMaterial(THREE, coloreOcchioSx, immagineOcchioSx),
-        buildEyeMaterial(THREE, coloreOcchioDx, immagineOcchioDx),
-      ]);
-
-      const eyeGeo = new THREE.SphereGeometry(0.04, 32, 32);
-      const eyeSx = new THREE.Mesh(eyeGeo, eyeSxMat);
-      const eyeDx = new THREE.Mesh(eyeGeo, eyeDxMat);
-
-        eyeSx.position.set(
-            occhioSxPos?.x ?? -0.05,
-            occhioSxPos?.y ?? -0.42,
-            occhioSxPos?.z ?? 0.05
-        );
-        eyeDx.position.set(
-            occhioDxPos?.x ?? 0.05,
-            occhioDxPos?.y ?? -0.42,
-            occhioDxPos?.z ?? 0.05
-        );
-
-      scene.add(eyeSx);
-      scene.add(eyeDx);
-
-      let corpeMat: any = null;
-      let disegnoMat: any = null;
 
       const loader = new GLTFLoader();
       loader.load(glbUrl, (gltf: any) => {
         if (cancelled) return;
 
         const model = gltf.scene;
-
         const innerGroup = new THREE.Group();
         innerGroup.rotation.x = Math.PI / 2;
         innerGroup.add(model);
-
         const outerGroup = new THREE.Group();
         outerGroup.add(innerGroup);
         scene.add(outerGroup);
 
+        // Calcola bounding box DOPO la rotazione
         outerGroup.updateMatrixWorld(true);
         const box = new THREE.Box3().setFromObject(outerGroup);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 1.4 / maxDim;
+        const scale = (1.4 * zoom) / maxDim;
 
         outerGroup.scale.setScalar(scale);
-        outerGroup.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+
+        // Ricalcola bounding box dopo la scala per centrare correttamente
+        outerGroup.updateMatrixWorld(true);
+        const box2 = new THREE.Box3().setFromObject(outerGroup);
+        const center2 = box2.getCenter(new THREE.Vector3());
+        outerGroup.position.set(-center2.x, -center2.y, -center2.z);
+
+        // Con rotazione X PI/2 il centro visivo scende: compenso con target Y negativo
+        const targetY = zoom > 1 ? -0.45 * (zoom - 1) : 0;
+        controls.target.set(0, targetY, 0);
+        camera.lookAt(0, targetY, 0);
+        controls.update();
+
+        let ciondoloMat: any = null;
+        let disegnoMat: any = null;
+        let occhioSxMat: any = null;
+        let occhioDxMat: any = null;
 
         model.traverse((obj: any) => {
           if (!obj.isMesh) return;
@@ -180,24 +118,19 @@ export default function Viewer3D({
           mats.forEach((mat: any) => {
             mat.roughness = 0.11;
             mat.metalness = 0;
-            if (mat.name === "nero") {
-              corpeMat = mat;
-              mat.color.set(coloreCiondolo === "bianco" ? "#d8d8d8" : "#1a1a1a");
-            }
-            if (mat.name === "bianco") {
-              disegnoMat = mat;
-              mat.color.set(coloreDisegno || "#ffffff");
-            }
+            if (mat.name === "ciondolo") { ciondoloMat = mat; mat.color.set(coloreCiondolo || "#1a1a1a"); }
+            if (mat.name === "disegno") { disegnoMat = mat; mat.color.set(coloreDisegno || "#ffffff"); }
+            if (mat.name === "occhio sx") { occhioSxMat = mat; mat.color.set(coloreOcchioSx || "#e07010"); }
+            if (mat.name === "occhio dx") { occhioDxMat = mat; mat.color.set(coloreOcchioDx || "#e07010"); }
           });
         });
 
-        stateRef.current = { renderer, eyeSx, eyeDx, corpeMat, disegnoMat, animId: 0, THREE };
+        stateRef.current = { ciondoloMat, disegnoMat, occhioSxMat, occhioDxMat };
       });
 
       function animate() {
         if (cancelled) return;
-        const id = requestAnimationFrame(animate);
-        if (stateRef.current) stateRef.current.animId = id;
+        animIdRef.current = requestAnimationFrame(animate);
         controls.update();
         renderer.render(scene, camera);
       }
@@ -208,34 +141,27 @@ export default function Viewer3D({
 
     return () => {
       cancelled = true;
-      if (stateRef.current) {
-        cancelAnimationFrame(stateRef.current.animId);
-        stateRef.current.renderer.dispose();
-        if (mountRef.current && stateRef.current.renderer.domElement.parentNode === mountRef.current) {
-          mountRef.current.removeChild(stateRef.current.renderer.domElement);
+      cancelAnimationFrame(animIdRef.current);
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+        if (mountRef.current && rendererRef.current.domElement.parentNode === mountRef.current) {
+          mountRef.current.removeChild(rendererRef.current.domElement);
         }
-        stateRef.current = null;
+        rendererRef.current = null;
       }
     };
-  }, [glbUrl, immagineOcchioSx, immagineOcchioDx]);
+  }, [glbUrl]);
 
-  // Aggiorna colori dinamicamente quando cambiano (senza ricreare il viewer)
   useEffect(() => {
     if (!stateRef.current) return;
-    const { eyeSx, eyeDx, corpeMat, disegnoMat, THREE } = stateRef.current;
-
-    // Aggiorna materiale occhi solo se non hanno texture
-    if (eyeSx?.material && !eyeSx.material.map) {
-      if (coloreOcchioSx) eyeSx.material.color.set(coloreOcchioSx);
-    }
-    if (eyeDx?.material && !eyeDx.material.map) {
-      if (coloreOcchioDx) eyeDx.material.color.set(coloreOcchioDx);
-    }
-    if (corpeMat) corpeMat.color.set(coloreCiondolo === "bianco" ? "#d8d8d8" : "#1a1a1a");
+    const { ciondoloMat, disegnoMat, occhioSxMat, occhioDxMat } = stateRef.current;
+    if (ciondoloMat && coloreCiondolo) ciondoloMat.color.set(coloreCiondolo);
     if (disegnoMat && coloreDisegno) disegnoMat.color.set(coloreDisegno);
+    if (occhioSxMat && coloreOcchioSx) occhioSxMat.color.set(coloreOcchioSx);
+    if (occhioDxMat && coloreOcchioDx) occhioDxMat.color.set(coloreOcchioDx);
   }, [coloreCiondolo, coloreDisegno, coloreOcchioSx, coloreOcchioDx]);
 
   return (
-    <div ref={mountRef} style={{ width: "100%", height: "280px", borderRadius: 12, overflow: "hidden" }} />
+    <div ref={mountRef} style={{ width: "100%", height: typeof height === "number" ? `${height}px` : height, borderRadius: 12, overflow: "hidden" }} />
   );
 }

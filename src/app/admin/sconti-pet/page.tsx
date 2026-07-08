@@ -18,6 +18,29 @@ export default function ScontiPetAdmin() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<(FasciaScontoPet & { isNew?: boolean }) | null>(null);
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<string>("ordine");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  function handleSort(key: string) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  }
+
+  function sortIcon(key: string) {
+    if (sortKey !== key) return null;
+    return <span style={{ opacity: 0.6, fontSize: 10 }}>{sortDir === "asc" ? " ↑" : " ↓"}</span>;
+  }
+
+  function sorted<T>(data: T[]): T[] {
+    return [...data].sort((a: any, b: any) => {
+      const va = a[sortKey]; const vb = b[sortKey];
+      if (va == null) return 1; if (vb == null) return -1;
+      const cmp = typeof va === "number" ? va - vb : String(va).localeCompare(String(vb));
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }
+
 
   async function carica() {
     const data = await getFasceScontoPet();
@@ -39,9 +62,9 @@ export default function ScontiPetAdmin() {
   }
 
   async function handleElimina(id: string) {
-    if (!confirm("Eliminare questa fascia?")) return;
     await deleteFasciaScontoPet(id);
     await carica();
+    setConfirmDelete(null);
   }
 
   return (
@@ -64,31 +87,45 @@ export default function ScontiPetAdmin() {
       ) : (
         <div className={localStyles.grid}>
           <div className={localStyles.gridHeader}>
-            <span>Da (PET)</span>
-            <span>Sconto %</span>
-            <span>Codice Shopify</span>
-            <span>Ord.</span>
+            <span onClick={() => handleSort("ordine")} style={{ cursor: "pointer", userSelect: "none" }}>Ord{sortIcon("ordine")}</span>
+            <span onClick={() => handleSort("da")} style={{ cursor: "pointer", userSelect: "none" }}>Da (pezzi){sortIcon("da")}</span>
+            <span onClick={() => handleSort("percentuale")} style={{ cursor: "pointer", userSelect: "none" }}>Sconto %{sortIcon("percentuale")}</span>
+            <span onClick={() => handleSort("codiceShopify")} style={{ cursor: "pointer", userSelect: "none" }}>Codice Shopify{sortIcon("codiceShopify")}</span>
             <span>Stato</span>
             <span></span>
           </div>
-          {fasce.map((f) => (
+          {sorted(fasce).map((f) => (
             <div key={f.id} className={localStyles.gridRow}>
+              <span className={localStyles.colOrdine}>{f.ordine}</span>
               <span className={localStyles.colDa}>{f.da}+</span>
               <span className={localStyles.colPerc}>{f.percentuale}%</span>
               <span className={localStyles.colCodice}>{f.codiceShopify}</span>
-              <span className={localStyles.colOrdine}>{f.ordine}</span>
               <span className={f.attivo ? styles.badgePub : styles.badgeBozza}>
                 {f.attivo ? "Attiva" : "Disabilitata"}
               </span>
               <div className={localStyles.colAzioni}>
-                <button className={localStyles.btnEdit} onClick={() => setEditing({ ...f })}>Modifica</button>
-                <button className={localStyles.btnDelete} onClick={() => handleElimina(f.id)}>Elimina</button>
+                <button className={localStyles.btnEdit} onClick={() => setEditing({ ...f })} title="Modifica">✏️</button>
+                <button className={localStyles.btnDelete} onClick={() => setConfirmDelete(f.id)} title="Elimina">🗑️</button>
               </div>
             </div>
           ))}
           {fasce.length === 0 && <p style={{ padding: "20px 0", fontSize: 13, opacity: 0.4, textAlign: "center" }}>Nessuna fascia configurata.</p>}
         </div>
       )}
+
+      {confirmDelete && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>Elimina fascia sconto PET</h2>
+            <p className={styles.dialogText}>Eliminare questa fascia? L&apos;operazione è irreversibile.</p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setConfirmDelete(null)}>Annulla</button>
+              <button className={styles.dialogDeleteBtn} onClick={() => handleElimina(confirmDelete!)} title="Elimina">🗑️</button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {editing && (
         <div className={localStyles.overlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setEditing(null); }}>

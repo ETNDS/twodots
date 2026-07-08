@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import styles from "@styles/adminAnimale.module.css";
 
 type Props = {
@@ -10,6 +13,8 @@ type Props = {
 };
 
 export default function ImmagineCard({ url, index, altText, onElimina, onPrincipale, showPrincipale = true }: Props) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   return (
     <div className={styles.ciondoloImg}>
       {showPrincipale && index === 0 && (
@@ -37,12 +42,32 @@ export default function ImmagineCard({ url, index, altText, onElimina, onPrincip
         </button>
         <button
           title="Elimina"
-          onClick={() => onElimina(url)}
+          onClick={() => setConfirmDelete(true)}
           style={{ background: "none", border: "none", cursor: "pointer", padding: "2px 4px", color: "var(--admin-text-muted)", fontSize: 14, lineHeight: 1 }}
         >
           🗑️
         </button>
       </div>
+
+      {confirmDelete && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>Elimina immagine</h2>
+            <p className={styles.dialogText}>
+              Questa immagine verrà rimossa. Continuare?
+            </p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setConfirmDelete(false)}>Annulla</button>
+              <button
+                className={styles.dialogDeleteBtn}
+                onClick={() => { onElimina(url); setConfirmDelete(false); }}
+              >
+                Elimina
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

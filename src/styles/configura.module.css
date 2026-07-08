@@ -1833,3 +1833,35 @@
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
 }
+/* Mini viewer nella colonna sinistra — visibile solo su mobile */
+
+/* Mini viewer 3D nella col sinistra — solo mobile */
+.viewerMini {
+  display: none;
+}
+.viewerMiniLabel {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .viewerMini {
+    display: block;
+    width: 100%;
+    height: 88px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 6px;
+    position: relative;
+    background: var(--color-lavanda-mid);
+  }
+  .viewerMiniLabel {
+    display: block;
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    font-size: 9px;
+    color: var(--color-navy);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}

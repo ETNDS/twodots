@@ -42,7 +42,6 @@ export async function creaDraftOrder(input: DraftOrderInput): Promise<{ checkout
     },
   };
 
-  console.log("[shopify-admin] Sending draft order:", JSON.stringify(body).slice(0, 500));
 
   const DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!;
   const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_TOKEN!;
@@ -60,8 +59,6 @@ export async function creaDraftOrder(input: DraftOrderInput): Promise<{ checkout
   );
 
   const responseText = await res.text();
-  console.log("[shopify-admin] Response status:", res.status);
-  console.log("[shopify-admin] Response body:", responseText.slice(0, 500));
 
   if (!res.ok) {
     console.error("[shopify-admin] Error:", responseText);

@@ -2,36 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getConfezioni, deleteConfezione, Confezione } from "@/lib/configuratore";
+import { getColoriResina, deleteColoreResina, ItemColore } from "@/lib/configuratore";
 import AdminTable, { ColDef } from "@/components/AdminTable";
 import styles from "@styles/adminAnimali.module.css";
 
-const COLUMNS: ColDef<Confezione>[] = [
+const COLUMNS: ColDef<ItemColore>[] = [
   { key: "ordine", label: "Ord", width: "40px", render: (i) => <span style={{ fontSize: 12, opacity: 0.4 }}>{i.ordine}</span> },
   {
-    key: "immagini", label: "", width: "48px", sortable: false,
+    key: "coloreCSS", label: "", width: "48px", sortable: false,
     render: (i) => (
       <div className={styles.gridImg}>
-        {i.immagini?.[0] ? <img src={i.immagini[0]} alt={i.nome} /> : <span>{i.nome[0]}</span>}
+        {i.immagini?.[0] ? <img src={i.immagini[0]} alt={i.nome} /> : <div style={{ width: 28, height: 28, borderRadius: "50%", background: i.coloreCSS, border: "1px solid rgba(0,0,0,0.1)" }} />}
       </div>
     ),
   },
   { key: "nome", label: "Nome", width: "180px", render: (i) => <span className={styles.gridNome}>{i.nome}</span> },
   { key: "descrizione", label: "Descrizione", render: (i) => <span className={styles.gridStoria}>{i.descrizione}</span> },
-  { key: "prezzo", label: "Prezzo", width: "80px", render: (i) => <span style={{ fontSize: 12 }}>€ {i.prezzo}</span> },
   { key: "attivo", label: "Stato", width: "100px", render: (i) => <span className={i.attivo ? styles.badgePub : styles.badgeBozza}>{i.attivo ? "Attivo" : "Disabilitato"}</span> },
 ];
 
 export default function Page() {
-  const [items, setItems] = useState<Confezione[]>([]);
+  const [items, setItems] = useState<ItemColore[]>([]);
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => { getConfezioni().then((data) => { setItems(data); setLoading(false); }); }, []);
+  useEffect(() => { getColoriResina().then((data) => { setItems(data); setLoading(false); }); }, []);
 
-  async function handleDelete(item: Confezione) {
-    await deleteConfezione(item.id);
+  async function handleDelete(item: ItemColore) {
+    await deleteColoreResina(item.id);
     setItems(prev => prev.filter(i => i.id !== item.id));
   }
 
@@ -39,15 +38,15 @@ export default function Page() {
 
   return (
     <div>
-      <div className={styles.header}><h1 className={styles.title}>Confezioni</h1></div>
+      <div className={styles.header}><h1 className={styles.title}>Colori resina</h1></div>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
           <input className={styles.filtroInput} type="text" placeholder="Cerca per nome..." value={filtro} onChange={(e) => setFiltro(e.target.value)} />
-          <span className={styles.count}>{loading ? "..." : `${filtrati.length} confezioni`}</span>
+          <span className={styles.count}>{loading ? "..." : `${filtrati.length} colori`}</span>
         </div>
-        <button className={styles.addBtn} onClick={() => router.push("/admin/confezioni/nuovo")}>+ Nuova confezione</button>
+        <button className={styles.addBtn} onClick={() => router.push("/admin/resina/nuovo")}>+ Nuovo colore</button>
       </div>
-      <AdminTable columns={COLUMNS} data={filtrati} loading={loading} onEdit={(i) => router.push(`/admin/confezioni/${i.id}`)} onDelete={handleDelete} deleteLabel="confezione" />
+      <AdminTable columns={COLUMNS} data={filtrati} loading={loading} onEdit={(i) => router.push(`/admin/resina/${i.id}`)} onDelete={handleDelete} deleteLabel="colore resina" />
     </div>
   );
 }

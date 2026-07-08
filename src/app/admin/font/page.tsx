@@ -2,10 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getFontDedica, FontDedica } from "@/lib/configuratore";
+import { getFontDedica, deleteFontDedica, FontDedica } from "@/lib/configuratore";
+import AdminTable, { ColDef } from "@/components/AdminTable";
 import styles from "@styles/adminAnimali.module.css";
-import localStyles from "@styles/adminFont.module.css";
 
+const COLUMNS: ColDef<FontDedica>[] = [
+  { key: "ordine", label: "Ord", width: "40px", render: (i) => <span style={{ fontSize: 12, opacity: 0.4 }}>{i.ordine}</span> },
+  { key: "famiglia", label: "Famiglia", width: "160px", render: (i) => <span style={{ fontFamily: i.famiglia, fontSize: 14, fontWeight: 500 }}>{i.famiglia}</span> },
+  { key: "sizePx", label: "Pt", width: "48px", render: (i) => <span style={{ fontSize: 12, opacity: 0.6 }}>{i.sizePx}</span> },
+  { key: "nome", label: "Nome", width: "160px", render: (i) => <span className={styles.gridNome}>{i.nome}</span> },
+  { key: "descrizione", label: "Descrizione", render: (i) => <span className={styles.gridStoria}>{i.descrizione}</span> },
+  { key: "attivo", label: "Stato", width: "100px", render: (i) => <span className={i.attivo ? styles.badgePub : styles.badgeBozza}>{i.attivo ? "Attivo" : "Disabilitato"}</span> },
+];
 
 export default function AdminFont() {
   const [items, setItems] = useState<FontDedica[]>([]);
@@ -13,59 +21,29 @@ export default function AdminFont() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    getFontDedica().then((data) => {
-      setItems(data);
-      setLoading(false);
-    });
-  }, []);
+  useEffect(() => { getFontDedica().then((data) => { setItems(data); setLoading(false); }); }, []);
 
-  const filtrati = items.filter((i) =>
+  async function handleDelete(item: FontDedica) {
+    await deleteFontDedica(item.id);
+    setItems(prev => prev.filter(i => i.id !== item.id));
+  }
+
+  const filtrati = items.filter(i =>
     i.nome.toLowerCase().includes(filtro.toLowerCase()) ||
     i.famiglia.toLowerCase().includes(filtro.toLowerCase())
   );
 
   return (
     <div>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Font dedica</h1>
-      </div>
+      <div className={styles.header}><h1 className={styles.title}>Font dedica</h1></div>
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
-          <input className={styles.filtroInput} type="text" placeholder="Cerca per nome o famiglia..."
-            value={filtro} onChange={(e) => setFiltro(e.target.value)} />
+          <input className={styles.filtroInput} type="text" placeholder="Cerca per nome o famiglia..." value={filtro} onChange={(e) => setFiltro(e.target.value)} />
           <span className={styles.count}>{loading ? "..." : `${filtrati.length} font`}</span>
         </div>
-        <button className={styles.addBtn} onClick={() => router.push("/admin/font/nuovo")}>
-          + Nuovo font
-        </button>
+        <button className={styles.addBtn} onClick={() => router.push("/admin/font/nuovo")}>+ Nuovo font</button>
       </div>
-      {loading ? (
-        <p className={styles.loading}>Caricamento...</p>
-      ) : (
-        <div className={localStyles.grid}>
-          <div className={localStyles.gridHeader}>
-            <span>Famiglia</span>
-            <span>Pt</span>
-            <span>Nome</span>
-            <span>Descrizione</span>
-            <span>Ord.</span>
-            <span>Stato</span>
-          </div>
-          {filtrati.map((item) => (
-            <div key={item.id} className={localStyles.gridRow} onClick={() => router.push(`/admin/font/${item.id}`)}>
-              <span className={localStyles.colFamiglia}>{item.famiglia}</span>
-              <span className={localStyles.colPt}>{item.sizePx}</span>
-              <span className={localStyles.colNome}>{item.nome}</span>
-              <span className={localStyles.colDescrizione}>{item.descrizione}</span>
-              <span className={localStyles.colOrdine}>{item.ordine}</span>
-              <span className={item.attivo ? styles.badgePub : styles.badgeBozza}>
-                {item.attivo ? "Attivo" : "Disabilitato"}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+      <AdminTable columns={COLUMNS} data={filtrati} loading={loading} onEdit={(i) => router.push(`/admin/font/${i.id}`)} onDelete={handleDelete} deleteLabel="font" />
     </div>
   );
 }

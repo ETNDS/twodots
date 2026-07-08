@@ -16,9 +16,12 @@ const EMPTY: Omit<FasciaSconto, "id"> = {
 export default function AdminSconti() {
   const [fasce, setFasce] = useState<FasciaSconto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortKey, setSortKey] = useState<string>("ordine");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [editing, setEditing] = useState<FasciaSconto | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   async function carica() {
     const data = await getFasceSconto();
@@ -58,9 +61,24 @@ export default function AdminSconti() {
   }
 
   async function handleElimina(id: string) {
-    if (!confirm("Eliminare questa fascia?")) return;
     await deleteFasciaSconto(id);
     await carica();
+    setConfirmDelete(null);
+  }
+
+
+  function handleSort(key: string) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  }
+
+  function sortedData<T>(data: T[]): T[] {
+    return [...data].sort((a: any, b: any) => {
+      const va = a[sortKey]; const vb = b[sortKey];
+      if (va == null) return 1; if (vb == null) return -1;
+      const cmp = typeof va === "number" ? va - vb : String(va).localeCompare(String(vb));
+      return sortDir === "asc" ? cmp : -cmp;
+    });
   }
 
   return (
@@ -81,31 +99,44 @@ export default function AdminSconti() {
       ) : (
         <div className={localStyles.grid}>
           <div className={localStyles.gridHeader}>
-            <span>Da (pezzi)</span>
-            <span>Sconto %</span>
-            <span>Codice Shopify</span>
-            <span>Ord.</span>
+            <span onClick={() => handleSort("ordine")} style={{ cursor: "pointer", userSelect: "none" }}>{sortKey === "ordine" ? (sortDir === "asc" ? "↑ " : "↓ ") : ""}Ord</span>
+            <span onClick={() => handleSort("da")} style={{ cursor: "pointer", userSelect: "none" }}>{sortKey === "da" ? (sortDir === "asc" ? "↑ " : "↓ ") : ""}Da (pezzi)</span>
+            <span onClick={() => handleSort("percentuale")} style={{ cursor: "pointer", userSelect: "none" }}>{sortKey === "percentuale" ? (sortDir === "asc" ? "↑ " : "↓ ") : ""}Sconto %</span>
+            <span onClick={() => handleSort("codiceShopify")} style={{ cursor: "pointer", userSelect: "none" }}>{sortKey === "codiceShopify" ? (sortDir === "asc" ? "↑ " : "↓ ") : ""}Codice Shopify</span>
             <span>Stato</span>
             <span></span>
           </div>
-          {fasce.map((f) => (
+          {sortedData(fasce).map((f) => (
             <div key={f.id} className={localStyles.gridRow}>
+              <span className={localStyles.colOrdine}>{f.ordine}</span>
               <span className={localStyles.colDa}>{f.da}+</span>
               <span className={localStyles.colPerc}>{f.percentuale}%</span>
               <span className={localStyles.colCodice}>{f.codiceShopify}</span>
-              <span className={localStyles.colOrdine}>{f.ordine}</span>
               <span className={f.attivo ? styles.badgePub : styles.badgeBozza}>
                 {f.attivo ? "Attiva" : "Disabilitata"}
               </span>
               <div className={localStyles.colAzioni}>
-                <button className={localStyles.btnEdit} onClick={() => apriEditing(f)}>Modifica</button>
-                <button className={localStyles.btnDelete} onClick={() => handleElimina(f.id)}>Elimina</button>
+                <button className={localStyles.btnEdit} onClick={() => apriEditing(f)} title="Modifica">✏️</button>
+                <button className={localStyles.btnDelete} onClick={() => setConfirmDelete(f.id)} title="Elimina">🗑️</button>
               </div>
             </div>
           ))}
           {fasce.length === 0 && (
             <p className={localStyles.vuoto}>Nessuna fascia configurata.</p>
           )}
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div className={styles.dialogOverlay}>
+          <div className={styles.dialog}>
+            <h2 className={styles.dialogTitle}>Elimina fascia sconto</h2>
+            <p className={styles.dialogText}>Eliminare questa fascia? L&apos;operazione è irreversibile.</p>
+            <div className={styles.dialogActions}>
+              <button className={styles.dialogCancelBtn} onClick={() => setConfirmDelete(null)}>Annulla</button>
+              <button className={styles.dialogDeleteBtn} onClick={() => handleElimina(confirmDelete!)}>Elimina</button>
+            </div>
+          </div>
         </div>
       )}
 

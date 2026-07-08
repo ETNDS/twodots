@@ -243,7 +243,7 @@ function ArticoloCard({ articolo: a, onRimuovi }: { articolo: ArticoloCarrello; 
               {a.pet.map((pet, i) => (
                 <div key={pet.uid} className={styles.cardPetItem}>
                   <p className={styles.cardSub}><strong>PET #{i + 1}</strong></p>
-                  <p className={styles.cardSub}>{pet.etichettaSizePet ? `Taglia: ${pet.etichettaSizePet} · ` : ""}Bijoux: {pet.coloreCiondoloPet}</p>
+                  <p className={styles.cardSub}>{pet.etichettaSizePet ? `Taglia: ${pet.etichettaSizePet} · ` : ""}Bijoux: {pet.coloreCiondoloPet?.nome}</p>
                   {pet.occhioSxPet && <p className={styles.cardSub}>Swarovski: {pet.occhioSxPet.nome} (sx){pet.occhioDxPet ? ` · ${pet.occhioDxPet.nome} (dx)` : ""}</p>}
                   {pet.dedicaPet && (
                     <div className={styles.cardSub}>

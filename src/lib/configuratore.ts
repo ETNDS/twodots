@@ -52,17 +52,9 @@ export type FasciaSconto = {
   ordine: number;
 };
 
-export type OcchioPos = {
-  x: number;
-  y: number;
-  z: number;
-};
-
 export type PetCiondolo = {
   immagineForma: string;
   modello3D: string;
-  occhioSxPos: OcchioPos | null;
-  occhioDxPos: OcchioPos | null;
 };
 
 async function getCollezione<T>(nome: string): Promise<T[]> {
@@ -74,6 +66,7 @@ async function getCollezione<T>(nome: string): Promise<T[]> {
 export const getCristalli = () => getCollezione<ItemColore>("cristalli");
 export const getCordini = () => getCollezione<ItemColore>("cordini");
 export const getSmalti = () => getCollezione<ItemColore>("smalti");
+export const getColoriResina = () => getCollezione<ItemColore>("coloriResina");
 export const getFontDedica = () => getCollezione<FontDedica>("fontDedica");
 export const getConfezioni = () => getCollezione<Confezione>("confezioni");
 
@@ -98,8 +91,6 @@ export async function getPetCiondolo(): Promise<PetCiondolo | null> {
   return {
     immagineForma: d.immagineForma || "",
     modello3D: d.modello3D || "",
-    occhioSxPos: d.occhioSxPos || null,
-    occhioDxPos: d.occhioDxPos || null,
   };
 }
 
@@ -155,7 +146,7 @@ export type PetConfigurato = {
   uid: string;
   sizePet: string | null;
   etichettaSizePet: string | null;
-  coloreCiondoloPet: "nero" | "bianco" | null;
+  coloreCiondoloPet: ItemColore | null;
   occhioSxPet: ItemColore | null;
   occhioDxPet: ItemColore | null;
   dedicaPet: string;
@@ -190,4 +181,32 @@ export function calcolaScontoPet(fasce: FasciaScontoPet[], nPet: number): Fascia
   const attive = fasce.filter(f => f.attivo && f.da <= nPet);
   if (attive.length === 0) return null;
   return attive.reduce((best, f) => f.da > best.da ? f : best);
+}
+
+export async function deleteCristallo(id: string): Promise<void> {
+  await deleteDoc(doc(db, "cristalli", id));
+}
+
+export async function deleteCordino(id: string): Promise<void> {
+  await deleteDoc(doc(db, "cordini", id));
+}
+
+export async function deleteSmalto(id: string): Promise<void> {
+  await deleteDoc(doc(db, "smalti", id));
+}
+
+export async function deleteColoreResina(id: string): Promise<void> {
+  await deleteDoc(doc(db, "coloriResina", id));
+}
+
+export async function deleteConfezione(id: string): Promise<void> {
+  await deleteDoc(doc(db, "confezioni", id));
+}
+
+export async function deleteFontDedica(id: string): Promise<void> {
+  await deleteDoc(doc(db, "fontDedica", id));
+}
+
+export async function deleteAnimale(id: string): Promise<void> {
+  await deleteDoc(doc(db, "animali", id));
 }
