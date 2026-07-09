@@ -328,6 +328,7 @@ function PetWizard({
               </div>
               {show3DPet && <div className={styles.label3D}>↺ ruota</div>}
             </div>
+            {!!petCiondolo && <p className={styles.viewerNota}>Anteprima indicativa, non definitiva.</p>}
             {pet3DCompletati < pet3DTotale && (
               <Preview3DProgress completati={pet3DCompletati} totale={pet3DTotale} />
             )}
@@ -391,6 +392,9 @@ function PetWizard({
                   zoom={3.5}
                 />
               </div>
+            )}
+            {petCiondolo?.modello3D && (
+              <p className={styles.viewerMiniNota}>Anteprima indicativa, non definitiva.</p>
             )}
             {steps.map((s) => (
               <button
@@ -849,6 +853,9 @@ function ConfiguraInner() {
                 <div className={styles.viewerMiniLabel}>↺</div>
               </div>
             )}
+            {config.animale?.modello3D && (
+              <p className={styles.viewerMiniNota}>Anteprima indicativa, non definitiva.</p>
+            )}
             <div className={styles.stepList}>
               {[
                 { id: 0, num: "01", label: "Animale", done: !!config.animale },
@@ -1140,6 +1147,7 @@ function ConfiguraInner() {
                         )}
                         {show3DViewer && <div className={styles.label3D}>↺ ruota</div>}
                       </div>
+                      {!!config.animale && <p className={styles.viewerNota}>Anteprima indicativa, non definitiva.</p>}
                       {!show3DViewer && (
                         <Preview3DProgress completati={hum3DCompletati} totale={5} />
                       )}
@@ -1273,6 +1281,7 @@ function ConfiguraInner() {
                   )}
                   {show3DViewer && <div className={styles.label3D}>↺ ruota</div>}
                 </div>
+                {!!config.animale && <p className={styles.viewerNota}>Anteprima indicativa, non definitiva.</p>}
                 {!show3DViewer && (
                   <Preview3DProgress completati={hum3DCompletati} totale={5} />
                 )}

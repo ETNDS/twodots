@@ -801,6 +801,15 @@
   text-align: center;
 }
 
+.viewerNota {
+  font-size: 10px;
+  color: var(--color-lavanda);
+  opacity: 0.4;
+  text-align: center;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+
 /* Riga hint + bottone preview affiancati */
 .dedicaHintRow {
   display: flex;
@@ -1842,6 +1851,9 @@
 .viewerMiniLabel {
   display: none;
 }
+.viewerMiniNota {
+  display: none;
+}
 
 @media (max-width: 768px) {
   .viewerMini {
@@ -1863,5 +1875,14 @@
     color: var(--color-navy);
     opacity: 0.3;
     pointer-events: none;
+  }
+  .viewerMiniNota {
+    display: block;
+    font-size: 9px;
+    color: var(--color-navy);
+    opacity: 0.4;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
   }
 }
