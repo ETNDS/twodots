@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  serverExternalPackages: ['firebase-admin', 'jwks-rsa', 'jose'],
   async redirects() {
     return [
       { source: '/you-and-pet', destination: '/bijoux-coppia', permanent: true },
